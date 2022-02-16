@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image } from "react-native";
+import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import { Feather } from '@expo/vector-icons';
 
-const Start = () => {
+const Start = ({ navigation }) => {
 
     function renderImage() {
         return (
@@ -93,11 +94,60 @@ const Start = () => {
         )
     }
 
+    function renderText() {
+        return (
+            <View
+                style={{
+                    marginTop: SIZES.padding,
+                    width: SIZES.width,
+                    alignItems: 'center'
+                }}
+            >
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center' }}>Welcome</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center' }}>to animal world !</Text>
+                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center' }}>Recognize wild animal and protect them with our app</Text>
+                <TouchableOpacity
+                    style={[{
+                        marginTop: SIZES.padding,
+                        backgroundColor: COLORS.primary,
+                        width: SIZES.width * 0.8,
+                        flexDirection: 'row',
+                        borderRadius: SIZES.radius * 2,
+                        alignItems: 'center'
+                    }, styles.shadow]}
+
+                    onPress={() => navigation.navigate('Home')}
+                >
+                    <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
+                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: 30 }} >Get Started</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.black }}>
+        <SafeAreaView style={styles.container}>
             {renderImage()}
+            {renderText()}
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.black,
+    },
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 1,
+    }
+});
 
 export default Start;
