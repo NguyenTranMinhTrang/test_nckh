@@ -4,7 +4,7 @@ const { width, height } = Dimensions.get("window");
 export const COLORS = {
   black: "#222222",
   tabbar: "#000000",
-  primary: "#00fa9a",
+  primary: "#45d279",
   white: "#FFFFFF",
   lightGray: "#64676D",
   lightGray2: "#EFEFF0",
