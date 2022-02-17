@@ -16,6 +16,7 @@ const App = () => {
     "Roboto-Black": require('./app/assets/fonts/Roboto-Black.ttf'),
     "Roboto-Bold": require('./app/assets/fonts/Roboto-Bold.ttf'),
     "Roboto-Regular": require('./app/assets/fonts/Roboto-Regular.ttf'),
+    "Roboto-Light": require('./app/assets/fonts/Roboto-Light.ttf'),
   })
 
   if (!loaded) {

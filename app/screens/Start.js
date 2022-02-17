@@ -113,7 +113,8 @@ const Start = ({ navigation }) => {
                         width: SIZES.width * 0.8,
                         flexDirection: 'row',
                         borderRadius: SIZES.radius * 2,
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        height: 55
                     }, styles.shadow]}
 
                     onPress={() => navigation.navigate('Home')}

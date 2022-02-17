@@ -3,6 +3,10 @@ import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+// Camera
+import Camera from "../camera/Camera";
+import Library from "../camera/Library";
+import imageAPI from "../api/imageAPI";
 
 const Home = ({ navigation }) => {
     const [showChooseCamera, setShowChooseCamre] = React.useState(false);
@@ -131,10 +135,72 @@ const Home = ({ navigation }) => {
                         <View
                             style={{
                                 justifyContent: 'center',
-                                width: '85%'
+                                alignItems: 'center',
+                                width: '85%',
+                                backgroundColor: COLORS.lightGray2,
+                                opacity: 0.7,
+                                borderRadius: SIZES.radius
                             }}
                         >
+                            <View
+                                style={{
+                                    backgroundColor: COLORS.lightGray2,
+                                    paddingBottom: SIZES.padding,
+                                    height: 90,
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    borderTopLeftRadius: SIZES.radius,
+                                    borderTopRightRadius: SIZES.radius,
+                                }}
+                            >
+                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Choose a photo</Text>
+                            </View>
+                            {/* Camera */}
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.white,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: SIZES.radius * 2,
+                                    marginBottom: SIZES.base,
+                                }}
+                                onPress={() => Camera(imageAPI.upLoad)}
+                            >
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Camera</Text>
+                            </TouchableOpacity>
 
+                            {/* Library */}
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.white,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: SIZES.radius * 2,
+                                    marginBottom: SIZES.padding,
+                                }}
+                                onPress={() => Library(imageAPI.upLoad)}
+                            >
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Library</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.primary,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: SIZES.padding * 2,
+                                    borderRadius: SIZES.radius
+                                }}
+
+                                onPress={() => setShowChooseCamre(false)}
+                            >
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                            </TouchableOpacity>
                         </View>
 
                     </BlurView>
