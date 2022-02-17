@@ -117,7 +117,7 @@ const Start = ({ navigation }) => {
                         height: 55
                     }, styles.shadow]}
 
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Tabs')}
                 >
                     <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
                     <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: 30 }} >Get Started</Text>

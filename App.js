@@ -26,14 +26,16 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName={ShowInfo}
         screenOptions={{
           headerShown: false
         }}
-        initialRouteName={Start}
+
       >
-        <Stack.Screen name="Start" component={Start} />
-        <Stack.Screen name="Home" component={Tabs} />
         <Stack.Screen name="ShowInfo" component={ShowInfo} />
+        <Stack.Screen name="Start" component={Start} />
+        <Stack.Screen name="Tabs" component={Tabs} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
