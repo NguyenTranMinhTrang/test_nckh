@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 const Home = ({ navigation }) => {
+    const [showChooseCamera, setShowChooseCamre] = React.useState(false);
     // Data
 
     const data = [
@@ -99,11 +101,44 @@ const Home = ({ navigation }) => {
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}
+
+                            onPress={() => setShowChooseCamre(true)}
                         >
                             <Entypo name="camera" size={50} color={COLORS.white} />
                         </TouchableOpacity>
                     </View>
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showChooseCamera}
+                >
+                    <BlurView
+                        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+                        blurType="light"
+                        blurAmount={20}
+                        reducedTransparencyFallbackColor="white"
+                    >
+                        {/* button to close modal */}
+                        <TouchableOpacity
+                            style={styles.absolute}
+                            onPress={() => setShowChooseCamre(false)}
+                        >
+
+                        </TouchableOpacity>
+
+                        {/* Content */}
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                width: '85%'
+                            }}
+                        >
+
+                        </View>
+
+                    </BlurView>
+                </Modal>
             </View>
         )
     }
@@ -181,6 +216,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3,
         elevation: 1,
+    },
+    absolute: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
     }
 });
 
