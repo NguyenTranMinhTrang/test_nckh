@@ -120,7 +120,7 @@ const Start = ({ navigation }) => {
                     onPress={() => navigation.navigate('Tabs')}
                 >
                     <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: 30 }} >Get Started</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.width * 0.8 / 5 }} >Get Started</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
+        paddingTop: 5
     },
     shadow: {
         shadowColor: "#000",

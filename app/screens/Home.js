@@ -89,7 +89,7 @@ const Home = ({ navigation }) => {
                 >
                     <View
                         style={{
-                            flex: 0.8
+                            flex: 0.75,
                         }}
                     >
                         <Text style={{ ...FONTS.h1, color: COLORS.white }}>Animal World</Text>
@@ -119,9 +119,8 @@ const Home = ({ navigation }) => {
                 >
                     <BlurView
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-                        blurType="light"
-                        blurAmount={20}
-                        reducedTransparencyFallbackColor="white"
+                        intensity={80}
+                        tint="dark"
                     >
                         {/* button to close modal */}
                         <TouchableOpacity
@@ -138,7 +137,6 @@ const Home = ({ navigation }) => {
                                 alignItems: 'center',
                                 width: '85%',
                                 backgroundColor: COLORS.lightGray2,
-                                opacity: 0.7,
                                 borderRadius: SIZES.radius
                             }}
                         >
@@ -233,7 +231,7 @@ const Home = ({ navigation }) => {
 
                     <Text style={{
                         position: 'absolute',
-                        ...FONTS.h3,
+                        ...FONTS.h2,
                         color: COLORS.white,
                         bottom: SIZES.padding * 2
                     }}
@@ -246,7 +244,7 @@ const Home = ({ navigation }) => {
 
         return (
             <View style={{ padding: SIZES.padding }}>
-                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Wild Animals</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
                 <FlatList
                     data={data}
                     horizontal
@@ -272,6 +270,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
+        paddingTop: 20
     },
     shadow: {
         shadowColor: "#000",
