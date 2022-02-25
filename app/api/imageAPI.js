@@ -1,6 +1,7 @@
 import axios from './axiosClient'
 import endpoint from './endpoint';
 const imageAPI = {
+    dummyData: {},
     getAll: (params) => {
         return axios.get(endpoint.ANIMAL, { params });
     },
@@ -13,7 +14,9 @@ const imageAPI = {
             }
             axios
                 .post(endpoint.IMAGE, data)
-                .then(res => console.log('Successful'))
+                .then(res => {
+                    dummyData = res.result;
+                })
                 .catch(err => console.log(err))
         } else {
             alert('No photo selected');
