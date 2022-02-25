@@ -20,7 +20,7 @@ const ShowInfo = ({ route }) => {
                 }}
             >
                 <Image
-                    source={images.crocodile}
+                    source={{ uri: 'https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg' }}
                     resizeMode='cover'
                     style={{
                         height: SIZES.height / 2,
@@ -33,29 +33,32 @@ const ShowInfo = ({ route }) => {
 
     function renderInfo() {
         return (
-            <ScrollView
-                style={{
-                    position: 'absolute',
-                    top: SIZES.height * 0.4,
-                    backgroundColor: COLORS.black,
-                    width: SIZES.width,
-                    borderRadius: SIZES.radius,
-                }}
-            >
-                <View
-                    style={{
-                        padding: SIZES.padding,
-                    }}
-                >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>{data.name}</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>{data.sciencename}</Text>
-                    <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Tình trạng bảo tồn</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.conservation}</Text>
-                    <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Mô tả</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.description}</Text>
+            <>
+                {data &&
+                    <ScrollView
+                        style={{
+                            position: 'absolute',
+                            top: SIZES.height * 0.4,
+                            backgroundColor: COLORS.black,
+                            width: SIZES.width,
+                            borderRadius: SIZES.radius,
+                        }}
+                    >
+                        <View
+                            style={{
+                                padding: SIZES.padding,
+                            }}
+                        >
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>{data.name}</Text>
+                            <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>{data.sciencename}</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Tình trạng bảo tồn</Text>
+                            <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.conservation}</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Mô tả</Text>
+                            <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.description}</Text>
 
-                </View>
-            </ScrollView>
+                        </View>
+                    </ScrollView>}
+            </>
         )
     }
 

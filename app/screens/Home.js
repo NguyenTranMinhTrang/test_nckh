@@ -93,7 +93,10 @@ const Home = ({ navigation }) => {
 
 
         if (!result.cancelled) {
-            cb(result);
+            const data = await cb(result);
+            navigation.navigate('ShowInfo', {
+                data
+            })
         }
     };
 
