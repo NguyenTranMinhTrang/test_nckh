@@ -1,14 +1,14 @@
 import React from "react";
 import { View, Text, SafeAreaView, Image, ScrollView } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
-import imageAPI from "../api/imageAPI";
 
 
-const ShowInfo = () => {
+const ShowInfo = ({ route }) => {
     const [data, setData] = React.useState(null);
 
     React.useEffect(() => {
-        setData(imageAPI.dummyData);
+        let { data } = route.params;
+        setData(data);
     })
 
     function renderImage() {

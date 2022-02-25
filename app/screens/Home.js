@@ -4,9 +4,9 @@ import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 // Camera
-import Camera from "../camera/Camera";
-import Library from "../camera/Library";
 import imageAPI from "../api/imageAPI";
+import * as ImagePicker from 'expo-image-picker';
+
 
 const Home = ({ navigation }) => {
     const [showChooseCamera, setShowChooseCamre] = React.useState(false);
@@ -34,6 +34,69 @@ const Home = ({ navigation }) => {
             image: images.peafowl,
         },
     ]
+    // Camera 
+
+    const Camera = async (cb) => {
+        const AskForPermission = async () => {
+            const result = await ImagePicker.requestCameraPermissionsAsync();
+            if (result.granted === false) {
+                alert('no permissions to access camera!', [{ text: 'ok' }]);
+                return false;
+            }
+
+            return true;
+        }
+        const hasPermission = await AskForPermission();
+        if (!hasPermission) {
+            return;
+        }
+        else {
+            let img = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: false,
+                aspect: [3, 3],
+                quality: 1,
+                base64: true,
+            })
+
+            if (!img.cancelled) {
+                const data = cb(img);
+                navigation.navigate('ShowInfo', {
+                    data
+                })
+            }
+
+        }
+    }
+    // Library
+    const Library = async (cb) => {
+        const AskForPermission = async () => {
+            const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (result.granted === false) {
+                alert('no permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
+                return false;
+            }
+            return true;
+        }
+        const hasPermission = await AskForPermission();
+        if (!hasPermission) {
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+            base64: true
+        });
+
+
+        if (!result.cancelled) {
+            cb(result);
+        }
+    };
+
 
     // Render
 
