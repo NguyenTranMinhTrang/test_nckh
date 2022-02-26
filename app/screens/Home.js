@@ -60,7 +60,7 @@ const Home = ({ navigation }) => {
             })
 
             if (!img.cancelled) {
-                const data = cb(img);
+                const data = await cb(img);
                 navigation.navigate('ShowInfo', {
                     data
                 })
