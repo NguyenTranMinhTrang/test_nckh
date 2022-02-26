@@ -60,7 +60,7 @@ const Home = ({ navigation }) => {
             })
 
             if (!img.cancelled) {
-                const data = cb(img);
+                const data = await cb(img);
                 navigation.navigate('ShowInfo', {
                     data
                 })
@@ -93,7 +93,10 @@ const Home = ({ navigation }) => {
 
 
         if (!result.cancelled) {
-            cb(result);
+            const data = await cb(result);
+            navigation.navigate('ShowInfo', {
+                data
+            })
         }
     };
 

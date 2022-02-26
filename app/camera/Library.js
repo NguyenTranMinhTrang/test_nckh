@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 const AskForPermission = async () => {
     const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (result.granted === false) {
-        alert('no permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
+        alert('No permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
         return false;
     }
     return true;

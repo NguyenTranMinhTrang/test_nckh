@@ -108,7 +108,7 @@ const Start = ({ navigation }) => {
                 <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center' }}>Recognize wild animal and protect them with our app</Text>
                 <TouchableOpacity
                     style={[{
-                        marginTop: SIZES.padding,
+                        marginTop: SIZES.padding * 2,
                         backgroundColor: COLORS.primary,
                         width: SIZES.width * 0.8,
                         flexDirection: 'row',

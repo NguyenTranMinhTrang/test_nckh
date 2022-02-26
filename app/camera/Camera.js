@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 const AskForPermission = async () => {
     const result = await ImagePicker.requestCameraPermissionsAsync();
     if (result.granted === false) {
-        alert('no permissions to access camera!', [{ text: 'ok' }]);
+        alert('No permissions to access camera!', [{ text: 'ok' }]);
         return false;
     }
 
