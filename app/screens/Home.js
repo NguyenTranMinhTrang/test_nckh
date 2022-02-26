@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -309,7 +309,7 @@ const Home = ({ navigation }) => {
         }
 
         return (
-            <View style={{ paddingVertical: SIZES.height < 750 ? SIZES.padding : SIZES.padding * 2, paddingHorizontal: SIZES.padding }}>
+            <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2, paddingHorizontal: SIZES.padding }}>
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
                 <FlatList
                     data={data}

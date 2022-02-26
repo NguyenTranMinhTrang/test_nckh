@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
+import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, StatusBar, Platform } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { Feather } from '@expo/vector-icons';
 
@@ -98,7 +98,7 @@ const Start = ({ navigation }) => {
         return (
             <View
                 style={{
-                    marginTop: SIZES.height < 750 ? SIZES.padding : SIZES.padding * 2,
+                    marginTop: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2,
                     width: SIZES.width,
                     alignItems: 'center'
                 }}
@@ -117,7 +117,7 @@ const Start = ({ navigation }) => {
                         height: 55
                     }, styles.shadow]}
 
-                    onPress={() => navigation.navigate('Tabs')}
+                    onPress={() => navigation.navigate('Login')}
                 >
                     <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
                     <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.padding }} >Get Started</Text>

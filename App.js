@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 // screens
-import { ShowInfo, Start } from './app/screens';
+import { Login, ShowInfo, Start, Register } from './app/screens';
 import Tabs from './app/navigation/tab';
 
 import { useFonts } from 'expo-font';
@@ -35,7 +35,8 @@ const App = () => {
         <Stack.Screen name="ShowInfo" component={ShowInfo} />
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Tabs" component={Tabs} />
-
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );

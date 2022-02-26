@@ -45,6 +45,7 @@ export const FONTS = {
   h2: { fontFamily: "Roboto-Bold", fontSize: SIZES.h2, lineHeight: 30 },
   h2_light: { fontFamily: "Roboto-Light", fontSize: SIZES.h2, lineHeight: 30 },
   h3: { fontFamily: "Roboto-Bold", fontSize: SIZES.h3, lineHeight: 22 },
+  h3_light: { fontFamily: "Roboto-Light", fontSize: SIZES.h3, lineHeight: 22 },
   h4: { fontFamily: "Roboto-Bold", fontSize: SIZES.h4, lineHeight: 22 },
   body1: { fontFamily: "Roboto-Regular", fontSize: SIZES.body1, lineHeight: 36 },
   body2: { fontFamily: "Roboto-Regular", fontSize: SIZES.body2, lineHeight: 30 },
