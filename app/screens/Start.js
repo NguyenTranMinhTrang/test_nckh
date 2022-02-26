@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { Feather } from '@expo/vector-icons';
 
@@ -98,7 +98,7 @@ const Start = ({ navigation }) => {
         return (
             <View
                 style={{
-                    marginTop: SIZES.padding,
+                    marginTop: SIZES.height < 750 ? SIZES.padding : SIZES.padding * 2,
                     width: SIZES.width,
                     alignItems: 'center'
                 }}
@@ -108,7 +108,7 @@ const Start = ({ navigation }) => {
                 <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center' }}>Recognize wild animal and protect them with our app</Text>
                 <TouchableOpacity
                     style={[{
-                        marginTop: SIZES.padding * 2,
+                        marginTop: SIZES.padding,
                         backgroundColor: COLORS.primary,
                         width: SIZES.width * 0.8,
                         flexDirection: 'row',
@@ -120,7 +120,7 @@ const Start = ({ navigation }) => {
                     onPress={() => navigation.navigate('Tabs')}
                 >
                     <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.width * 0.8 / 5 }} >Get Started</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.padding }} >Get Started</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-        paddingTop: 5
+        marginTop: StatusBar.currentHeight ? StatusBar.currentHeight : 0,
     },
     shadow: {
         shadowColor: "#000",

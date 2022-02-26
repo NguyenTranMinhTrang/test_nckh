@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -309,7 +309,7 @@ const Home = ({ navigation }) => {
         }
 
         return (
-            <View style={{ padding: SIZES.padding }}>
+            <View style={{ paddingVertical: SIZES.height < 750 ? SIZES.padding : SIZES.padding * 2, paddingHorizontal: SIZES.padding }}>
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
                 <FlatList
                     data={data}
@@ -317,7 +317,7 @@ const Home = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => `${item.id}`}
                     renderItem={renderItem}
-                    contentContainerStyle={{ paddingTop: SIZES.padding, paddingBottom: SIZES.padding * 2 }}
+                    contentContainerStyle={{ padding: SIZES.padding }}
                 />
             </View>
         )
@@ -336,7 +336,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-        paddingTop: 20
+        paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight : 0,
+
     },
     shadow: {
         shadowColor: "#000",
