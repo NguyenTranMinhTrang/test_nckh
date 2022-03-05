@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home } from "../screens/index";
+import { Home, User } from "../screens/index";
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -83,7 +83,7 @@ const Tabs = () => {
         >
             <Tab.Screen
                 name="User"
-                component={Home}
+                component={User}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome name="user-o" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />
