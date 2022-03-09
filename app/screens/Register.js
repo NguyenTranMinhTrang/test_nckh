@@ -2,7 +2,8 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
-
+import endpoint from "../api/endpoint"
+import axios from "../api/axiosClient"
 const Register = ({ navigation }) => {
     const [data, setData] = React.useState({
         email: '',
@@ -12,25 +13,44 @@ const Register = ({ navigation }) => {
         confirmSecureTextEntry: true
     });
 
+    const [message, setMessage] = React.useState();
+    const [messageType, setMessageType] = React.useState();
+
     function handleEmailChange(value) {
-        setData({
-            ...data,
-            email: value
-        });
+        if (value == '') {
+            handleMessage("Email is empty!!")
+        }
+        else {
+            setData({
+                ...data,
+                email: value
+            });
+        }
+
     }
 
     function handlePasswordChange(value) {
-        setData({
-            ...data,
-            password: value
-        });
+        if (value == '') {
+            handleMessage("Password is empty!!")
+        }
+        else {
+            setData({
+                ...data,
+                password: value
+            });
+        }
     }
 
     function handleConfirmPasswordChange(value) {
-        setData({
-            ...data,
-            confirm: value
-        });
+        if (value == '') {
+            handleMessage("Confirm password is empty!!")
+        }
+        else {
+            setData({
+                ...data,
+                confirm: value
+            });
+        }
     }
 
     function updateSecureTextEntry() {
@@ -45,6 +65,39 @@ const Register = ({ navigation }) => {
             ...data,
             confirmSecureTextEntry: !data.confirmSecureTextEntry
         })
+    }
+
+    const handleRegister = (data) => {
+        const { email, password, confirm } = data
+        if (password != confirm) {
+            handleMessage("Password and confirm password do not match!!")
+        }
+        else {
+            axios.post(endpoint.SIGNUP, {
+                "email": email,
+                "password": password
+            })
+                .then(res => {
+                    const result = res.data
+                    const { message, status, data } = result
+
+                    if (status !== 'SUCCESS') {
+                        handleMessage(message, status)
+                    }
+                    else {
+                        navigation.navigate('', { ...data[0] }) // handle navigate
+                    }
+                })
+                .catch(err => {
+                    console.log(err.JSON())
+                    handleMessage("An error occurred. Check your network and try again")
+                })
+        }
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
     }
 
 
