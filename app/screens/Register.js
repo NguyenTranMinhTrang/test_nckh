@@ -1,9 +1,21 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from "react-native";
-import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    TextInput,
+    Platform,
+    Pressable,
+    KeyboardAvoidingView,
+    Keyboard
+} from "react-native";
+import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import endpoint from "../api/endpoint"
-import axios from "../api/axiosClient"
+import endpoint from "../api/endpoint";
+import axios from "../api/axiosClient";
+
+// render
 const Register = ({ navigation }) => {
     const [data, setData] = React.useState({
         email: '',
@@ -13,44 +25,27 @@ const Register = ({ navigation }) => {
         confirmSecureTextEntry: true
     });
 
-    const [message, setMessage] = React.useState();
-    const [messageType, setMessageType] = React.useState();
+    const [message, setMessage] = React.useState(null);
 
     function handleEmailChange(value) {
-        if (value == '') {
-            handleMessage("Email is empty!!")
-        }
-        else {
-            setData({
-                ...data,
-                email: value
-            });
-        }
-
+        setData({
+            ...data,
+            email: value
+        });
     }
 
     function handlePasswordChange(value) {
-        if (value == '') {
-            handleMessage("Password is empty!!")
-        }
-        else {
-            setData({
-                ...data,
-                password: value
-            });
-        }
+        setData({
+            ...data,
+            password: value
+        });
     }
 
     function handleConfirmPasswordChange(value) {
-        if (value == '') {
-            handleMessage("Confirm password is empty!!")
-        }
-        else {
-            setData({
-                ...data,
-                confirm: value
-            });
-        }
+        setData({
+            ...data,
+            confirm: value
+        });
     }
 
     function updateSecureTextEntry() {
@@ -70,34 +65,33 @@ const Register = ({ navigation }) => {
     const handleRegister = (data) => {
         const { email, password, confirm } = data
         if (password != confirm) {
-            handleMessage("Password and confirm password do not match!!")
+            handleMessage({ message: "Password and confirm password do not match!!", status: 'FAILED' })
         }
         else {
             axios.post(endpoint.SIGNUP, {
-                "email": email,
-                "password": password
+                "email": data.email,
+                "password": data.password
             })
                 .then(res => {
-                    const result = res.data
+                    const result = res
                     const { message, status, data } = result
 
                     if (status !== 'SUCCESS') {
-                        handleMessage(message, status)
+                        handleMessage({ message: message, status: status })
                     }
                     else {
-                        navigation.navigate('', { ...data[0] }) // handle navigate
+                        navigation.goBack();
                     }
                 })
                 .catch(err => {
-                    console.log(err.JSON())
+                    console.log(err)
                     handleMessage("An error occurred. Check your network and try again")
                 })
         }
     }
 
-    const handleMessage = (message, type = 'FAILED') => {
+    const handleMessage = (message) => {
         setMessage(message);
-        setMessageType(type);
     }
 
 
@@ -108,91 +102,118 @@ const Register = ({ navigation }) => {
             </View>
         )
     }
-
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
     function renderFooter() {
         return (
-            <View
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={keyboardVerticalOffset}
                 style={{
                     flex: 3,
-                    paddingHorizontal: SIZES.padding,
                     backgroundColor: COLORS.white,
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
-                    paddingVertical: 30
                 }}
             >
-                <Text style={{ ...FONTS.h3_light }}>Email</Text>
-                <View style={styles.box_text}>
-                    <FontAwesome name="user" size={20} color="black" />
-                    <TextInput
-                        placeholder="Your Email"
-                        style={styles.textInput}
-                        onChangeText={(value) => handleEmailChange(value)}
-                    />
-                </View>
-                <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
-                <View style={styles.box_text}>
-                    <FontAwesome name="lock" size={20} color="black" />
-                    <TextInput
-                        placeholder="Your Password"
-                        secureTextEntry={data.secureTextEntry ? true : false}
-                        autoCapitalize="none"
-                        style={styles.textInput}
-                        onChangeText={(value) => handlePasswordChange(value)}
-                    />
-                    <TouchableOpacity
-                        onPress={updateSecureTextEntry}
-                    >
-                        {
-                            data.secureTextEntry ?
-                                <Feather name="eye-off" size={20} color="black" />
-                                :
-                                <Feather name="eye" size={20} color="black" />
-                        }
-                    </TouchableOpacity>
-                </View>
-                <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Confirm Password</Text>
-                <View style={styles.box_text}>
-                    <FontAwesome name="lock" size={20} color="black" />
-                    <TextInput
-                        placeholder="Your Confirm Password"
-                        secureTextEntry={data.confirmSecureTextEntry ? true : false}
-                        autoCapitalize="none"
-                        style={styles.textInput}
-                        onChangeText={(value) => handleConfirmPasswordChange(value)}
-                    />
-                    <TouchableOpacity
-                        onPress={updateConfirmSecureTextEntry}
-                    >
-                        {
-                            data.confirmSecureTextEntry ?
-                                <Feather name="eye-off" size={20} color="black" />
-                                :
-                                <Feather name="eye" size={20} color="black" />
-                        }
-                    </TouchableOpacity>
-                </View>
-                <View
+                <Pressable
                     style={{
-                        alignItems: 'center',
-                        marginTop: 50,
+                        flex: 1,
+                        paddingHorizontal: SIZES.padding,
+                        paddingVertical: 30,
                     }}
+                    onPress={Keyboard.dismiss}
                 >
-                    <TouchableOpacity
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '100%',
-                            height: 50,
-                            backgroundColor: COLORS.primary,
-                            borderRadius: SIZES.radius
-                        }}
-                        onPress={() => navigation.navigate('Tabs')}
+                    {
+                        message && <View
+                            style={{
+                                marginBottom: SIZES.base
+                            }}
+                        >
+                            <Text style={{ ...FONTS.h3_light, color: 'red' }}>{message.message}</Text>
+                        </View>
+                    }
+                    <Text style={{ ...FONTS.h3_light }}>Email</Text>
+                    <View style={styles.box_text}>
+                        <FontAwesome name="user" size={20} color="black" />
+                        <TextInput
+                            placeholder="Your Email"
+                            style={styles.textInput}
+                            onChangeText={(value) => handleEmailChange(value)}
+                        />
+                    </View>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
+                    <View style={styles.box_text}>
+                        <FontAwesome name="lock" size={20} color="black" />
+                        <TextInput
+                            placeholder="Your Password"
+                            secureTextEntry={data.secureTextEntry ? true : false}
+                            autoCapitalize="none"
+                            style={styles.textInput}
+                            onChangeText={(value) => handlePasswordChange(value)}
+                        />
+                        <TouchableOpacity
+                            onPress={updateSecureTextEntry}
+                        >
+                            {
+                                data.secureTextEntry ?
+                                    <Feather name="eye-off" size={20} color="black" />
+                                    :
+                                    <Feather name="eye" size={20} color="black" />
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Confirm Password</Text>
+                    <View
+                        style={styles.box_text}
                     >
-                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+                        <FontAwesome name="lock" size={20} color="black" />
+                        <TextInput
+                            placeholder="Your Confirm Password"
+                            secureTextEntry={data.confirmSecureTextEntry ? true : false}
+                            autoCapitalize="none"
+                            style={styles.textInput}
+                            onChangeText={(value) => handleConfirmPasswordChange(value)}
+                        />
+                        <TouchableOpacity
+                            onPress={updateConfirmSecureTextEntry}
+                        >
+                            {
+                                data.confirmSecureTextEntry ?
+                                    <Feather name="eye-off" size={20} color="black" />
+                                    :
+                                    <Feather name="eye" size={20} color="black" />
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            marginTop: 50,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                height: 50,
+                                backgroundColor: COLORS.primary,
+                                borderRadius: SIZES.radius
+                            }}
+                            onPress={() => {
+                                if (data.email !== '' && data.password !== '' && data.confirm !== '') {
+                                    handleRegister(data);
+                                }
+                                else {
+                                    handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
+                                }
+                            }}
+                        >
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Pressable>
+            </KeyboardAvoidingView>
         )
     }
 
