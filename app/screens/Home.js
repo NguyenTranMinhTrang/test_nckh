@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 const Home = ({ navigation }) => {
-    const [showChooseCamera, setShowChooseCamre] = React.useState(false);
+    const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
     // Data
 
     const data = [
@@ -48,7 +48,7 @@ const Home = ({ navigation }) => {
         }
         const hasPermission = await AskForPermission();
         if (!hasPermission) {
-            return;
+            return false;
         }
         else {
             let img = await ImagePicker.launchCameraAsync({
@@ -64,8 +64,10 @@ const Home = ({ navigation }) => {
                 navigation.navigate('ShowInfo', {
                     data
                 })
+                return true;
             }
 
+            return false;
         }
     }
     // Library
@@ -80,7 +82,7 @@ const Home = ({ navigation }) => {
         }
         const hasPermission = await AskForPermission();
         if (!hasPermission) {
-            return;
+            return false;
         }
 
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -97,7 +99,11 @@ const Home = ({ navigation }) => {
             navigation.navigate('ShowInfo', {
                 data
             })
+
+            return true;
         }
+
+        return false;
     };
 
 
@@ -172,7 +178,7 @@ const Home = ({ navigation }) => {
                                 alignItems: 'center'
                             }}
 
-                            onPress={() => setShowChooseCamre(true)}
+                            onPress={() => setShowChooseCamrera(true)}
                         >
                             <Entypo name="camera" size={50} color={COLORS.white} />
                         </TouchableOpacity>
@@ -191,7 +197,7 @@ const Home = ({ navigation }) => {
                         {/* button to close modal */}
                         <TouchableOpacity
                             style={styles.absolute}
-                            onPress={() => setShowChooseCamre(false)}
+                            onPress={() => setShowChooseCamrera(false)}
                         >
 
                         </TouchableOpacity>
@@ -230,7 +236,12 @@ const Home = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.base,
                                 }}
-                                onPress={() => Camera(imageAPI.upLoad)}
+                                onPress={async () => {
+                                    let isClosed = await Camera(imageAPI.upLoad);
+                                    if (isClosed) {
+                                        setShowChooseCamrera(false);
+                                    }
+                                }}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Camera</Text>
                             </TouchableOpacity>
@@ -246,7 +257,12 @@ const Home = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.padding,
                                 }}
-                                onPress={() => Library(imageAPI.upLoad)}
+                                onPress={async () => {
+                                    let isClosed = await Library(imageAPI.upLoad);
+                                    if (isClosed) {
+                                        setShowChooseCamrera(false);
+                                    }
+                                }}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Library</Text>
                             </TouchableOpacity>
@@ -261,7 +277,7 @@ const Home = ({ navigation }) => {
                                     borderRadius: SIZES.radius
                                 }}
 
-                                onPress={() => setShowChooseCamre(false)}
+                                onPress={() => setShowChooseCamrera(false)}
                             >
                                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
                             </TouchableOpacity>
@@ -336,8 +352,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-        paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight : 0,
-
     },
     shadow: {
         shadowColor: "#000",

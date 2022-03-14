@@ -194,6 +194,7 @@ const User = ({ navigation }) => {
                                     color: COLORS.white,
                                     padding: 5,
                                 }}
+                                secureTextEntry={true}
                             />
                         </View>
                         <View

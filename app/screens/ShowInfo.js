@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, ScrollView } from "react-native";
+import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import { AntDesign } from '@expo/vector-icons';
 
 
-const ShowInfo = ({ route }) => {
+
+const ShowInfo = ({ navigation, route }) => {
     const [data, setData] = React.useState(null);
 
     React.useEffect(() => {
@@ -15,6 +17,7 @@ const ShowInfo = ({ route }) => {
         return (
             <View
                 style={{
+                    height: '40%',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}
@@ -23,10 +26,31 @@ const ShowInfo = ({ route }) => {
                     source={{ uri: `${data.img}` }}
                     resizeMode='cover'
                     style={{
-                        height: SIZES.height / 2,
-                        width: SIZES.width,
+                        height: '100%',
+                        width: '100%',
                     }}
                 />
+
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        left: 7,
+                        top: 15,
+                        height: 50,
+                        width: 50,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 25,
+                        backgroundColor: 'rgba(255,255,255,0.5)'
+                    }}
+                    onPress={() => navigation.goBack()}
+                >
+                    <AntDesign
+                        name="arrowleft"
+                        size={30}
+                        color={COLORS.white}
+                    />
+                </TouchableOpacity>
             </View>
         )
     }
@@ -35,11 +59,11 @@ const ShowInfo = ({ route }) => {
         return (
             <ScrollView
                 style={{
-                    position: 'absolute',
-                    top: SIZES.height * 0.4,
+                    marginTop: -40,
                     backgroundColor: COLORS.black,
                     width: SIZES.width,
-                    borderRadius: SIZES.radius,
+                    borderTopLeftRadius: 50,
+                    borderTopRightRadius: 50
                 }}
             >
                 <View

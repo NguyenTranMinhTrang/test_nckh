@@ -201,12 +201,14 @@ const Register = ({ navigation }) => {
                                 borderRadius: SIZES.radius
                             }}
                             onPress={() => {
-                                if (data.email !== '' && data.password !== '' && data.confirm !== '') {
+                                /* if (data.email !== '' && data.password !== '' && data.confirm !== '') {
                                     handleRegister(data);
                                 }
                                 else {
                                     handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
-                                }
+                                } */
+
+                                navigation.navigate('Tabs')
                             }}
                         >
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>

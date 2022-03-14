@@ -5,6 +5,14 @@ import { Feather } from '@expo/vector-icons';
 
 const Start = ({ navigation }) => {
 
+    React.useEffect(() => {
+        if (Platform.OS === "android") {
+            StatusBar.setBackgroundColor('#FF573300');
+            StatusBar.setTranslucent(true)
+        }
+
+    }, []);
+
     function renderImage() {
         return (
             <View
@@ -138,7 +146,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-        marginTop: StatusBar.currentHeight ? StatusBar.currentHeight : 0,
     },
     shadow: {
         shadowColor: "#000",
