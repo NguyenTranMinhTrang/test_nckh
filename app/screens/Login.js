@@ -12,32 +12,27 @@ import {
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import endpoint from "../api/endpoint";
-import axios from "../api/axiosClient";
 
+import validator from "../utils/validations";
+import { showError } from "../components/showErrorMess";
 // render
 const Login = ({ navigation }) => {
     const [data, setData] = React.useState({
+        isLoading: false,
         email: '',
         password: '',
         secureTextEntry: true,
     });
 
-    const [message, setMessage] = React.useState(null);
+    const { isLoading, email, password, secureTextEntry } = data;
 
-    function handleEmailChange(value) {
-        setData({
-            ...data,
-            email: value
-        });
-    }
 
-    function handlePasswordChange(value) {
-        setData({
+    const updateState = (newState) => setData(() => (
+        {
             ...data,
-            password: value
-        });
-    }
+            ...newState
+        }
+    ))
 
     function updateSecureTextEntry() {
         setData({
@@ -46,30 +41,27 @@ const Login = ({ navigation }) => {
         })
     }
 
-    const handleLogin = (data) => {
-        axios.post(endpoint.LOGIN, {
-            "email": data.email,
-            "password": data.password
-        })
-            .then(res => {
-                const result = res
-                const { message, status, data } = result
+    const isValid = () => {
+        const error = validator({
+            email,
+            password
+        });
 
-                if (status !== 'SUCCESS') {
-                    handleMessage({ message: message, status: status })
-                }
-                else {
-                    navigation.navigate('Tabs', { ...data[0] }) // handle navigate
-                }
-            })
-            .catch(err => {
-                console.log(err)
-                handleMessage("An error occurred. Check your network and try again")
-            })
+        if (error) {
+            showError(error);
+            return false;
+        }
+        return true;
     }
 
-    const handleMessage = (message) => {
-        setMessage(message);
+    const onLogin = () => {
+        const checkValidData = isValid();
+
+        if (checkValidData) {
+            navigation.navigate('Register');
+
+        }
+
     }
 
 
@@ -104,7 +96,7 @@ const Login = ({ navigation }) => {
 
                     onPress={Keyboard.dismiss}
                 >
-                    {
+                    {/*  {
                         message && <View
                             style={{
                                 marginBottom: SIZES.base
@@ -112,14 +104,14 @@ const Login = ({ navigation }) => {
                         >
                             <Text style={{ ...FONTS.h3_light, color: 'red' }}>{message.message}</Text>
                         </View>
-                    }
+                    } */}
                     <Text style={{ ...FONTS.h3_light }}>Email</Text>
                     <View style={styles.box_text}>
                         <FontAwesome name="user" size={20} color="black" />
                         <TextInput
                             placeholder="Your Email"
                             style={styles.textInput}
-                            onChangeText={(value) => handleEmailChange(value)}
+                            onChangeText={(email) => updateState({ email })}
                         />
                     </View>
                     <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
@@ -129,16 +121,16 @@ const Login = ({ navigation }) => {
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
                             placeholder="Your Password"
-                            secureTextEntry={data.secureTextEntry ? true : false}
+                            secureTextEntry={secureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(value) => handlePasswordChange(value)}
+                            onChangeText={(password) => updateState({ password })}
                         />
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
                         >
                             {
-                                data.secureTextEntry ?
+                                secureTextEntry ?
                                     <Feather name="eye-off" size={20} color="black" />
                                     :
                                     <Feather name="eye" size={20} color="black" />
@@ -160,14 +152,14 @@ const Login = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={() => {
+                            onPress={() => onLogin()   /*  {
                                 if (data.email !== '' && data.password !== '') {
                                     handleLogin(data);
                                 }
                                 else {
                                     handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
                                 }
-                            }}
+                            } */ }
                         >
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Login</Text>
                         </TouchableOpacity>

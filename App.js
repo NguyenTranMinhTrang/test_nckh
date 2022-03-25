@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FlashMessage from "react-native-flash-message";
+import { View } from "react-native";
+import { Provider } from 'react-redux';
+import store from "./app/redux/stores";
 
 
 // screens
@@ -24,21 +28,26 @@ const App = () => {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false
-        }}
-        initialRouteName="Start"
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+          initialRouteName="Start"
 
-      >
-        <Stack.Screen name="ShowInfo" component={ShowInfo} />
-        <Stack.Screen name="Start" component={Start} />
-        <Stack.Screen name="Tabs" component={Tabs} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-      </Stack.Navigator>
-    </NavigationContainer>
+        >
+          <Stack.Screen name="ShowInfo" component={ShowInfo} />
+          <Stack.Screen name="Start" component={Start} />
+          <Stack.Screen name="Tabs" component={Tabs} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <FlashMessage
+        position="top"
+      />
+    </Provider>
   );
 };
 

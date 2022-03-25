@@ -14,10 +14,13 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import endpoint from "../api/endpoint";
 import axios from "../api/axiosClient";
+import validator from "../utils/validations";
+import { showError } from "../components/showErrorMess";
 
 // render
 const Register = ({ navigation }) => {
     const [data, setData] = React.useState({
+        isLoading: false,
         email: '',
         password: '',
         confirm: '',
@@ -25,28 +28,15 @@ const Register = ({ navigation }) => {
         confirmSecureTextEntry: true
     });
 
-    const [message, setMessage] = React.useState(null);
+    const { isLoading, email, password, confirm, secureTextEntry, confirmSecureTextEntry } = data;
 
-    function handleEmailChange(value) {
-        setData({
-            ...data,
-            email: value
-        });
-    }
 
-    function handlePasswordChange(value) {
-        setData({
+    const updateState = (newState) => setData(() => (
+        {
             ...data,
-            password: value
-        });
-    }
-
-    function handleConfirmPasswordChange(value) {
-        setData({
-            ...data,
-            confirm: value
-        });
-    }
+            ...newState
+        }
+    ))
 
     function updateSecureTextEntry() {
         setData({
@@ -62,37 +52,60 @@ const Register = ({ navigation }) => {
         })
     }
 
-    const handleRegister = (data) => {
-        const { email, password, confirm } = data
-        if (password != confirm) {
-            handleMessage({ message: "Password and confirm password do not match!!", status: 'FAILED' })
-        }
-        else {
-            axios.post(endpoint.SIGNUP, {
-                "email": data.email,
-                "password": data.password
-            })
-                .then(res => {
-                    const result = res
-                    const { message, status, data } = result
+    const isValid = () => {
+        const error = validator({
+            email,
+            password,
+            confirm
+        });
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage({ message: message, status: status })
-                    }
-                    else {
-                        navigation.goBack();
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                    handleMessage("An error occurred. Check your network and try again")
-                })
+        if (error) {
+            showError(error);
+            return false;
         }
+        return true;
     }
 
-    const handleMessage = (message) => {
-        setMessage(message);
+    const onRegister = () => {
+        const checkValidData = isValid();
+
+        if (checkValidData) {
+            navigation.navigate('Tabs');
+        }
+
     }
+
+    /*     const handleRegister = (data) => {
+            const { email, password, confirm } = data
+            if (password != confirm) {
+                handleMessage({ message: "Password and confirm password do not match!!", status: 'FAILED' })
+            }
+            else {
+                axios.post(endpoint.SIGNUP, {
+                    "email": data.email,
+                    "password": data.password
+                })
+                    .then(res => {
+                        const result = res
+                        const { message, status, data } = result
+    
+                        if (status !== 'SUCCESS') {
+                            handleMessage({ message: message, status: status })
+                        }
+                        else {
+                            navigation.goBack();
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        handleMessage("An error occurred. Check your network and try again")
+                    })
+            }
+        }
+    
+        const handleMessage = (message) => {
+            setMessage(message);
+        } */
 
 
     function renderHeader() {
@@ -123,7 +136,7 @@ const Register = ({ navigation }) => {
                     }}
                     onPress={Keyboard.dismiss}
                 >
-                    {
+                    {/* {
                         message && <View
                             style={{
                                 marginBottom: SIZES.base
@@ -131,14 +144,14 @@ const Register = ({ navigation }) => {
                         >
                             <Text style={{ ...FONTS.h3_light, color: 'red' }}>{message.message}</Text>
                         </View>
-                    }
+                    } */}
                     <Text style={{ ...FONTS.h3_light }}>Email</Text>
                     <View style={styles.box_text}>
                         <FontAwesome name="user" size={20} color="black" />
                         <TextInput
                             placeholder="Your Email"
                             style={styles.textInput}
-                            onChangeText={(value) => handleEmailChange(value)}
+                            onChangeText={(email) => updateState({ email })}
                         />
                     </View>
                     <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
@@ -146,16 +159,16 @@ const Register = ({ navigation }) => {
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
                             placeholder="Your Password"
-                            secureTextEntry={data.secureTextEntry ? true : false}
+                            secureTextEntry={secureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(value) => handlePasswordChange(value)}
+                            onChangeText={(password) => updateState({ password })}
                         />
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
                         >
                             {
-                                data.secureTextEntry ?
+                                secureTextEntry ?
                                     <Feather name="eye-off" size={20} color="black" />
                                     :
                                     <Feather name="eye" size={20} color="black" />
@@ -169,16 +182,16 @@ const Register = ({ navigation }) => {
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
                             placeholder="Your Confirm Password"
-                            secureTextEntry={data.confirmSecureTextEntry ? true : false}
+                            secureTextEntry={confirmSecureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(value) => handleConfirmPasswordChange(value)}
+                            onChangeText={(confirm) => updateState({ confirm })}
                         />
                         <TouchableOpacity
                             onPress={updateConfirmSecureTextEntry}
                         >
                             {
-                                data.confirmSecureTextEntry ?
+                                confirmSecureTextEntry ?
                                     <Feather name="eye-off" size={20} color="black" />
                                     :
                                     <Feather name="eye" size={20} color="black" />
@@ -200,7 +213,7 @@ const Register = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={() => {
+                            onPress={() => onRegister()
                                 /* if (data.email !== '' && data.password !== '' && data.confirm !== '') {
                                     handleRegister(data);
                                 }
@@ -208,8 +221,8 @@ const Register = ({ navigation }) => {
                                     handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
                                 } */
 
-                                navigation.navigate('Tabs')
-                            }}
+
+                            }
                         >
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
                         </TouchableOpacity>
