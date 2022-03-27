@@ -70,42 +70,39 @@ const Register = ({ navigation }) => {
         const checkValidData = isValid();
 
         if (checkValidData) {
-            navigation.navigate('Tabs');
+            handleRegister(data);
+            navigation.navigate('Login');
         }
 
     }
 
-    /*     const handleRegister = (data) => {
-            const { email, password, confirm } = data
-            if (password != confirm) {
-                handleMessage({ message: "Password and confirm password do not match!!", status: 'FAILED' })
-            }
-            else {
-                axios.post(endpoint.SIGNUP, {
-                    "email": data.email,
-                    "password": data.password
-                })
-                    .then(res => {
-                        const result = res
-                        const { message, status, data } = result
-    
-                        if (status !== 'SUCCESS') {
-                            handleMessage({ message: message, status: status })
-                        }
-                        else {
-                            navigation.goBack();
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                        handleMessage("An error occurred. Check your network and try again")
-                    })
-            }
-        }
-    
-        const handleMessage = (message) => {
-            setMessage(message);
-        } */
+    const handleRegister = (data) => {
+        const { email, password, confirm } = data;
+
+        axios.post(endpoint.SIGNUP, {
+            "email": email,
+            "password": password
+        })
+            .then(res => {
+                const result = res
+                const { status, data, err } = result
+
+                if (status === 'SUCCESS') {
+                    console.log(data);
+                }
+                else {
+                    console.log(err);
+                    console.log(status);
+                }
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+
+
 
 
     function renderHeader() {

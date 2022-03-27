@@ -15,6 +15,7 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 
 import validator from "../utils/validations";
 import { showError } from "../components/showErrorMess";
+import actions from '../redux/actions';
 // render
 const Login = ({ navigation }) => {
     const [data, setData] = React.useState({
@@ -54,12 +55,20 @@ const Login = ({ navigation }) => {
         return true;
     }
 
-    const onLogin = () => {
+    const onLogin = async () => {
         const checkValidData = isValid();
 
         if (checkValidData) {
-            navigation.navigate('Register');
-
+            try {
+                const res = await actions.login({
+                    email,
+                    password
+                })
+                console.log("Resss --->", res);
+            } catch (error) {
+                console.log(error);
+                showError(error.message);
+            }
         }
 
     }
