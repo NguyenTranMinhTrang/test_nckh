@@ -8,14 +8,16 @@ import {
     Platform,
     Pressable,
     KeyboardAvoidingView,
-    Keyboard
+    Keyboard,
+    ActivityIndicator
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import endpoint from "../api/endpoint";
-import axios from "../api/axiosClient";
+
 import validator from "../utils/validations";
-import { showError } from "../components/showErrorMess";
+import { showError, showSuccess } from "../components/showErrorMess";
+import actions from "../redux/actions";
+
 
 // render
 const Register = ({ navigation }) => {
@@ -66,44 +68,34 @@ const Register = ({ navigation }) => {
         return true;
     }
 
-    const onRegister = () => {
+    const onRegister = async () => {
         const checkValidData = isValid();
 
         if (checkValidData) {
-            handleRegister(data);
-            navigation.navigate('Login');
+            updateState({
+                isLoading: true
+            })
+            try {
+                const res = await actions.signup({
+                    email,
+                    password
+                })
+                console.log("Resss --->", res);
+                showSuccess("Registered successfully ! Please verify your account !");
+                updateState({
+                    isLoading: false
+                })
+                navigation.goBack();
+            } catch (error) {
+                console.log(error);
+                showError(error.message);
+                updateState({
+                    isLoading: false
+                })
+            }
         }
 
     }
-
-    const handleRegister = (data) => {
-        const { email, password, confirm } = data;
-
-        axios.post(endpoint.SIGNUP, {
-            "email": email,
-            "password": password
-        })
-            .then(res => {
-                const result = res
-                const { status, data, err } = result
-
-                if (status === 'SUCCESS') {
-                    console.log(data);
-                }
-                else {
-                    console.log(err);
-                    console.log(status);
-                }
-
-            })
-            .catch(err => {
-                console.log(err)
-            })
-
-    }
-
-
-
 
     function renderHeader() {
         return (
@@ -210,18 +202,11 @@ const Register = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={() => onRegister()
-                                /* if (data.email !== '' && data.password !== '' && data.confirm !== '') {
-                                    handleRegister(data);
-                                }
-                                else {
-                                    handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
-                                } */
-
-
-                            }
+                            onPress={onRegister}
                         >
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
+                            {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
+                            }
                         </TouchableOpacity>
                     </View>
                 </Pressable>

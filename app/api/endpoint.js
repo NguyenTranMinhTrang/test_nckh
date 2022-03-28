@@ -1,4 +1,4 @@
-const IP = '192.168.43.59'
+const IP = '10.40.238.93'
 const BASE_URL = `http://${IP}:3000`
 
 export default {

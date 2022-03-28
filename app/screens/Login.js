@@ -8,13 +8,14 @@ import {
     Platform,
     KeyboardAvoidingView,
     Pressable,
-    Keyboard
+    Keyboard,
+    ActivityIndicator
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 
 import validator from "../utils/validations";
-import { showError } from "../components/showErrorMess";
+import { showError, showSuccess } from "../components/showErrorMess";
 import actions from '../redux/actions';
 // render
 const Login = ({ navigation }) => {
@@ -59,15 +60,30 @@ const Login = ({ navigation }) => {
         const checkValidData = isValid();
 
         if (checkValidData) {
+            updateState({
+                isLoading: true
+            })
             try {
                 const res = await actions.login({
                     email,
                     password
                 })
                 console.log("Resss --->", res);
+                if (!res.emailVerifired) {
+                    showError("Please verify your email !");
+                }
+                else {
+                    showSuccess("Login successfully !");
+                }
+                updateState({
+                    isLoading: false
+                })
             } catch (error) {
                 console.log(error);
                 showError(error.message);
+                updateState({
+                    isLoading: false
+                })
             }
         }
 
@@ -105,15 +121,6 @@ const Login = ({ navigation }) => {
 
                     onPress={Keyboard.dismiss}
                 >
-                    {/*  {
-                        message && <View
-                            style={{
-                                marginBottom: SIZES.base
-                            }}
-                        >
-                            <Text style={{ ...FONTS.h3_light, color: 'red' }}>{message.message}</Text>
-                        </View>
-                    } */}
                     <Text style={{ ...FONTS.h3_light }}>Email</Text>
                     <View style={styles.box_text}>
                         <FontAwesome name="user" size={20} color="black" />
@@ -161,16 +168,11 @@ const Login = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={() => onLogin()   /*  {
-                                if (data.email !== '' && data.password !== '') {
-                                    handleLogin(data);
-                                }
-                                else {
-                                    handleMessage({ message: 'Empty input fileds ', status: 'FAILED' });
-                                }
-                            } */ }
+                            onPress={onLogin}
                         >
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Login</Text>
+                            {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Login</Text>
+                            }
                         </TouchableOpacity>
                     </View>
                     <View

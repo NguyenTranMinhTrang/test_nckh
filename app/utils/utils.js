@@ -1,10 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import endpoint from "../api/endpoint";
 import axios from "../api/axiosClient";
 
-export async function postUser(data) {
+export async function postUser(url, data) {
     return new Promise(async (resolve, reject) => {
-        axios.post(endpoint.LOGIN, {
+        axios.post(url, {
             "email": data.email,
             "password": data.password
         })
