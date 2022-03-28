@@ -1,21 +1,24 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect } from 'react';
 import FlashMessage from "react-native-flash-message";
-import { View } from "react-native";
 import { Provider } from 'react-redux';
 import store from "./app/redux/stores";
-
-
-// screens
-import { Login, ShowInfo, Start, Register } from './app/screens';
-import Tabs from './app/navigation/tab';
-
 import { useFonts } from 'expo-font';
+import Routes from './app/navigation/Routes';
+import { getUserData } from './app/utils/utils';
+import { saveUserData } from './app/redux/actions/auth';
+
 
 // screen for stack & tabs
-const Stack = createNativeStackNavigator();
 const App = () => {
+  useEffect(() => {
+    (async () => {
+      const userData = await getUserData()
+      console.log("user data App.js", userData)
+      if (!!userData) {
+        saveUserData(userData)
+      }
+    })();
+  }, [])
   const [loaded] = useFonts({
     "Roboto-Black": require('./app/assets/fonts/Roboto-Black.ttf'),
     "Roboto-Bold": require('./app/assets/fonts/Roboto-Bold.ttf'),
@@ -29,21 +32,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}
-          initialRouteName="Start"
-
-        >
-          <Stack.Screen name="ShowInfo" component={ShowInfo} />
-          <Stack.Screen name="Start" component={Start} />
-          <Stack.Screen name="Tabs" component={Tabs} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Routes />
       <FlashMessage
         position="top"
       />

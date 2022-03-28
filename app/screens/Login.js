@@ -68,9 +68,8 @@ const Login = ({ navigation }) => {
                     email,
                     password
                 })
-                console.log("Resss --->", res);
                 if (!res.emailVerifired) {
-                    showError("Please verify your email !");
+                    showError(res.message);
                 }
                 else {
                     showSuccess("Login successfully !");
@@ -80,7 +79,6 @@ const Login = ({ navigation }) => {
                 })
             } catch (error) {
                 console.log(error);
-                showError(error.message);
                 updateState({
                     isLoading: false
                 })

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
-import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 
 

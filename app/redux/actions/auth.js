@@ -23,9 +23,10 @@ export function login(data) {
                 return
             }
             resolve(res)
-        }).catch((error) => {
-            reject(error)
         })
+            .catch((error) => {
+                reject(error)
+            })
     })
 }
 

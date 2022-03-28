@@ -1,11 +1,34 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, StatusBar, TextInput } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, StatusBar, TextInput, Alert } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
+import actions from "../redux/actions";
 
 const User = ({ navigation }) => {
     const email = React.useRef();
     const password = React.useRef();
+    const [isLoading, setLoading] = React.useState(false);
+
+    const userData = useSelector((state) => state.auth.userData);
+    console.log("user in profile screen : ", userData);
+
+    const Onlogout = () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure, yout want to logout from this device',
+            [{ text: 'Yes', onPress: logout }, { text: 'No', }],
+            { cancelable: true }
+        )
+    }
+
+    const logout = () => {
+        setLoading(true)
+        setTimeout(() => {
+            actions.logout()
+            setLoading(false)
+        }, 2000);
+    }
 
     function renderHeader() {
         return (
@@ -128,7 +151,7 @@ const User = ({ navigation }) => {
                         >
                             <Text style={{ ...FONTS.h3, color: COLORS.white, padding: 5 }}>Email</Text>
                             <TextInput
-                                defaultValue="admin@123"
+                                defaultValue={userData.email}
                                 ref={email}
                                 style={{
                                     ...FONTS.h3_light,
@@ -229,6 +252,8 @@ const User = ({ navigation }) => {
                             flexDirection: 'row',
                             backgroundColor: COLORS.tabbar,
                         }}
+
+                        onPress={Onlogout}
                     >
                         <View
                             style={{
