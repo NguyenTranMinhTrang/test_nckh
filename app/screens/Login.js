@@ -19,6 +19,9 @@ import { showError, showSuccess } from "../components/showErrorMess";
 import actions from '../redux/actions';
 // render
 const Login = ({ navigation }) => {
+
+    const isUnmounted = React.useRef(false);
+
     const [data, setData] = React.useState({
         isLoading: false,
         email: '',
@@ -26,8 +29,15 @@ const Login = ({ navigation }) => {
         secureTextEntry: true,
     });
 
-    const { isLoading, email, password, secureTextEntry } = data;
+    React.useEffect(
+        () => () => {
+            isUnmounted.current = true;
+        },
+        [],
+    );
 
+
+    const { isLoading, email, password, secureTextEntry } = data;
 
     const updateState = (newState) => setData(() => (
         {
@@ -71,12 +81,13 @@ const Login = ({ navigation }) => {
                 if (!res.emailVerifired) {
                     showError(res.message);
                 }
-                else {
-                    showSuccess("Login successfully !");
+
+                if (!isUnmounted.current) {
+                    updateState({
+                        isLoading: false
+                    })
                 }
-                updateState({
-                    isLoading: false
-                })
+
             } catch (error) {
                 console.log(error);
                 updateState({

@@ -23,11 +23,7 @@ const User = ({ navigation }) => {
     }
 
     const logout = () => {
-        setLoading(true)
-        setTimeout(() => {
-            actions.logout()
-            setLoading(false)
-        }, 2000);
+        actions.logout();
     }
 
     function renderHeader() {
