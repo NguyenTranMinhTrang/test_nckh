@@ -1,6 +1,6 @@
 import React from "react";
 import Tabs from "./tab";
-import { ShowInfo } from "../screens";
+import { ShowInfo, ChangePassword } from "../screens";
 
 export default function (Stack) {
     return (
@@ -13,6 +13,11 @@ export default function (Stack) {
             <Stack.Screen
                 name="ShowInfo"
                 component={ShowInfo}
+            />
+
+            <Stack.Screen
+                name="ChangePassword"
+                component={ChangePassword}
             />
 
         </>

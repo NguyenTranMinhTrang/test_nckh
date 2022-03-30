@@ -116,16 +116,10 @@ const Home = ({ navigation }) => {
                     flexDirection: 'row',
                     height: 50,
                     alignItems: 'center',
+                    justifyContent: 'center',
                     marginTop: SIZES.base
                 }}
             >
-                <AntDesign
-                    name="arrowleft"
-                    size={50}
-                    color={COLORS.primary}
-                    style={{ paddingLeft: SIZES.base }}
-                    onPress={() => navigation.popToTop()}
-                />
                 <View
                     style={{
                         width: SIZES.width * 0.5,
@@ -134,7 +128,6 @@ const Home = ({ navigation }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         height: 50,
-                        marginLeft: SIZES.padding * 2
                     }}
                 >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>Home</Text>

@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 import actions from "../redux/actions";
 
 const User = ({ navigation }) => {
-    const email = React.useRef();
-    const password = React.useRef();
-    const [isLoading, setLoading] = React.useState(false);
-
     const userData = useSelector((state) => state.auth.userData);
+    const email = React.useRef();
+    const [newEmail, setNewEmail] = React.useState(userData.email ? userData.email : '');
+
     console.log("user in profile screen : ", userData);
+    console.log(newEmail);
 
     const Onlogout = () => {
         Alert.alert(
@@ -147,13 +147,14 @@ const User = ({ navigation }) => {
                         >
                             <Text style={{ ...FONTS.h3, color: COLORS.white, padding: 5 }}>Email</Text>
                             <TextInput
-                                defaultValue={userData.email}
+                                defaultValue={userData.email ? userData.email : ''}
                                 ref={email}
                                 style={{
                                     ...FONTS.h3_light,
                                     color: COLORS.white,
                                     padding: 5,
                                 }}
+                                onChangeText={(newEmail) => setNewEmail(newEmail)}
                             />
                         </View>
                         <View
@@ -181,7 +182,7 @@ const User = ({ navigation }) => {
                         </View>
                     </View>
 
-                    <View
+                    <TouchableOpacity
                         style={{
                             width: '100%',
                             borderRadius: SIZES.radius,
@@ -189,10 +190,12 @@ const User = ({ navigation }) => {
                             backgroundColor: COLORS.tabbar,
                             marginVertical: 10
                         }}
+
+                        onPress={() => navigation.navigate('ChangePassword')}
                     >
                         <View
                             style={{
-                                flex: 2,
+                                flex: 0.2,
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}
@@ -201,45 +204,13 @@ const User = ({ navigation }) => {
                         </View>
                         <View
                             style={{
-                                flex: 6.5
+                                flex: 0.8
                             }}
                         >
-                            <Text style={{ ...FONTS.h3, color: COLORS.white, padding: 5 }}>Password</Text>
-                            <TextInput
-                                defaultValue="123456"
-                                ref={password}
-                                style={{
-                                    ...FONTS.h3_light,
-                                    color: COLORS.white,
-                                    padding: 5,
-                                }}
-                                secureTextEntry={true}
-                            />
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Change Password</Text>
                         </View>
-                        <View
-                            style={{
-                                flex: 1.5,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <TouchableOpacity
-                                style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                                onPress={() => {
-                                    password.current.focus();
-                                }}
-                            >
-                                <FontAwesome
-                                    name="edit"
-                                    size={40}
-                                    color={COLORS.primary}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+
+                    </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{
@@ -268,13 +239,7 @@ const User = ({ navigation }) => {
                             <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Log Out</Text>
 
                         </View>
-                        <View
-                            style={{
-                                flex: 0.1,
-                            }}
-                        >
 
-                        </View>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -18,7 +18,7 @@ const checkMinLength = (value, minlength, key) => {
 }
 
 export default function (data) {
-    const { email, password, confirm } = data;
+    const { email, password, confirm, newPassword } = data;
 
     if (email !== undefined) {
         let emptyValidationText = checkEmpty(email, 'Please enter your email !');
@@ -37,6 +37,18 @@ export default function (data) {
             return emptyValidationText;
         } else {
             let checkLength = checkMinLength(password, 8, "Password must be at least 8 characters !");
+            if (checkLength !== '') {
+                return checkLength;
+            }
+        }
+    }
+
+    if (newPassword !== undefined) {
+        let emptyValidationText = checkEmpty(newPassword, 'Please enter your new password !');
+        if (emptyValidationText !== '') {
+            return emptyValidationText;
+        } else {
+            let checkLength = checkMinLength(newPassword, 8, "New password must be at least 8 characters !");
             if (checkLength !== '') {
                 return checkLength;
             }
