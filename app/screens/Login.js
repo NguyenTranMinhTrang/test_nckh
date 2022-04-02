@@ -24,6 +24,7 @@ const Login = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         isLoading: false,
+        id: '',
         email: '',
         password: '',
         secureTextEntry: true,

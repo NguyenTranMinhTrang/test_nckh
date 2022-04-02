@@ -191,7 +191,9 @@ const User = ({ navigation }) => {
                             marginVertical: 10
                         }}
 
-                        onPress={() => navigation.navigate('ChangePassword')}
+                        onPress={() => navigation.navigate('ChangePassword', {
+                            userData
+                        })}
                     >
                         <View
                             style={{

@@ -1,4 +1,4 @@
-const IP = '10.40.238.93'
+const IP = '192.168.1.109'
 const BASE_URL = `http://${IP}:3000`
 
 export default {
@@ -6,5 +6,6 @@ export default {
     IMAGE: "/api/image",
     ANIMAL: "/api/animal",
     LOGIN: "/user/login",
-    SIGNUP: "/user/signup"
+    SIGNUP: "/user/signup",
+    CHANGE_PASSWORD: "/user/changePassword"
 }
