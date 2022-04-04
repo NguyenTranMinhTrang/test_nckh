@@ -24,6 +24,7 @@ const Login = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         isLoading: false,
+        id: '',
         email: '',
         password: '',
         secureTextEntry: true,
@@ -66,6 +67,7 @@ const Login = ({ navigation }) => {
         return true;
     }
 
+    // Handle message in ra màn hình lỗi sai password
     const onLogin = async () => {
         const checkValidData = isValid();
 

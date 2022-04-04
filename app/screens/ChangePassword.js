@@ -4,10 +4,12 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
+import axios from "../api/axiosClient"
+import endpoint from "../api/endpoint"
 
+const ChangePassword = ({ navigation, route }) => {
 
-
-const ChangePassword = ({ navigation }) => {
+    let { userData } = route.params
 
     const [state, setState] = React.useState({
         password: '',
@@ -15,7 +17,6 @@ const ChangePassword = ({ navigation }) => {
         secureTextEntry: true,
         newSecureTextEntry: true
     });
-    console.log(state);
 
     const { password, newPassword, secureTextEntry, newSecureTextEntry } = state;
 
@@ -56,8 +57,26 @@ const ChangePassword = ({ navigation }) => {
     const onReset = () => {
         const checkValidData = isValid();
         if (checkValidData) {
-            // call api here nhe Phi Hoc
-            navigation.goBack();
+
+            //Handle message + refacture code
+            axios.post(endpoint.CHANGE_PASSWORD, {
+                "email": userData.email,
+                "password": password,
+                "newPassword": newPassword
+            })
+                .then(res => {
+                    if (res.status == 'SUCCESS') {
+                        showSuccess(res.message)
+                        navigation.goBack();
+                    }
+                    else {
+                        showError(res.message)
+                    }
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
 
         }
     }

@@ -10,33 +10,30 @@ import {
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
+import axios from "../api/axiosClient";
+import endpoint from "../api/endpoint";
 
 
 const History = ({ navigation }) => {
     // Data
 
-    const data = [
-        {
-            id: 1,
-            name: "Tiger",
-            image: images.tiger,
-        },
-        {
-            id: 2,
-            name: "Crocodile",
-            image: images.crocodile,
-        },
-        {
-            id: 3,
-            name: "Turtle",
-            image: images.turtle,
-        },
-        {
-            id: 4,
-            name: "Peafowl",
-            image: images.peafowl,
-        },
-    ]
+    const userData = useSelector((state) => state.auth.userData);
+
+    const [data, setData] = React.useState([]);
+
+    React.useEffect(() => {
+        axios.post(endpoint.GET_History, {
+            "id": userData.id
+        })
+            .then(res => {
+                setData(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
+
     function renderHeader() {
         return (
             <View
@@ -92,7 +89,7 @@ const History = ({ navigation }) => {
                         }}
                     >
                         <Image
-                            source={item.image}
+                            source={{ uri: `${item.img}` }}
                             resizeMode="cover"
                             style={{
                                 width: '100%',
@@ -110,7 +107,7 @@ const History = ({ navigation }) => {
                         }}
                     >
                         <Text style={{ ...FONTS.body3, color: COLORS.white }}>{item.name}</Text>
-                        <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Search at: 10:32 14/3/2022</Text>
+                        <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Search at: {item.time}</Text>
                     </View>
                 </View>
             )
@@ -133,7 +130,7 @@ const History = ({ navigation }) => {
                     <FlatList
                         data={data}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={item => `${item.id}`}
+                        keyExtractor={item => `${item.animalID}`}
                         renderItem={renderItem}
                     />
                 </View>

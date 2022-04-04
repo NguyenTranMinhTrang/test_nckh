@@ -18,12 +18,6 @@ const imageAPI = {
             catch (err) {
                 console.log(err)
             }
-
-            // .then(res => {
-            //     result = res.result
-            //     console.log('OK')
-            // })
-            // .catch(err => console.log(err))
         } else {
             alert('No photo selected');
         }

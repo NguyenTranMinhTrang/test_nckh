@@ -3,12 +3,33 @@ import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import axios from "../api/axiosClient";
+import { useSelector } from "react-redux";
+import endpoint from "../api/endpoint";
 // Camera
 import imageAPI from "../api/imageAPI";
 import * as ImagePicker from 'expo-image-picker';
 
+const postHistory = (id, animalID) => {
+    var today = new Date();
+    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+
+    axios.post(endpoint.POST_History, {
+        "id": id,
+        "animalID": animalID,
+        "time": date
+    })
+        .then(res => {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log('err')
+            console.log(err)
+        })
+}
 
 const Home = ({ navigation }) => {
+    const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
     // Data
 
@@ -61,6 +82,10 @@ const Home = ({ navigation }) => {
 
             if (!img.cancelled) {
                 const data = await cb(img);
+
+                // post
+                postHistory(userData.id, data.id)
+
                 navigation.navigate('ShowInfo', {
                     data
                 })
@@ -96,6 +121,10 @@ const Home = ({ navigation }) => {
 
         if (!result.cancelled) {
             const data = await cb(result);
+
+            // post
+            postHistory(userData.id, data.id)
+
             navigation.navigate('ShowInfo', {
                 data
             })
