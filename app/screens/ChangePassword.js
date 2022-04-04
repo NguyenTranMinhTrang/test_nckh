@@ -6,18 +6,10 @@ import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
 import axios from "../api/axiosClient"
 import endpoint from "../api/endpoint"
-import { getUserData } from "../utils/utils";
-
-
 
 const ChangePassword = ({ navigation, route }) => {
 
-    const [data, setData] = React.useState(null);
-
-    React.useEffect(() => {
-        let { data } = route.params;
-        setData(data);
-    })
+    let { userData } = route.params
 
     const [state, setState] = React.useState({
         password: '',
@@ -25,7 +17,6 @@ const ChangePassword = ({ navigation, route }) => {
         secureTextEntry: true,
         newSecureTextEntry: true
     });
-    console.log(state);
 
     const { password, newPassword, secureTextEntry, newSecureTextEntry } = state;
 
@@ -67,20 +58,25 @@ const ChangePassword = ({ navigation, route }) => {
         const checkValidData = isValid();
         if (checkValidData) {
 
+            //Handle message + refacture code
             axios.post(endpoint.CHANGE_PASSWORD, {
-                "id": data.id,
+                "email": userData.email,
                 "password": password,
                 "newPassword": newPassword
             })
                 .then(res => {
+                    if (res.status == 'SUCCESS') {
+                        showSuccess(res.message)
+                        navigation.goBack();
+                    }
+                    else {
+                        showError(res.message)
+                    }
 
                 })
                 .catch(err => {
-
+                    console.log(err)
                 })
-
-
-            navigation.goBack();
 
         }
     }

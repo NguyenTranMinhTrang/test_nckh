@@ -67,6 +67,7 @@ const Login = ({ navigation }) => {
         return true;
     }
 
+    // Handle message in ra màn hình lỗi sai password
     const onLogin = async () => {
         const checkValidData = isValid();
 
