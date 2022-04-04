@@ -8,6 +8,6 @@ export default {
     LOGIN: "/user/login",
     SIGNUP: "/user/signup",
     CHANGE_PASSWORD: "/user/changePassword",
-    postHistory: "/user/postHistory",
-    getHistory: "/user/getHistory"
+    POST_History: "/user/postHistory",
+    GET_History: "/user/getHistory"
 }

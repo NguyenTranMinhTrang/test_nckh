@@ -23,7 +23,7 @@ const History = ({ navigation }) => {
     const [data, setData] = React.useState([]);
 
     React.useEffect(() => {
-        axios.post(endpoint.getHistory, {
+        axios.post(endpoint.GET_History, {
             "id": userData.id
         })
             .then(res => {

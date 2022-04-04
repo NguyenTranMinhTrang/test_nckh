@@ -14,7 +14,7 @@ const postHistory = (id, animalID) => {
     var today = new Date();
     var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
 
-    axios.post(endpoint.postHistory, {
+    axios.post(endpoint.POST_History, {
         "id": id,
         "animalID": animalID,
         "time": date
