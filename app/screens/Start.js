@@ -111,12 +111,12 @@ const Start = ({ navigation }) => {
                     alignItems: 'center'
                 }}
             >
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center' }}>Welcome</Text>
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center' }}>to animal world !</Text>
-                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center' }}>Recognize wild animal and protect them with our app</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Welcome</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>to animal world !</Text>
+                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5 }}>Recognize wild animal and protect them with our app</Text>
                 <TouchableOpacity
                     style={[{
-                        marginTop: SIZES.padding,
+                        marginTop: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2,
                         backgroundColor: COLORS.primary,
                         width: SIZES.width * 0.8,
                         flexDirection: 'row',

@@ -1,4 +1,4 @@
-const IP = '192.168.1.109'
+const IP = '192.168.1.10'
 const BASE_URL = `https://cherry-surprise-85276.herokuapp.com/`
 
 export default {
