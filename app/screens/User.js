@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-        paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight : 0,
+
 
     },
 })

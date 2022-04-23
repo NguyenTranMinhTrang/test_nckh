@@ -10,7 +10,7 @@ import endpoint from "../api/endpoint";
 import imageAPI from "../api/imageAPI";
 import * as ImagePicker from 'expo-image-picker';
 
-const postHistory = (id, animalID) => {
+const postHistory = async (id, animalID) => {
     var today = new Date();
     var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
 
@@ -84,7 +84,7 @@ const Home = ({ navigation }) => {
                 const data = await cb(img);
 
                 // post
-                postHistory(userData.id, data.id)
+                await postHistory(userData.id, data.id)
 
                 navigation.navigate('ShowInfo', {
                     data
@@ -123,7 +123,7 @@ const Home = ({ navigation }) => {
             const data = await cb(result);
 
             // post
-            postHistory(userData.id, data.id)
+            await postHistory(userData.id, data.id);
 
             navigation.navigate('ShowInfo', {
                 data

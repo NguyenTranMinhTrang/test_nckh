@@ -13,6 +13,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import axios from "../api/axiosClient";
 import endpoint from "../api/endpoint";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const History = ({ navigation }) => {
@@ -21,18 +22,22 @@ const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
 
     const [data, setData] = React.useState([]);
+    console.log(data);
 
-    React.useEffect(() => {
-        axios.post(endpoint.GET_History, {
-            "id": userData.id
-        })
-            .then(res => {
-                setData(res.data)
+    useFocusEffect(
+        React.useCallback(() => {
+            axios.post(endpoint.GET_History, {
+                "id": userData.id
             })
-            .catch(err => {
-                console.log(err)
-            })
-    }, [])
+                .then(res => {
+                    setData(res.data)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }, [])
+    );
 
     function renderHeader() {
         return (
@@ -130,7 +135,7 @@ const History = ({ navigation }) => {
                     <FlatList
                         data={data}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={item => `${item.animalID}`}
+                        keyExtractor={(item, index) => `${item.animalID} - ${index}`}
                         renderItem={renderItem}
                     />
                 </View>
