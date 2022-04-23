@@ -87,7 +87,6 @@ const Register = ({ navigation }) => {
                 })
                 navigation.goBack();
             } catch (error) {
-                console.log(error);
                 showError(error.message);
                 updateState({
                     isLoading: false
