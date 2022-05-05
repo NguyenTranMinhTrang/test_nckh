@@ -11,8 +11,7 @@ import {
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
-import axios from "../api/axiosClient";
-import endpoint from "../api/endpoint";
+import { getHistory } from "../api/userAPI";
 import { useFocusEffect } from "@react-navigation/native";
 
 
@@ -24,18 +23,21 @@ const History = ({ navigation }) => {
     const [data, setData] = React.useState([]);
     console.log(data);
 
+
+
     useFocusEffect(
         React.useCallback(() => {
-            axios.post(endpoint.GET_History, {
-                "id": userData.id
-            })
-                .then(res => {
-                    setData(res.data)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-
+            async function get_history(id) {
+                try {
+                    let res = await getHistory(id)
+                    if (res.data) {
+                        setData(res.data)
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            get_history(userData.id)
         }, [])
     );
 
