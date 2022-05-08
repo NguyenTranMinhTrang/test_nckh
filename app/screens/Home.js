@@ -3,9 +3,7 @@ import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import axios from "../api/axiosClient";
 import { useSelector } from "react-redux";
-import endpoint from "../api/endpoint";
 // Camera
 import imageAPI from "../api/imageAPI";
 import { postHistory } from "../api/userAPI"

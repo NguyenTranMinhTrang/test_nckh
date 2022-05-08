@@ -16,14 +16,10 @@ import { useFocusEffect } from "@react-navigation/native";
 
 
 const History = ({ navigation }) => {
-    // Data
-
     const userData = useSelector((state) => state.auth.userData);
-
     const [data, setData] = React.useState([]);
+
     console.log(data);
-
-
 
     useFocusEffect(
         React.useCallback(() => {
@@ -37,7 +33,7 @@ const History = ({ navigation }) => {
                     console.log(error)
                 }
             }
-            get_history(userData.id)
+            get_history(userData.id);
         }, [])
     );
 

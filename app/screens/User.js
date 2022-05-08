@@ -1,14 +1,29 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, StatusBar, TextInput, Alert } from "react-native";
+import {
+    View,
+    Text,
+    SafeAreaView,
+    TouchableOpacity,
+    StyleSheet,
+    Modal,
+    TextInput,
+    Alert,
+
+} from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import actions from "../redux/actions";
+import { BlurView } from "expo-blur";
+import Camera from "../camera/Camera";
+import Library from "../camera/Library";
+
 
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const email = React.useRef();
     const [newEmail, setNewEmail] = React.useState(userData.email ? userData.email : '');
+    const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
 
     console.log("user in profile screen : ", userData);
     console.log(newEmail);
@@ -26,6 +41,11 @@ const User = ({ navigation }) => {
         actions.logout();
     }
 
+    const takeAvatar = () => {
+        setShowChooseCamrera(true);
+    }
+
+    // render
     function renderHeader() {
         return (
             <View
@@ -56,6 +76,107 @@ const User = ({ navigation }) => {
                 >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showChooseCamera}
+                >
+                    <BlurView
+                        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+                        intensity={80}
+                        tint="dark"
+                    >
+                        {/* button to close modal */}
+                        <TouchableOpacity
+                            style={styles.absolute}
+                            onPress={() => setShowChooseCamrera(false)}
+                        >
+
+                        </TouchableOpacity>
+
+                        {/* Content */}
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '85%',
+                                backgroundColor: COLORS.lightGray2,
+                                borderRadius: SIZES.radius
+                            }}
+                        >
+                            <View
+                                style={{
+                                    backgroundColor: COLORS.lightGray2,
+                                    paddingBottom: SIZES.padding,
+                                    height: 90,
+                                    width: '100%',
+                                    alignItems: 'center',
+                                    borderTopLeftRadius: SIZES.radius,
+                                    borderTopRightRadius: SIZES.radius,
+                                }}
+                            >
+                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Choose a photo</Text>
+                            </View>
+                            {/* Camera */}
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.white,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: SIZES.radius * 2,
+                                    marginBottom: SIZES.base,
+                                }}
+                                onPress={async () => {
+                                    let isClosed = await Camera(imageAPI.upLoad);
+                                    if (isClosed) {
+                                        setShowChooseCamrera(false);
+                                    }
+                                }}
+                            >
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Camera</Text>
+                            </TouchableOpacity>
+
+                            {/* Library */}
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.white,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: SIZES.radius * 2,
+                                    marginBottom: SIZES.padding,
+                                }}
+                                onPress={async () => {
+                                    let isClosed = await Library(imageAPI.upLoad);
+                                    if (isClosed) {
+                                        setShowChooseCamrera(false);
+                                    }
+                                }}
+                            >
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Library</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    height: 70,
+                                    width: '91%',
+                                    backgroundColor: COLORS.primary,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: SIZES.padding * 2,
+                                    borderRadius: SIZES.radius
+                                }}
+
+                                onPress={() => setShowChooseCamrera(false)}
+                            >
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </BlurView>
+                </Modal>
             </View>
         )
     }
@@ -101,6 +222,8 @@ const User = ({ navigation }) => {
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}
+
+                        onPress={() => takeAvatar()}
                     >
                         <Entypo name="camera" size={35} color={COLORS.white} />
                     </TouchableOpacity>
