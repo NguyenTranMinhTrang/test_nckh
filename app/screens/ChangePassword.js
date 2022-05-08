@@ -4,8 +4,7 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
-import axios from "../api/axiosClient"
-import endpoint from "../api/endpoint"
+import { postChangePassword } from "../api/userAPI"
 
 const ChangePassword = ({ navigation, route }) => {
 
@@ -54,30 +53,21 @@ const ChangePassword = ({ navigation, route }) => {
         return true;
     }
 
-    const onReset = () => {
+    const onReset = async () => {
         const checkValidData = isValid();
         if (checkValidData) {
-
-            //Handle message + refacture code
-            axios.post(endpoint.CHANGE_PASSWORD, {
-                "email": userData.email,
-                "password": password,
-                "newPassword": newPassword
-            })
-                .then(res => {
-                    if (res.status == 'SUCCESS') {
-                        showSuccess(res.message)
-                        navigation.goBack();
-                    }
-                    else {
-                        showError(res.message)
-                    }
-
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-
+            try {
+                let res = await postChangePassword(userData.email, password, newPassword)
+                if (res.status == 'SUCCESS') {
+                    showSuccess(res.message)
+                    navigation.goBack();
+                }
+                else {
+                    showError(res.message)
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 

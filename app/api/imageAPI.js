@@ -1,10 +1,6 @@
 import axios from './axiosClient'
 import endpoint from './endpoint';
 const imageAPI = {
-    getAll: (params) => {
-        return axios.get(endpoint.ANIMAL, { params });
-    },
-
     upLoad: async (image) => {
         if (image) {
             const data = {

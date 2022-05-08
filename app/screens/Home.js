@@ -8,25 +8,8 @@ import { useSelector } from "react-redux";
 import endpoint from "../api/endpoint";
 // Camera
 import imageAPI from "../api/imageAPI";
+import { postHistory } from "../api/userAPI"
 import * as ImagePicker from 'expo-image-picker';
-
-const postHistory = async (id, animalID) => {
-    var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-
-    axios.post(endpoint.POST_History, {
-        "id": id,
-        "animalID": animalID,
-        "time": date
-    })
-        .then(res => {
-            console.log(res)
-        })
-        .catch(err => {
-            console.log('err')
-            console.log(err)
-        })
-}
 
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
