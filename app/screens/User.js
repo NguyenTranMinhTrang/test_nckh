@@ -17,6 +17,7 @@ import actions from "../redux/actions";
 import { BlurView } from "expo-blur";
 import Camera from "../camera/Camera";
 import Library from "../camera/Library";
+import { uploadProfileImage } from "../api/userAPI"
 
 
 const User = ({ navigation }) => {
@@ -129,7 +130,7 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.base,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Camera(imageAPI.upLoad);
+                                    let isClosed = await Camera(uploadProfileImage, userData.token);
                                     if (isClosed) {
                                         setShowChooseCamrera(false);
                                     }
@@ -150,7 +151,7 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.padding,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Library(imageAPI.upLoad);
+                                    let isClosed = await Library(uploadProfileImage, userData.token);
                                     if (isClosed) {
                                         setShowChooseCamrera(false);
                                     }

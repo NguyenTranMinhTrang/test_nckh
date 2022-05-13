@@ -26,6 +26,8 @@ const Register = ({ navigation }) => {
         email: '',
         password: '',
         confirm: '',
+        avatar: '',
+        token: '',
         secureTextEntry: true,
         confirmSecureTextEntry: true
     });
