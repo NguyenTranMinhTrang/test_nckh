@@ -58,10 +58,9 @@ export const uploadProfileImage = async (photo, token) => {
                 'Content-Type': 'multipart/form-data',
                 authorization: `JWT ${token}`,
             },
-            transformRequest: (data, headers) => {
-                return formData;
-            }
+            transformRequest: formData => formData
         });
+        console.log(res)
     } catch (error) {
         console.log(error.message);
     }

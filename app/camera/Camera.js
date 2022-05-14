@@ -23,7 +23,6 @@ const Camera = async (cb, token) => {
             quality: 1,
             base64: true,
         })
-
         if (!img.cancelled) {
             cb(img, token);
         }
