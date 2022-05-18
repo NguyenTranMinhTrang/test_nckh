@@ -10,13 +10,13 @@ const AskForPermission = async () => {
 }
 
 
-const Library = async (cb) => {
+const Library = async (cb, token) => {
     const hasPermission = await AskForPermission();
     if (!hasPermission) {
         return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let img = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
@@ -25,8 +25,8 @@ const Library = async (cb) => {
     });
 
 
-    if (!result.cancelled) {
-        cb(result);
+    if (!img.cancelled) {
+        cb(img, token);
     }
 };
 

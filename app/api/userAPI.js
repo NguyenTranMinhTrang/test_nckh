@@ -43,6 +43,30 @@ export const getHistory = async (id) => {
     }
 }
 
+export const uploadProfileImage = async (photo, token) => {
+    const formData = new FormData();
+    formData.append('profile', {
+        name: new Date() + '_profile',
+        uri: Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
+        type: 'image/jpg',
+    });
+
+    try {
+        const res = await axios.post(endpoint.UPLOAD_PROFILE, formData, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                authorization: `JWT ${token}`,
+            },
+            transformRequest: formData => formData
+        });
+        console.log(res)
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+
 
 
 

@@ -27,6 +27,8 @@ const Login = ({ navigation }) => {
         id: '',
         email: '',
         password: '',
+        avatar: '',
+        token: '',
         secureTextEntry: true,
     });
 

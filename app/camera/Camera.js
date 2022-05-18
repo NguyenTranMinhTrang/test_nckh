@@ -10,7 +10,7 @@ const AskForPermission = async () => {
     return true;
 }
 
-const Camera = async (cb) => {
+const Camera = async (cb, token) => {
     const hasPermission = await AskForPermission();
     if (!hasPermission) {
         return;
@@ -23,9 +23,8 @@ const Camera = async (cb) => {
             quality: 1,
             base64: true,
         })
-
         if (!img.cancelled) {
-            cb(img);
+            cb(img, token);
         }
 
     }

@@ -1,6 +1,6 @@
-// const IP = '10.40.236.187'
-// const BASE_URL = `http://${IP}:3000`
-const BASE_URL = `https://cherry-surprise-85276.herokuapp.com/`
+const IP = '192.168.1.109'
+const BASE_URL = `http://${IP}:3000`
+//const BASE_URL = `https://cherry-surprise-85276.herokuapp.com/`
 export default {
     BASE_URL,
     IMAGE: "/api/image",
@@ -9,5 +9,6 @@ export default {
     SIGNUP: "/user/signup",
     CHANGE_PASSWORD: "/user/changePassword",
     POST_HISTORY: "/user/postHistory",
-    GET_HISTORY: "/user/getHistory"
+    GET_HISTORY: "/user/getHistory",
+    UPLOAD_PROFILE: "/user/uploadProfile"
 }
