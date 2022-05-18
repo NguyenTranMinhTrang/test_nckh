@@ -60,9 +60,13 @@ export const uploadProfileImage = async (photo, token) => {
             },
             transformRequest: formData => formData
         });
-        console.log(res)
+        console.log(res);
+        if (res) {
+            return true;
+        }
     } catch (error) {
         console.log(error.message);
+        return false;
     }
 };
 

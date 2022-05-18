@@ -4,7 +4,9 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
-import { postChangePassword } from "../api/userAPI"
+import { postChangePassword } from "../api/userAPI";
+import { AntDesign } from '@expo/vector-icons';
+
 
 const ChangePassword = ({ navigation, route }) => {
 
@@ -74,6 +76,26 @@ const ChangePassword = ({ navigation, route }) => {
     function renderHeader() {
         return (
             <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: 50, justifyContent: 'flex-end' }}>
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        left: SIZES.padding,
+                        top: 15,
+                        height: 50,
+                        width: 50,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 25,
+                        backgroundColor: 'rgba(255,255,255,0.5)'
+                    }}
+                    onPress={() => navigation.goBack()}
+                >
+                    <AntDesign
+                        name="arrowleft"
+                        size={30}
+                        color={COLORS.white}
+                    />
+                </TouchableOpacity>
                 <Text style={{ ...FONTS.h1, color: COLORS.white }}>Reset Password</Text>
             </View>
         )

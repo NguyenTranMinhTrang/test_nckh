@@ -1,6 +1,6 @@
-const IP = '192.168.1.109'
-const BASE_URL = `http://${IP}:3000`
-//const BASE_URL = `https://cherry-surprise-85276.herokuapp.com/`
+/* const IP = '192.168.1.109'
+const BASE_URL = `http://${IP}:3000` */
+const BASE_URL = `https://cherry-surprise-85276.herokuapp.com/`;
 export default {
     BASE_URL,
     IMAGE: "/api/image",
