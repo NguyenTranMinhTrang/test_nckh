@@ -19,8 +19,6 @@ const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [data, setData] = React.useState([]);
 
-    console.log(data);
-
     useFocusEffect(
         React.useCallback(() => {
             async function get_history(id) {

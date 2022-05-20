@@ -8,7 +8,7 @@ import {
     Modal,
     TextInput,
     Alert,
-
+    Image
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
@@ -22,12 +22,9 @@ import { uploadProfileImage } from "../api/userAPI"
 
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
-    const email = React.useRef();
-    const [newEmail, setNewEmail] = React.useState(userData.email ? userData.email : '');
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
 
     console.log("user in profile screen : ", userData);
-    console.log(newEmail);
 
     const Onlogout = () => {
         Alert.alert(
@@ -210,7 +207,22 @@ const User = ({ navigation }) => {
                             justifyContent: 'flex-end'
                         }}
                     >
-                        <FontAwesome name="user" size={120} color={COLORS.lightGray2} />
+                        {
+                            userData.avatar ?
+                                <Image
+                                    source={{ uri: userData.avatar }}
+                                    resizeMode="cover"
+                                    style={{
+                                        height: '100%',
+                                        width: '100%',
+                                        borderRadius: 150
+                                    }}
+
+                                />
+                                :
+                                <FontAwesome name="user" size={120} color={COLORS.lightGray2} />
+
+                        }
                     </View>
                     <TouchableOpacity
                         style={{
@@ -266,43 +278,19 @@ const User = ({ navigation }) => {
                         </View>
                         <View
                             style={{
-                                flex: 6.5
+                                flex: 8
                             }}
                         >
                             <Text style={{ ...FONTS.h3, color: COLORS.white, padding: 5 }}>Email</Text>
-                            <TextInput
-                                defaultValue={userData.email ? userData.email : ''}
-                                ref={email}
+                            <Text
                                 style={{
                                     ...FONTS.h3_light,
                                     color: COLORS.white,
                                     padding: 5,
                                 }}
-                                onChangeText={(newEmail) => setNewEmail(newEmail)}
-                            />
-                        </View>
-                        <View
-                            style={{
-                                flex: 1.5,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <TouchableOpacity
-                                style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                                onPress={() => {
-                                    email.current.focus();
-                                }}
                             >
-                                <FontAwesome
-                                    name="edit"
-                                    size={40}
-                                    color={COLORS.primary}
-                                />
-                            </TouchableOpacity>
+                                {userData.email}
+                            </Text>
                         </View>
                     </View>
 
@@ -383,9 +371,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
-
-
     },
+    absolute: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    }
 })
 
 export default User;
