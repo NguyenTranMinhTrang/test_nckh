@@ -23,6 +23,7 @@ import { uploadProfileImage } from "../api/userAPI"
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
+    const [profileImg, setProfileImg] = React.useState(userData.avatar)
 
     console.log("user in profile screen : ", userData);
 
@@ -127,9 +128,10 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.base,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Camera(uploadProfileImage, userData.token);
-                                    if (isClosed) {
+                                    let img = await Camera(uploadProfileImage, userData.token);
+                                    if (img) {
                                         setShowChooseCamrera(false);
+                                        setProfileImg(img.uri)
                                     }
                                 }}
                             >
@@ -148,9 +150,10 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.padding,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Library(uploadProfileImage, userData.token);
-                                    if (isClosed) {
+                                    let img = await Library(uploadProfileImage, userData.token);
+                                    if (img) {
                                         setShowChooseCamrera(false);
+                                        setProfileImg(img.uri)
                                     }
                                 }}
                             >
@@ -208,9 +211,9 @@ const User = ({ navigation }) => {
                         }}
                     >
                         {
-                            userData.avatar ?
+                            profileImg ?
                                 <Image
-                                    source={{ uri: userData.avatar }}
+                                    source={{ uri: profileImg }}
                                     resizeMode="cover"
                                     style={{
                                         height: '100%',
