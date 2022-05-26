@@ -27,6 +27,7 @@ const Library = async (cb, token) => {
 
     if (!img.cancelled) {
         cb(img, token);
+        return img;
     }
 };
 
