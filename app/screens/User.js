@@ -18,6 +18,7 @@ import { BlurView } from "expo-blur";
 import Camera from "../camera/Camera";
 import Library from "../camera/Library";
 import { uploadProfileImage } from "../api/userAPI"
+import { showError } from "../components/showErrorMess";
 
 
 const User = ({ navigation }) => {
@@ -128,10 +129,14 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.base,
                                 }}
                                 onPress={async () => {
-                                    let img = await Camera(uploadProfileImage, userData.token);
-                                    if (img) {
+                                    let response = await Camera(uploadProfileImage, userData.token);
+                                    if (response.status == 1) {
                                         setShowChooseCamrera(false);
-                                        setProfileImg(img.uri)
+                                        setProfileImg(response.img.uri)
+                                    }
+                                    else {
+                                        setShowChooseCamrera(false);
+                                        showError(response.error);
                                     }
                                 }}
                             >
@@ -150,10 +155,14 @@ const User = ({ navigation }) => {
                                     marginBottom: SIZES.padding,
                                 }}
                                 onPress={async () => {
-                                    let img = await Library(uploadProfileImage, userData.token);
-                                    if (img) {
+                                    let response = await Library(uploadProfileImage, userData.token);
+                                    if (response.status == 1) {
                                         setShowChooseCamrera(false);
-                                        setProfileImg(img.uri)
+                                        setProfileImg(response.img.uri)
+                                    }
+                                    else {
+                                        setShowChooseCamrera(false);
+                                        showError(response.error);
                                     }
                                 }}
                             >

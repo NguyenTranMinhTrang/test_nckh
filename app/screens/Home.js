@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import imageAPI from "../api/imageAPI";
 import { postHistory } from "../api/userAPI"
 import * as ImagePicker from 'expo-image-picker';
+import { showError } from "../components/showErrorMess";
 
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
@@ -62,14 +63,20 @@ const Home = ({ navigation }) => {
             })
 
             if (!img.cancelled) {
-                const data = await cb(img);
+                const response = await cb(img);
 
-                // post
-                await postHistory(userData.id, data.id)
+                if (response.status == 0) {
+                    showError(response.error);
+                }
+                else {
+                    const data = response.data;
+                    await postHistory(userData.id, data.id)
 
-                navigation.navigate('ShowInfo', {
-                    data
-                })
+                    navigation.navigate('ShowInfo', {
+                        data
+                    })
+                }
+
                 return true;
             }
 
@@ -101,14 +108,19 @@ const Home = ({ navigation }) => {
 
 
         if (!result.cancelled) {
-            const data = await cb(result);
+            const response = await cb(result);
 
-            // post
-            await postHistory(userData.id, data.id);
+            if (response.status == 0) {
+                showError(response.error);
+            }
+            else {
+                const data = response.data;
+                await postHistory(userData.id, data.id)
 
-            navigation.navigate('ShowInfo', {
-                data
-            })
+                navigation.navigate('ShowInfo', {
+                    data
+                })
+            }
 
             return true;
         }

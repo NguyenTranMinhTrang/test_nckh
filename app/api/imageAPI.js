@@ -31,8 +31,13 @@ const imageAPI = {
                 base64: image.base64
             }
             try {
-                const res = await axios.post(endpoint.IMAGE, data)
-                return res.result
+                const res = await axios.post(endpoint.IMAGE, data);
+                if (res.status == "SUCCESS") {
+                    return { status: 1, data: res.result };
+                }
+                else {
+                    return { status: 0, error: res.message };
+                }
             }
             catch (err) {
                 console.log(err)

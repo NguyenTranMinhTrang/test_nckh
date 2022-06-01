@@ -26,8 +26,13 @@ const Library = async (cb, token) => {
 
 
     if (!img.cancelled) {
-        cb(img, token);
-        return img;
+        const response = await cb(img, token);
+        if (response.status == 1) {
+            return { status: 1, img: img };
+        }
+        else {
+            return response;
+        }
     }
 };
 
