@@ -15,14 +15,14 @@ export const saveUserData = (data) => {
 export function login(data) {
     return new Promise((resolve, reject) => {
         return postUser(endpoint.LOGIN, data).then((res) => {
-            if (res.emailVerifired) {
-                setUserData(res).then(() => {
-                    resolve(res)
-                    saveUserData(res)
+            if (res.status == "SUCCESS") {
+                setUserData(res.data).then(() => {
+                    resolve(res.data);
+                    saveUserData(res.data);
                 });
-                return
+                return;
             }
-            resolve(res)
+            resolve(res.data);
         })
             .catch((error) => {
                 reject(error)

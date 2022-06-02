@@ -8,40 +8,17 @@ export async function postUser(url, data) {
             "password": data.password
         })
             .then(res => {
-                const { status, data } = res;
+                const { status } = res;
 
                 if (status !== 'SUCCESS') {
-                    return reject(data);
+                    return reject(res);
                 }
 
-                return resolve(data);
+                return resolve(res);
             })
             .catch(error => {
-                console.log(error)
-                console.log(error && error.response, 'the error respne')
-                if (error && error.response && error.response.status === 401) {
-                    clearUserData();
-                    dispatch({
-                        type: types.CLEAR_REDUX_STATE,
-                        payload: {}
-                    });
-                    dispatch({
-                        type: types.NO_INTERNET,
-                        payload: { internetConnection: true },
-                    });
-
-
-                }
-                if (error && error.response && error.response.data) {
-                    if (!error.response.data.message) {
-                        return reject({ ...error.response.data, msg: error.response.data.message || "Network Error" })
-                    }
-                    return reject(error.response.data)
-                } else {
-                    return reject({ message: "Network Error", msg: "Network Error" });
-                }
-
-                return reject(error);
+                console.log("Error from request auth: ", error);
+                return reject({ status: "FAILED", message: "Network Error!" });
             })
     })
 }

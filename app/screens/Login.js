@@ -69,7 +69,7 @@ const Login = ({ navigation }) => {
         return true;
     }
 
-    // Handle message in ra màn hình lỗi sai password
+
     const onLogin = async () => {
         const checkValidData = isValid();
 
@@ -81,9 +81,10 @@ const Login = ({ navigation }) => {
                 const res = await actions.login({
                     email,
                     password
-                })
-                if (!res.emailVerifired) {
-                    showError(res.message);
+                });
+
+                if (res) {
+                    showSuccess("Login Success!")
                 }
 
                 if (!isUnmounted.current) {
@@ -93,7 +94,15 @@ const Login = ({ navigation }) => {
                 }
 
             } catch (error) {
-                console.log(error);
+                if (error && error.status) {
+                    if (error.status == "FAILED") {
+                        showError(error.message);
+                    }
+                }
+                else {
+                    showError("There is an error occurd!");
+                    console.log(error);
+                }
                 updateState({
                     isLoading: false
                 })

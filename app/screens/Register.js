@@ -81,15 +81,25 @@ const Register = ({ navigation }) => {
                 const res = await actions.signup({
                     email,
                     password
-                })
-                console.log("Resss --->", res);
-                showSuccess("Registered successfully ! Please verify your account !");
+                });
+
+                if (res) {
+                    showSuccess("Registered successfully ! Please verify your account !");
+                }
                 updateState({
                     isLoading: false
                 })
                 navigation.goBack();
             } catch (error) {
-                showError(error.message);
+                if (error && error.status) {
+                    if (error.status == "FAILED") {
+                        showError(error.message);
+                    }
+                }
+                else {
+                    showError("There is an error occurd!");
+                    console.log(error);
+                }
                 updateState({
                     isLoading: false
                 })

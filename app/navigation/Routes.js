@@ -20,7 +20,7 @@ export default function Routes() {
                     headerShown: false
                 }}
             >
-                {!!userData && userData.emailVerifired ? HomeScreen(Stack)
+                {!!userData && userData.token ? HomeScreen(Stack)
                     : AuthScreen(Stack)
                 }
             </Stack.Navigator>

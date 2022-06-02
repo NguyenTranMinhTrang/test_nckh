@@ -6,7 +6,8 @@ import {
     FlatList,
     StyleSheet,
     Text,
-    Image
+    Image,
+    Alert
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
@@ -73,7 +74,7 @@ const History = ({ navigation }) => {
 
         function renderItem({ item }) {
             return (
-                <View
+                <TouchableOpacity
                     style={{
                         marginBottom: SIZES.padding,
                         height: SIZES.height * 0.25,
@@ -82,6 +83,8 @@ const History = ({ navigation }) => {
                         borderWidth: 1,
                         borderColor: '#606d87',
                     }}
+
+                    onLongPress={() => Alert.alert("Do you want to delete ?")}
                 >
                     <View
                         style={{
@@ -110,7 +113,7 @@ const History = ({ navigation }) => {
                         <Text style={{ ...FONTS.body3, color: COLORS.white }}>{item.name}</Text>
                         <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Search at: {item.time}</Text>
                     </View>
-                </View>
+                </TouchableOpacity>
             )
         }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { Linking, View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -13,6 +13,9 @@ import { showError } from "../components/showErrorMess";
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
+
+    console.log("Userdata from Home: ", userData);
+
     // Data
 
     const data = [
@@ -36,7 +39,32 @@ const Home = ({ navigation }) => {
             name: "Peafowl",
             image: images.peafowl,
         },
-    ]
+        {
+            id: 5,
+            name: "Elephant",
+            image: images.elephant,
+        },
+        {
+            id: 6,
+            name: "Eagle",
+            image: images.eagle,
+        },
+        {
+            id: 7,
+            name: "Fox",
+            image: images.fox,
+        },
+        {
+            id: 8,
+            name: "Lizard",
+            image: images.lizard,
+        },
+        {
+            id: 9,
+            name: "Monkey",
+            image: images.monkey,
+        }
+    ];
     // Camera 
 
     const Camera = async (cb) => {
@@ -128,18 +156,31 @@ const Home = ({ navigation }) => {
         return false;
     };
 
+    const openUrl = async (url) => {
+        const isSupported = await Linking.canOpenURL(url);
+        if (isSupported) {
+            await Linking.openURL(url);
+        }
+        else {
+            showError("We can't open this url!");
+        }
+    }
+
 
     // Render
 
     function renderHeader() {
+        const avatar = userData?.avatar;
+        console.log("Link avatar: ", avatar);
         return (
             <View
                 style={{
                     flexDirection: 'row',
                     height: 50,
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: SIZES.base
+                    justifyContent: avatar ? "space-between" : "center",
+                    marginTop: SIZES.base,
+                    paddingHorizontal: SIZES.padding
                 }}
             >
                 <View
@@ -154,6 +195,36 @@ const Home = ({ navigation }) => {
                 >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>Home</Text>
                 </View>
+
+                {
+                    avatar ?
+                        <>
+                            <View
+                                style={{
+                                    height: 60,
+                                    width: 60,
+                                    borderRadius: 60,
+                                    backgroundColor: "white"
+                                }}
+                            >
+
+                            </View>
+
+                            <View
+                                style={{
+                                    height: 15,
+                                    width: 15,
+                                    borderRadius: 15,
+                                    backgroundColor: COLORS.primary,
+                                    position: 'absolute',
+                                    right: SIZES.padding,
+                                    bottom: 0
+                                }}
+                            ></View>
+                        </>
+                        :
+                        <></>
+                }
             </View>
         )
     }
@@ -307,7 +378,7 @@ const Home = ({ navigation }) => {
     function renderImage() {
         const renderItem = ({ item }) => {
             return (
-                <View
+                <TouchableOpacity
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
@@ -315,6 +386,8 @@ const Home = ({ navigation }) => {
                         marginRight: SIZES.padding,
                         ...styles.shadow
                     }}
+
+                    onPress={() => openUrl(`https://en.wikipedia.org/wiki/${item.name}`)}
                 >
                     <Image
                         source={item.image}
@@ -335,7 +408,7 @@ const Home = ({ navigation }) => {
                     >
                         {item.name}
                     </Text>
-                </View>
+                </TouchableOpacity>
             )
         }
 
@@ -344,6 +417,7 @@ const Home = ({ navigation }) => {
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
                 <FlatList
                     data={data}
+                    removeClippedSubviews
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => `${item.id}`}
