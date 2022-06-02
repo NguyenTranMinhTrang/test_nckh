@@ -7,7 +7,9 @@ import {
     StyleSheet,
     Text,
     Image,
-    Alert
+    Alert,
+    StatusBar,
+    Platform
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
@@ -35,6 +37,12 @@ const History = ({ navigation }) => {
             get_history(userData.id);
         }, [])
     );
+
+    const deleteHistory = () => {
+        console.log("delete");
+    }
+
+    // render
 
     function renderHeader() {
         return (
@@ -84,7 +92,12 @@ const History = ({ navigation }) => {
                         borderColor: '#606d87',
                     }}
 
-                    onLongPress={() => Alert.alert("Do you want to delete ?")}
+                    onLongPress={() => Alert.alert(
+                        "Confirm",
+                        "Do you want to delele ?",
+                        [{ text: 'Yes', onPress: deleteHistory }, { text: 'No', }],
+                        { cancelable: true }
+                    )}
                 >
                     <View
                         style={{
@@ -154,6 +167,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
 
 })

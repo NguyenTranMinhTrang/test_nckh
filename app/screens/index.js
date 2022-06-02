@@ -6,5 +6,6 @@ import Register from "./Register";
 import User from "./User";
 import History from "./History";
 import ChangePassword from "./ChangePassword";
+import ForgetPassword from "./ForgetPassword";
 
-export { Home, ShowInfo, Start, Login, Register, User, History, ChangePassword };
+export { Home, ShowInfo, Start, Login, Register, User, History, ChangePassword, ForgetPassword };

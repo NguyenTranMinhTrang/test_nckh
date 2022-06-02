@@ -114,7 +114,7 @@ const Login = ({ navigation }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: 50, justifyContent: 'flex-end' }}>
+            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
                 <Text style={{ ...FONTS.h1, color: COLORS.white }}>Welcome!</Text>
             </View>
         )
@@ -175,10 +175,25 @@ const Login = ({ navigation }) => {
                             }
                         </TouchableOpacity>
                     </View>
+
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            marginTop: SIZES.base,
+                            justifyContent: "flex-end"
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('ForgetPassword')}
+                        >
+                            <Text style={{ ...FONTS.h4 }}>Forget Password ?</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     <View
                         style={{
                             alignItems: 'center',
-                            marginTop: 50,
+                            marginTop: SIZES.padding,
                         }}
                     >
                         <TouchableOpacity

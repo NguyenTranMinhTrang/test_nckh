@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     Modal,
-    TextInput,
+    StatusBar,
+    Platform,
     Alert,
     Image
 } from "react-native";
@@ -24,9 +25,6 @@ import { showError } from "../components/showErrorMess";
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
-    const [profileImg, setProfileImg] = React.useState(userData.avatar)
-
-    console.log("user in profile screen : ", userData);
 
     const Onlogout = () => {
         Alert.alert(
@@ -132,7 +130,9 @@ const User = ({ navigation }) => {
                                     let response = await Camera(uploadProfileImage, userData.token);
                                     if (response.status == 1) {
                                         setShowChooseCamrera(false);
-                                        setProfileImg(response.img.uri)
+                                        const oldUserData = { ...userData };
+                                        oldUserData.avatar = response.img.uri;
+                                        actions.saveUserData(oldUserData);
                                     }
                                     else {
                                         setShowChooseCamrera(false);
@@ -158,7 +158,9 @@ const User = ({ navigation }) => {
                                     let response = await Library(uploadProfileImage, userData.token);
                                     if (response.status == 1) {
                                         setShowChooseCamrera(false);
-                                        setProfileImg(response.img.uri)
+                                        const oldUserData = { ...userData };
+                                        oldUserData.avatar = response.img.uri;
+                                        actions.saveUserData(oldUserData);
                                     }
                                     else {
                                         setShowChooseCamrera(false);
@@ -220,9 +222,9 @@ const User = ({ navigation }) => {
                         }}
                     >
                         {
-                            profileImg ?
+                            userData.avatar ?
                                 <Image
-                                    source={{ uri: profileImg }}
+                                    source={{ uri: userData.avatar }}
                                     resizeMode="cover"
                                     style={{
                                         height: '100%',
@@ -383,6 +385,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
     absolute: {
         position: 'absolute',

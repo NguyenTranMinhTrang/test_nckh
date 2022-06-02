@@ -14,8 +14,6 @@ const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
 
-    console.log("Userdata from Home: ", userData);
-
     // Data
 
     const data = [
@@ -171,7 +169,6 @@ const Home = ({ navigation }) => {
 
     function renderHeader() {
         const avatar = userData?.avatar;
-        console.log("Link avatar: ", avatar);
         return (
             <View
                 style={{
@@ -207,6 +204,14 @@ const Home = ({ navigation }) => {
                                     backgroundColor: "white"
                                 }}
                             >
+                                <Image
+                                    source={{ uri: avatar }}
+                                    style={{
+                                        height: '100%',
+                                        width: '100%',
+                                        borderRadius: 60
+                                    }}
+                                />
 
                             </View>
 
@@ -417,7 +422,6 @@ const Home = ({ navigation }) => {
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
                 <FlatList
                     data={data}
-                    removeClippedSubviews
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => `${item.id}`}
@@ -441,6 +445,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.black,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
     shadow: {
         shadowColor: "#000",

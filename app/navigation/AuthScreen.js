@@ -1,5 +1,5 @@
 import React from "react";
-import { Start, Login, Register, } from "../screens";
+import { Start, Login, Register, ForgetPassword } from "../screens";
 
 export default function (Stack) {
     return (
@@ -16,7 +16,10 @@ export default function (Stack) {
                 name="Register"
                 component={Register}
             />
-
+            <Stack.Screen
+                name="ForgetPassword"
+                component={ForgetPassword}
+            />
         </>
     )
 }
