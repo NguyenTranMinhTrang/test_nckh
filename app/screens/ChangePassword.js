@@ -60,7 +60,7 @@ const ChangePassword = ({ navigation, route }) => {
         if (checkValidData) {
             try {
                 let res = await postChangePassword(userData.email, password, newPassword)
-                if (res.status == 'SUCCESS') {
+                if (res.status == 1) {
                     showSuccess(res.message)
                     navigation.goBack();
                 }

@@ -5,10 +5,10 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 // Camera
-import imageAPI from "../api/imageAPI";
+import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI"
 import * as ImagePicker from 'expo-image-picker';
-import { showError } from "../components/showErrorMess";
+import { showError, showSuccess } from "../components/showErrorMess";
 
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
@@ -141,7 +141,13 @@ const Home = ({ navigation }) => {
             }
             else {
                 const data = response.data;
-                await postHistory(userData.id, data.id)
+                const res = await postHistory(userData.id, data.id)
+                if (res.status == 1) {
+                    showSuccess(res.message)
+                }
+                else if (res.status == 0) {
+                    showError(res.error);
+                }
 
                 navigation.navigate('ShowInfo', {
                     data
@@ -328,7 +334,7 @@ const Home = ({ navigation }) => {
                                     marginBottom: SIZES.base,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Camera(imageAPI.upLoad);
+                                    let isClosed = await Camera(upLoad);
                                     if (isClosed) {
                                         setShowChooseCamrera(false);
                                     }
@@ -349,7 +355,7 @@ const Home = ({ navigation }) => {
                                     marginBottom: SIZES.padding,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Library(imageAPI.upLoad);
+                                    let isClosed = await Library(upLoad);
                                     if (isClosed) {
                                         setShowChooseCamrera(false);
                                     }

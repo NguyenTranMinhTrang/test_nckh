@@ -12,11 +12,14 @@ import {
     Platform,
     ActivityIndicator
 } from "react-native";
+import { deleteHistory } from "../api/userAPI";
+import { getByID } from "../api/imageAPI";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import { getHistory } from "../api/userAPI";
 import { useFocusEffect } from "@react-navigation/native";
+import { showError, showSuccess } from "../components/showErrorMess";
 
 
 const History = ({ navigation }) => {
@@ -24,24 +27,31 @@ const History = ({ navigation }) => {
     const [data, setData] = React.useState([]);
     const [isLoad, setIsLoad] = React.useState(false);
 
+    async function get_history(id) {
+        let res = await getHistory(id)
+        if (res.status == 1) {
+            setData(res.data)
+        }
+        else {
+            showError(res.error)
+        }
+    }
+
     useFocusEffect(
         React.useCallback(() => {
-            async function get_history(id) {
-                try {
-                    let res = await getHistory(id)
-                    if (res.data) {
-                        setData(res.data)
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-            }
             get_history(userData.id);
         }, [])
     );
 
-    const deleteHistory = () => {
-        console.log("delete");
+    const delete_history = async (id, animalID, time) => {
+        let res = await deleteHistory(id, animalID, time)
+        if (res.status == 1) {
+            showSuccess(res.message)
+        }
+        else {
+            showError(res.error)
+        }
+        get_history(id)
     }
 
     // render
@@ -101,7 +111,7 @@ const History = ({ navigation }) => {
                     onLongPress={() => Alert.alert(
                         "Confirm",
                         "Do you want to delele ?",
-                        [{ text: 'Yes', onPress: deleteHistory }, { text: 'No', }],
+                        [{ text: 'Yes', onPress: () => delete_history(userData.id, item.animalID, item.time) }, { text: 'No', }],
                         { cancelable: true }
                     )}
                 >

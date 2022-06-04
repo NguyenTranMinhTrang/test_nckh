@@ -4,18 +4,23 @@ import endpoint from './endpoint';
 export const postHistory = async (id, animalID) => {
     var today = new Date();
     var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    try {
+        const res = await axios.post(endpoint.POST_HISTORY, {
+            "id": id,
+            "animalID": animalID,
+            "time": date
+        });
+        if (res.status == "SUCCESS") {
+            return { status: 1, message: res.message };
+        }
+        else {
+            return { status: 0, error: res.message };
+        }
 
-    axios.post(endpoint.POST_HISTORY, {
-        "id": id,
-        "animalID": animalID,
-        "time": date
-    })
-        .then(res => {
-            console.log(res)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    } catch (error) {
+        console.log(err)
+    }
+
 }
 export const postChangePassword = async (email, password, newPassword) => {
     try {
@@ -24,7 +29,12 @@ export const postChangePassword = async (email, password, newPassword) => {
             "password": password,
             "newPassword": newPassword
         })
-        return res
+        if (res.status == "SUCCESS") {
+            return { status: 1, message: res.message };
+        }
+        else {
+            return { status: 0, error: res.message };
+        }
     }
     catch (err) {
         console.log(err)
@@ -36,7 +46,31 @@ export const getHistory = async (id) => {
         const res = await axios.post(endpoint.GET_HISTORY, {
             "id": id
         })
-        return res
+        if (res.status == "SUCCESS") {
+            return { status: 1, data: res.data };
+        }
+        else {
+            return { status: 0, error: res.message };
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+export const deleteHistory = async (id, animalID, time) => {
+    try {
+        const res = await axios.post(endpoint.DELETE_HISTORY, {
+            "id": id,
+            "animalID": animalID,
+            "time": time
+        })
+        if (res.status == "SUCCESS") {
+            return { status: 1, message: res.message };
+        }
+        else {
+            return { status: 0, error: res.message };
+        }
     }
     catch (err) {
         console.log(err)
