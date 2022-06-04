@@ -9,7 +9,8 @@ import {
     Image,
     Alert,
     StatusBar,
-    Platform
+    Platform,
+    ActivityIndicator
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
@@ -21,6 +22,7 @@ import { useFocusEffect } from "@react-navigation/native";
 const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [data, setData] = React.useState([]);
+    const [isLoad, setIsLoad] = React.useState(false);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -80,6 +82,10 @@ const History = ({ navigation }) => {
 
     function renderHistory() {
 
+        const handleLoadMore = () => {
+            setIsLoad(true);
+        }
+
         function renderItem({ item }) {
             return (
                 <TouchableOpacity
@@ -130,6 +136,24 @@ const History = ({ navigation }) => {
             )
         }
 
+        function renderFooter() {
+            return (
+                <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: SIZES.padding }}>
+                    <TouchableOpacity
+                        onPress={() => handleLoadMore()}
+                    >
+                        {
+                            isLoad ?
+                                <ActivityIndicator size="large" />
+                                :
+                                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Load More ...</Text>
+
+                        }
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+
         return (
             <View
                 style={{
@@ -140,8 +164,8 @@ const History = ({ navigation }) => {
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Your Animal</Text>
                 <View
                     style={{
-                        marginVertical: SIZES.padding,
-                        height: SIZES.height * 0.6
+                        marginTop: SIZES.padding,
+                        height: Platform.OS === "android" ? SIZES.height * 0.7 : SIZES.height * 0.6,
                     }}
                 >
                     <FlatList
@@ -149,7 +173,9 @@ const History = ({ navigation }) => {
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => `${item.animalID} - ${index}`}
                         renderItem={renderItem}
+                        ListFooterComponent={renderFooter}
                     />
+
                 </View>
             </View>
         )

@@ -34,8 +34,8 @@ const ShowInfo = ({ navigation, route }) => {
                 <TouchableOpacity
                     style={{
                         position: 'absolute',
-                        left: 7,
-                        top: 15,
+                        left: SIZES.padding,
+                        top: 30,
                         height: 50,
                         width: 50,
                         justifyContent: 'center',

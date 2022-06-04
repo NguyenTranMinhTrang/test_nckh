@@ -75,12 +75,12 @@ const ChangePassword = ({ navigation, route }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: 50, justifyContent: 'flex-end' }}>
+            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
                 <TouchableOpacity
                     style={{
                         position: 'absolute',
                         left: SIZES.padding,
-                        top: 15,
+                        top: 30,
                         height: 50,
                         width: 50,
                         justifyContent: 'center',
