@@ -84,7 +84,7 @@ const History = ({ navigation }) => {
                         marginLeft: SIZES.padding * 2
                     }}
                 >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>History</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lịch Sử</Text>
                 </View>
             </View>
         )
@@ -140,7 +140,7 @@ const History = ({ navigation }) => {
                         }}
                     >
                         <Text style={{ ...FONTS.body3, color: COLORS.white }}>{item.name}</Text>
-                        <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Search at: {item.time}</Text>
+                        <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Thời gian: {item.time}</Text>
                     </View>
                 </TouchableOpacity>
             )
@@ -156,7 +156,7 @@ const History = ({ navigation }) => {
                             isLoad ?
                                 <ActivityIndicator size="large" />
                                 :
-                                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Load More ...</Text>
+                                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Tải Thêm ...</Text>
 
                         }
                     </TouchableOpacity>
@@ -171,7 +171,7 @@ const History = ({ navigation }) => {
                     paddingHorizontal: SIZES.padding,
                 }}
             >
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Your Animal</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Của Bạn</Text>
                 <View
                     style={{
                         marginTop: SIZES.padding,

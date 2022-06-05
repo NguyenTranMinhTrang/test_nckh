@@ -111,9 +111,9 @@ const Start = ({ navigation }) => {
                     alignItems: 'center'
                 }}
             >
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Welcome</Text>
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>to animal world !</Text>
-                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5 }}>Recognize wild animal and protect them with our app</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Chào Mừng Đến Với</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Thế Giới Động Vật !</Text>
+                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5, paddingHorizontal: SIZES.padding }}>Nhận diện và bảo về các loài động vật hoang dã với app chúng tôi !</Text>
                 <TouchableOpacity
                     style={[{
                         marginTop: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2,
@@ -128,7 +128,7 @@ const Start = ({ navigation }) => {
                     onPress={() => navigation.navigate('Login')}
                 >
                     <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.padding }} >Get Started</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.padding }} >Bắt Đầu Thôi</Text>
                 </TouchableOpacity>
             </View>
         )

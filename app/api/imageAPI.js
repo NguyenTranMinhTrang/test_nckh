@@ -65,6 +65,6 @@ export const upLoad = async (image) => {
             console.log(err)
         }
     } else {
-        alert('No photo selected');
+        alert('Không có ảnh nào được chọn !');
     }
 }

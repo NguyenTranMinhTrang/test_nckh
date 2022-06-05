@@ -102,7 +102,7 @@ export const uploadProfileImage = async (photo, token) => {
         }
     } catch (error) {
         console.log(error.message);
-        return false;
+        return { status: 0, error: "Lỗi Mạng !" };
     }
 };
 

@@ -115,7 +115,7 @@ const Login = ({ navigation }) => {
     function renderHeader() {
         return (
             <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Welcome!</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Xin Chào !</Text>
             </View>
         )
     }
@@ -152,7 +152,7 @@ const Login = ({ navigation }) => {
                             onChangeText={(email) => updateState({ email })}
                         />
                     </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu</Text>
                     <View
                         style={styles.box_text}
                     >
@@ -186,7 +186,7 @@ const Login = ({ navigation }) => {
                         <TouchableOpacity
                             onPress={() => navigation.navigate('ForgetPassword')}
                         >
-                            <Text style={{ ...FONTS.h4 }}>Forget Password ?</Text>
+                            <Text style={{ ...FONTS.h4 }}>Quên Mật Khẩu ?</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -208,7 +208,7 @@ const Login = ({ navigation }) => {
                             onPress={onLogin}
                         >
                             {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Login</Text>
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Nhập</Text>
                             }
                         </TouchableOpacity>
                     </View>
@@ -223,13 +223,13 @@ const Login = ({ navigation }) => {
                         <Text
                             style={{ ...FONTS.h3_light }}
                         >
-                            Don't have an acount ?
+                            Bạn chưa có tài khoản ?
                         </Text>
                         <TouchableOpacity
                             style={{ alignItems: 'center', justifyContent: 'center' }}
                             onPress={() => navigation.navigate('Register')}
                         >
-                            <Text style={{ ...FONTS.h3 }}> Let's register</Text>
+                            <Text style={{ ...FONTS.h3 }}> Đăng ký ngay !</Text>
                         </TouchableOpacity>
                     </View>
                 </Pressable>

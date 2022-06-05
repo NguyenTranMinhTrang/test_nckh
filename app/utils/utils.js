@@ -18,7 +18,7 @@ export async function postUser(url, data) {
             })
             .catch(error => {
                 console.log("Error from request auth: ", error);
-                return reject({ status: "FAILED", message: "Network Error!" });
+                return reject({ status: "FAILED", message: "Lỗi Mạng !" });
             })
     })
 }

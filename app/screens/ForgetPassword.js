@@ -72,7 +72,7 @@ const ForgetPassword = ({ navigation }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Get Password</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Lấy Lại Mật Khẩu</Text>
             </View>
         )
     }
@@ -145,7 +145,7 @@ const ForgetPassword = ({ navigation }) => {
 
                             onPress={() => handleGetPassword()}
                         >
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Get Password</Text>
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lấy Mật Khẩu</Text>
                         </TouchableOpacity>
                     </View>
 

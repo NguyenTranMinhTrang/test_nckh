@@ -72,7 +72,7 @@ const User = ({ navigation }) => {
                         marginLeft: SIZES.padding * 2
                     }}
                 >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cá Nhân</Text>
                 </View>
                 <Modal
                     animationType="slide"
@@ -113,7 +113,7 @@ const User = ({ navigation }) => {
                                     borderTopRightRadius: SIZES.radius,
                                 }}
                             >
-                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Choose a photo</Text>
+                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Chọn 1 tấm ảnh</Text>
                             </View>
                             {/* Camera */}
                             <TouchableOpacity
@@ -140,7 +140,7 @@ const User = ({ navigation }) => {
                                     }
                                 }}
                             >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Camera</Text>
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
                             </TouchableOpacity>
 
                             {/* Library */}
@@ -168,7 +168,7 @@ const User = ({ navigation }) => {
                                     }
                                 }}
                             >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Library</Text>
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
@@ -183,7 +183,7 @@ const User = ({ navigation }) => {
 
                                 onPress={() => setShowChooseCamrera(false)}
                             >
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -333,7 +333,7 @@ const User = ({ navigation }) => {
                                 flex: 0.8
                             }}
                         >
-                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Change Password</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Đổi Mật Khẩu</Text>
                         </View>
 
                     </TouchableOpacity>
@@ -362,7 +362,7 @@ const User = ({ navigation }) => {
                                 flex: 0.7
                             }}
                         >
-                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Log Out</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, paddingVertical: 25 }}>Đăng Xuất</Text>
 
                         </View>
 
