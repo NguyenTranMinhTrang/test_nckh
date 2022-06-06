@@ -51,6 +51,7 @@ const History = ({ navigation }) => {
         else {
             showError(res.error)
         }
+        //Reset history after deleted
         get_history(id)
     }
 
