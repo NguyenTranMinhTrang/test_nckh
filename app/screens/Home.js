@@ -1,12 +1,13 @@
 import React from "react";
-import { Linking, View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 // Camera
 import { upLoad } from "../api/imageAPI";
-import { postHistory } from "../api/userAPI"
+import { postHistory } from "../api/userAPI";
+import { getByID } from "../api/imageAPI";
 import * as ImagePicker from 'expo-image-picker';
 import { showError, showSuccess } from "../components/showErrorMess";
 
@@ -16,53 +17,80 @@ const Home = ({ navigation }) => {
 
     // Data
 
-    const data = [
+    let data = [
         {
-            id: 1,
-            name: "Tiger",
+            id: 22,
+            name: "Hổ",
             image: images.tiger,
         },
         {
-            id: 2,
-            name: "Crocodile",
+            id: 7,
+            name: "Cá Sấu",
             image: images.crocodile,
         },
         {
-            id: 3,
-            name: "Turtle",
-            image: images.turtle,
-        },
-        {
-            id: 4,
-            name: "Peafowl",
+            id: 23,
+            name: "Công Lục",
             image: images.peafowl,
         },
         {
-            id: 5,
-            name: "Elephant",
+            id: 12,
+            name: "Voi",
             image: images.elephant,
         },
         {
-            id: 6,
-            name: "Eagle",
-            image: images.eagle,
+            id: 3,
+            name: "Gấu Mực",
+            image: images.gaumuc,
         },
         {
-            id: 7,
-            name: "Fox",
-            image: images.fox,
+            id: 5,
+            name: "Bồ Câu",
+            image: images.nicola,
         },
         {
-            id: 8,
-            name: "Lizard",
+            id: 25,
+            name: "Rồng Đất",
             image: images.lizard,
         },
         {
-            id: 9,
-            name: "Monkey",
-            image: images.monkey,
-        }
+            id: 10,
+            name: "Rùa Da",
+            image: images.ruada,
+        },
+        {
+            id: 11,
+            name: "Tê Giác",
+            image: images.sumatra,
+        },
+        {
+            id: 16,
+            name: "Rái Cá",
+            image: images.raica,
+        },
+        {
+            id: 30,
+            name: "Gấu Ngựa",
+            image: images.gaungua,
+        },
     ];
+    data = data.sort(() => Math.random() - 0.5)
+
+    const getInfo = async (id) => {
+        let res = await getByID(id);
+        if (res) {
+            if (res.status == 1) {
+                navigation.navigate("ShowInfo", {
+                    data: res.data
+                });
+            }
+            else {
+                showError(res.error);
+            }
+        }
+
+    }
+
     // Camera 
 
     const Camera = async (cb) => {
@@ -160,16 +188,6 @@ const Home = ({ navigation }) => {
         return false;
     };
 
-    const openUrl = async (url) => {
-        const isSupported = await Linking.canOpenURL(url);
-        if (isSupported) {
-            await Linking.openURL(url);
-        }
-        else {
-            showError("We can't open this url!");
-        }
-    }
-
 
     // Render
 
@@ -249,7 +267,7 @@ const Home = ({ navigation }) => {
                     paddingTop: SIZES.padding * 2
                 }}
             >
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Discover</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Khám Phá</Text>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -261,8 +279,8 @@ const Home = ({ navigation }) => {
                             flex: 0.75,
                         }}
                     >
-                        <Text style={{ ...FONTS.h1, color: COLORS.white }}>Animal World</Text>
-                        <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>Take photo to recognise wild animals with our app!</Text>
+                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Thế Giới Động Vật</Text>
+                        <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>Chụp ảnh để nhận diện các loài động vật hoang dã ngay!</Text>
                     </View>
                     <View style={{ flex: 0.2 }}>
                         <TouchableOpacity
@@ -320,7 +338,7 @@ const Home = ({ navigation }) => {
                                     borderTopRightRadius: SIZES.radius,
                                 }}
                             >
-                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Choose a photo</Text>
+                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Chọn 1 tấm ảnh</Text>
                             </View>
                             {/* Camera */}
                             <TouchableOpacity
@@ -340,7 +358,7 @@ const Home = ({ navigation }) => {
                                     }
                                 }}
                             >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Camera</Text>
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
                             </TouchableOpacity>
 
                             {/* Library */}
@@ -361,7 +379,7 @@ const Home = ({ navigation }) => {
                                     }
                                 }}
                             >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Use Library</Text>
+                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
@@ -398,7 +416,7 @@ const Home = ({ navigation }) => {
                         ...styles.shadow
                     }}
 
-                    onPress={() => openUrl(`https://en.wikipedia.org/wiki/${item.name}`)}
+                    onPress={() => getInfo(item.id)}
                 >
                     <Image
                         source={item.image}
@@ -425,7 +443,7 @@ const Home = ({ navigation }) => {
 
         return (
             <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2, paddingHorizontal: SIZES.padding }}>
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Wild Animals</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Hoang Dã</Text>
                 <FlatList
                     data={data}
                     horizontal

@@ -96,7 +96,7 @@ const ChangePassword = ({ navigation, route }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Reset Password</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đổi Mật Khẩu</Text>
             </View>
         )
     }
@@ -125,7 +125,7 @@ const ChangePassword = ({ navigation, route }) => {
                     onPress={Keyboard.dismiss}
                 >
                     {/* Old password  */}
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu Cũ</Text>
                     <View
                         style={styles.box_text}
                     >
@@ -151,7 +151,7 @@ const ChangePassword = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                     {/* New Password */}
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>New Password</Text>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu Mới</Text>
                     <View
                         style={styles.box_text}
                     >
@@ -196,7 +196,7 @@ const ChangePassword = ({ navigation, route }) => {
                             onPress={onReset}
                         >
 
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Reset Password</Text>
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đổi Mật Khẩu</Text>
 
                         </TouchableOpacity>
                     </View>

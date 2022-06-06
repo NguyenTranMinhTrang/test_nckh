@@ -21,22 +21,22 @@ export default function (data) {
     const { email, password, confirm, newPassword } = data;
 
     if (email !== undefined) {
-        let emptyValidationText = checkEmpty(email, 'Please enter your email !');
+        let emptyValidationText = checkEmpty(email, 'Vui lòng nhập email !');
         if (emptyValidationText !== '') {
             return emptyValidationText;
         } else {
             if (!validator.email(email)) {
-                return "Please enter valid email !";
+                return "Vui lòng nhập email hợp lệ !";
             }
         }
     }
 
     if (password !== undefined) {
-        let emptyValidationText = checkEmpty(password, 'Please enter your password !');
+        let emptyValidationText = checkEmpty(password, 'Vui lòng nhập mật khẩu !');
         if (emptyValidationText !== '') {
             return emptyValidationText;
         } else {
-            let checkLength = checkMinLength(password, 8, "Password must be at least 8 characters !");
+            let checkLength = checkMinLength(password, 8, "Mật khẩu ít nhất phải gồm 8 kí tự !");
             if (checkLength !== '') {
                 return checkLength;
             }
@@ -44,11 +44,11 @@ export default function (data) {
     }
 
     if (newPassword !== undefined) {
-        let emptyValidationText = checkEmpty(newPassword, 'Please enter your new password !');
+        let emptyValidationText = checkEmpty(newPassword, 'Vui lòng nhập mật khẩu mới !');
         if (emptyValidationText !== '') {
             return emptyValidationText;
         } else {
-            let checkLength = checkMinLength(newPassword, 8, "New password must be at least 8 characters !");
+            let checkLength = checkMinLength(newPassword, 8, "Mật khẩu mới ít nhất phải gồm 8 kí tự !");
             if (checkLength !== '') {
                 return checkLength;
             }
@@ -57,7 +57,7 @@ export default function (data) {
 
     if (confirm !== undefined) {
         if (password !== confirm) {
-            return "Confirm password is incorrect !";
+            return "Mật khẩu xác nhận không khớp !";
         }
         else {
             return '';

@@ -131,7 +131,7 @@ const Register = ({ navigation }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Register Now!</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đăng Ký Ngay !</Text>
             </View>
         )
     }
@@ -156,15 +156,6 @@ const Register = ({ navigation }) => {
                     }}
                     onPress={Keyboard.dismiss}
                 >
-                    {/* {
-                        message && <View
-                            style={{
-                                marginBottom: SIZES.base
-                            }}
-                        >
-                            <Text style={{ ...FONTS.h3_light, color: 'red' }}>{message.message}</Text>
-                        </View>
-                    } */}
                     <Text style={{ ...FONTS.h3_light }}>Email</Text>
                     <View style={styles.box_text}>
                         <FontAwesome name="user" size={20} color="black" />
@@ -174,7 +165,7 @@ const Register = ({ navigation }) => {
                             onChangeText={(email) => updateState({ email })}
                         />
                     </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Password</Text>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu</Text>
                     <View style={styles.box_text}>
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
@@ -195,7 +186,7 @@ const Register = ({ navigation }) => {
                             }
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Confirm Password</Text>
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Xác Nhận Mật Khẩu</Text>
                     <View
                         style={styles.box_text}
                     >
@@ -236,7 +227,7 @@ const Register = ({ navigation }) => {
                             onPress={onRegister}
                         >
                             {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Register</Text>
+                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Ký</Text>
                             }
                         </TouchableOpacity>
                     </View>
