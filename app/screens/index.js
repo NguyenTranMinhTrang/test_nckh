@@ -7,5 +7,19 @@ import User from "./User";
 import History from "./History";
 import ChangePassword from "./ChangePassword";
 import ForgetPassword from "./ForgetPassword";
+import Code from "./Code";
+import GetPassword from "./GetPassword";
 
-export { Home, ShowInfo, Start, Login, Register, User, History, ChangePassword, ForgetPassword };
+export {
+    Home,
+    ShowInfo,
+    Start,
+    Login,
+    Register,
+    User,
+    History,
+    ChangePassword,
+    ForgetPassword,
+    Code,
+    GetPassword
+};

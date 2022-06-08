@@ -1,66 +1,52 @@
 import React from "react";
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    TextInput,
-    Platform,
-    Pressable,
-    KeyboardAvoidingView,
-    Keyboard,
-    ActivityIndicator
-} from "react-native";
+import { View, Text, SafeAreaView, TextInput, KeyboardAvoidingView, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
-import { FontAwesome, Feather, AntDesign } from '@expo/vector-icons';
-
+import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
-import actions from "../redux/actions";
+import { AntDesign } from '@expo/vector-icons';
 
 
-// render
-const Register = ({ navigation }) => {
-    const [data, setData] = React.useState({
-        isLoading: false,
-        email: '',
+const GetPassword = ({ navigation }) => {
+
+    const [state, setState] = React.useState({
         password: '',
-        confirm: '',
-        avatar: '',
-        token: '',
+        confirmPassword: '',
         secureTextEntry: true,
-        confirmSecureTextEntry: true
+        newSecureTextEntry: true
     });
 
-    const { isLoading, email, password, confirm, secureTextEntry, confirmSecureTextEntry } = data;
+    const { password, confirmPassword, secureTextEntry, newSecureTextEntry } = state;
+
+    console.log(password);
+    console.log(confirmPassword);
 
 
-    const updateState = (newState) => setData(() => (
+    const updateState = (newState) => setState(() => (
         {
-            ...data,
+            ...state,
             ...newState
         }
     ))
 
     function updateSecureTextEntry() {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
+        setState({
+            ...state,
+            secureTextEntry: !state.secureTextEntry
         })
     }
 
-    function updateConfirmSecureTextEntry() {
-        setData({
-            ...data,
-            confirmSecureTextEntry: !data.confirmSecureTextEntry
+    function updateNewSecureTextEntry() {
+        setState({
+            ...state,
+            newSecureTextEntry: !state.newSecureTextEntry
         })
     }
 
     const isValid = () => {
         const error = validator({
-            email,
             password,
-            confirm
+            confirm: confirmPassword
         });
 
         if (error) {
@@ -70,42 +56,11 @@ const Register = ({ navigation }) => {
         return true;
     }
 
-    const onRegister = async () => {
+    const onReset = async () => {
         const checkValidData = isValid();
-
         if (checkValidData) {
-            updateState({
-                isLoading: true
-            })
-            try {
-                const res = await actions.signup({
-                    email,
-                    password
-                });
-
-                if (res) {
-                    showSuccess(res.message);
-                }
-                updateState({
-                    isLoading: false
-                })
-                navigation.goBack();
-            } catch (error) {
-                if (error && error.status) {
-                    if (error.status == "FAILED") {
-                        showError(error.message);
-                    }
-                }
-                else {
-                    showError("There is an error occurd!");
-                    console.log(error);
-                }
-                updateState({
-                    isLoading: false
-                })
-            }
+            console.log("Ok");
         }
-
     }
 
     function renderHeader() {
@@ -131,12 +86,13 @@ const Register = ({ navigation }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đăng Ký Ngay !</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đổi Mật Khẩu</Text>
             </View>
         )
     }
-    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
-    function renderFooter() {
+
+    function renderContent() {
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -152,28 +108,25 @@ const Register = ({ navigation }) => {
                     style={{
                         flex: 1,
                         paddingHorizontal: SIZES.padding,
-                        paddingVertical: 30,
+                        paddingVertical: 30
+
                     }}
+
                     onPress={Keyboard.dismiss}
                 >
-                    <Text style={{ ...FONTS.h3_light }}>Email</Text>
-                    <View style={styles.box_text}>
-                        <FontAwesome name="user" size={20} color="black" />
-                        <TextInput
-                            placeholder="Your Email"
-                            style={styles.textInput}
-                            onChangeText={(email) => updateState({ email })}
-                        />
-                    </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu</Text>
-                    <View style={styles.box_text}>
+                    {/* Old password  */}
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu Mới</Text>
+                    <View
+                        style={styles.box_text}
+                    >
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Your Password"
+                            placeholder="Your Old Password"
                             secureTextEntry={secureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(password) => updateState({ password })}
+                            onChangeText={(password) => updateState({ password: password })}
+
                         />
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
@@ -184,35 +137,41 @@ const Register = ({ navigation }) => {
                                     :
                                     <Feather name="eye" size={20} color="black" />
                             }
+
                         </TouchableOpacity>
                     </View>
+                    {/* New Password */}
                     <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Xác Nhận Mật Khẩu</Text>
                     <View
                         style={styles.box_text}
                     >
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Your Confirm Password"
-                            secureTextEntry={confirmSecureTextEntry ? true : false}
+                            placeholder="Your New Password"
+                            secureTextEntry={newSecureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(confirm) => updateState({ confirm })}
+                            onChangeText={(confirmPassword) => updateState({ confirmPassword: confirmPassword })}
                         />
                         <TouchableOpacity
-                            onPress={updateConfirmSecureTextEntry}
+                            onPress={updateNewSecureTextEntry}
                         >
                             {
-                                confirmSecureTextEntry ?
+                                newSecureTextEntry ?
                                     <Feather name="eye-off" size={20} color="black" />
                                     :
                                     <Feather name="eye" size={20} color="black" />
                             }
+
                         </TouchableOpacity>
                     </View>
+
+                    {/* Button reset password */}
+
                     <View
                         style={{
                             alignItems: 'center',
-                            marginTop: 50,
+                            marginTop: 30,
                         }}
                     >
                         <TouchableOpacity
@@ -224,23 +183,24 @@ const Register = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={onRegister}
+                            onPress={onReset}
                         >
-                            {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Ký</Text>
-                            }
+
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đổi Mật Khẩu</Text>
+
                         </TouchableOpacity>
                     </View>
+
                 </Pressable>
-            </KeyboardAvoidingView>
+            </KeyboardAvoidingView >
         )
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {renderFooter()}
-        </View>
+            {renderContent()}
+        </SafeAreaView>
     )
 }
 
@@ -263,4 +223,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Register;
+export default GetPassword;
