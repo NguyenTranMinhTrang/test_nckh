@@ -1,32 +1,71 @@
 import React from "react";
-import { View, Text, SafeAreaView, TextInput, KeyboardAvoidingView, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
 import { AntDesign } from '@expo/vector-icons';
+import ResendTimer from "../components/ResendTimer";
 
 
-const ForgetPassword = ({ navigation }) => {
+const Code = ({ navigation }) => {
 
-    const [email, setEmail] = React.useState('');
+    const [code, setCode] = React.useState('');
+    const [timeLeft, setTimeLeft] = React.useState(null);
+    const [targetTime, setTargetTime] = React.useState(null);
+    const [activeResend, setActiveResend] = React.useState(false);
+    let resendTimerInterval;
 
-    const isValid = () => {
-        const error = validator({
-            email
-        });
-
-        if (error) {
-            showError(error);
-            return false;
+    const caculateTimeLeft = (finalTime) => {
+        console.log(finalTime);
+        const difference = finalTime - +new Date();
+        if (difference >= 0) {
+            setTimeLeft(Math.round(difference / 1000));
         }
-        return true;
+        else {
+            setTimeLeft(null);
+            clearInterval(resendTimerInterval);
+            setActiveResend(true);
+        }
     }
 
-    const handleGetPassword = () => {
+    const triggerTime = (targetTime = 30) => {
+        setTargetTime(targetTime);
+        setActiveResend(false);
+        const finalTime = +(new Date()) + targetTime * 1000;
+        console.log("Ban dau", finalTime);
+        resendTimerInterval = setInterval(() => {
+            caculateTimeLeft(finalTime);
+        }, 1000);
+    }
+
+    const resendEmail = async () => {
+        console.log("Hello");
+        triggerTime();
+    }
+
+    React.useEffect(() => {
+        triggerTime();
+
+        return () => {
+            clearInterval(resendTimerInterval);
+        }
+    }, []);
+
+    const isValid = () => {
+        if (!code) {
+            showError("Bạn chưa nhập mã pin !");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    const handlePin = () => {
         const checkValid = isValid();
         if (checkValid) {
-            navigation.navigate("Code");
+            console.log("OK");
+            navigation.navigate("GetPassword");
         }
     }
 
@@ -53,7 +92,7 @@ const ForgetPassword = ({ navigation }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Lấy Lại Mật Khẩu</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Nhập Mã Pin</Text>
             </View>
         )
     }
@@ -72,23 +111,24 @@ const ForgetPassword = ({ navigation }) => {
                     style={{
                         flex: 1,
                         paddingHorizontal: SIZES.padding,
-                        paddingVertical: 30
-
+                        paddingVertical: 30,
                     }}
 
                     onPress={Keyboard.dismiss}
                 >
-                    {/* Email  */}
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Email</Text>
+                    {/* Mã Pin  */}
+                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Pin</Text>
                     <View
                         style={styles.box_text}
                     >
-                        <FontAwesome name="user" size={20} color="black" />
+                        <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Nhập Email ..."
+                            placeholder="Mã Pin ..."
+                            value={code}
                             autoCapitalize="none"
                             style={styles.textInput}
-                            onChangeText={(email) => setEmail(email)}
+                            keyboardType="number-pad"
+                            onChangeText={(code) => setCode(code)}
 
                         />
                     </View>
@@ -112,12 +152,17 @@ const ForgetPassword = ({ navigation }) => {
                                 borderRadius: SIZES.radius
                             }}
 
-                            onPress={() => handleGetPassword()}
+                            onPress={() => handlePin()}
                         >
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lấy Mật Khẩu</Text>
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
                     </View>
-
+                    <ResendTimer
+                        activeResend={activeResend}
+                        timeLeft={timeLeft}
+                        targetTime={targetTime}
+                        resendEmail={resendEmail}
+                    />
                 </Pressable>
             </View >
         )
@@ -150,4 +195,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ForgetPassword;
+export default Code;

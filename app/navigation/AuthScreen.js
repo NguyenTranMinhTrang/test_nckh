@@ -1,5 +1,5 @@
 import React from "react";
-import { Start, Login, Register, ForgetPassword } from "../screens";
+import { Start, Login, Register, ForgetPassword, Code, GetPassword } from "../screens";
 
 export default function (Stack) {
     return (
@@ -19,6 +19,14 @@ export default function (Stack) {
             <Stack.Screen
                 name="ForgetPassword"
                 component={ForgetPassword}
+            />
+            <Stack.Screen
+                name="Code"
+                component={Code}
+            />
+            <Stack.Screen
+                name="GetPassword"
+                component={GetPassword}
             />
         </>
     )

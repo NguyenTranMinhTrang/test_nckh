@@ -56,11 +56,16 @@ export default function (data) {
     }
 
     if (confirm !== undefined) {
-        if (password !== confirm) {
-            return "Mật khẩu xác nhận không khớp !";
-        }
-        else {
-            return '';
+        let emptyValidationText = checkEmpty(confirm, 'Vui lòng nhập xác nhận mật khẩu !');
+        if (emptyValidationText !== '') {
+            return emptyValidationText;
+        } else {
+            if (password !== confirm) {
+                return "Mật khẩu xác nhận không khớp !";
+            }
+            else {
+                return '';
+            }
         }
     }
 }
