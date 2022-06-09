@@ -71,7 +71,8 @@ const Register = ({ navigation }) => {
     }
 
     const onRegister = async () => {
-        const checkValidData = isValid();
+        navigation.navigate("SendEmail");
+        /* const checkValidData = isValid();
 
         if (checkValidData) {
             updateState({
@@ -89,7 +90,7 @@ const Register = ({ navigation }) => {
                 updateState({
                     isLoading: false
                 })
-                navigation.goBack();
+                navigation.navigate("SendEmail");
             } catch (error) {
                 if (error && error.status) {
                     if (error.status == "FAILED") {
@@ -105,7 +106,7 @@ const Register = ({ navigation }) => {
                 })
             }
         }
-
+ */
     }
 
     function renderHeader() {

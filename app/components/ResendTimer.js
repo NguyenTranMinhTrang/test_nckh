@@ -16,14 +16,14 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
                     marginTop: SIZES.padding,
                 }}
             >
-                <Text style={{ ...FONTS.h3_light }}>Chưa nhận được mã pin ? </Text>
+                <Text style={{ ...FONTS.h3_light, color: COLORS.white }}>Chưa nhận được mã pin ? </Text>
                 {
                     activeResend && (
 
                         <TouchableOpacity
                             onPress={() => resendEmail()}
                         >
-                            <Text style={{ ...FONTS.h3, textDecorationLine: "underline" }}>Gửi Lại !</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, textDecorationLine: "underline" }}>Gửi Lại !</Text>
                         </TouchableOpacity>
 
                     )
@@ -33,7 +33,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
                         <TouchableOpacity
                             disabled={true}
                         >
-                            <Text style={{ ...FONTS.h3, textDecorationLine: "underline", opacity: 0.5 }}>Gửi Lại !</Text>
+                            <Text style={{ ...FONTS.h3, color: COLORS.white, textDecorationLine: "underline", opacity: 0.5 }}>Gửi Lại !</Text>
                         </TouchableOpacity>
                     )
                 }
@@ -41,11 +41,11 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
             </View>
             {
                 !activeResend && (
-                    <Text style={{ ...FONTS.h3_light }}>in {timeLeft || targetTime} second(s)</Text>
+                    <Text style={{ ...FONTS.h3_light, color: COLORS.white }}>in {timeLeft || targetTime} second(s)</Text>
                 )
             }
 
-        </View>
+        </View >
     )
 }
 

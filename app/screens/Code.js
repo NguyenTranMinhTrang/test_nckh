@@ -11,50 +11,6 @@ import { resendPIN, verifyPIN } from "../api/userAPI"
 const Code = ({ navigation, route }) => {
     const { data } = route.params
     const [code, setCode] = React.useState('');
-    const [timeLeft, setTimeLeft] = React.useState(null);
-    const [targetTime, setTargetTime] = React.useState(null);
-    const [activeResend, setActiveResend] = React.useState(false);
-    let resendTimerInterval;
-
-    const caculateTimeLeft = (finalTime) => {
-        const difference = finalTime - +new Date();
-        if (difference >= 0) {
-            setTimeLeft(Math.round(difference / 1000));
-        }
-        else {
-            setTimeLeft(null);
-            clearInterval(resendTimerInterval);
-            setActiveResend(true);
-        }
-    }
-
-    const triggerTime = (targetTime = 30) => {
-        setTargetTime(targetTime);
-        setActiveResend(false);
-        const finalTime = +(new Date()) + targetTime * 1000;
-        resendTimerInterval = setInterval(() => {
-            caculateTimeLeft(finalTime);
-        }, 1000);
-    }
-
-    const resendEmail = async (email = data.email) => {
-        const res = await resendPIN(email)
-        if (res.status == "PENDING") {
-            showSuccess(res.message)
-            triggerTime();
-        }
-        else {
-            showError(res.message)
-        }
-    }
-
-    React.useEffect(() => {
-        triggerTime();
-
-        return () => {
-            clearInterval(resendTimerInterval);
-        }
-    }, []);
 
     const isValid = () => {
         if (!code) {
@@ -171,12 +127,7 @@ const Code = ({ navigation, route }) => {
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
                     </View>
-                    <ResendTimer
-                        activeResend={activeResend}
-                        timeLeft={timeLeft}
-                        targetTime={targetTime}
-                        resendEmail={() => resendEmail(data.email)}
-                    />
+
                 </Pressable>
             </View >
         )

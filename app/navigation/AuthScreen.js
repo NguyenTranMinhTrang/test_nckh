@@ -1,5 +1,5 @@
 import React from "react";
-import { Start, Login, Register, ForgetPassword, Code, GetPassword } from "../screens";
+import { Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail } from "../screens";
 
 export default function (Stack) {
     return (
@@ -27,6 +27,10 @@ export default function (Stack) {
             <Stack.Screen
                 name="GetPassword"
                 component={GetPassword}
+            />
+            <Stack.Screen
+                name="SendEmail"
+                component={SendEmail}
             />
         </>
     )

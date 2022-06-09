@@ -9,6 +9,7 @@ import ChangePassword from "./ChangePassword";
 import ForgetPassword from "./ForgetPassword";
 import Code from "./Code";
 import GetPassword from "./GetPassword";
+import SendEmail from "./SendEmail";
 
 export {
     Home,
@@ -21,5 +22,6 @@ export {
     ChangePassword,
     ForgetPassword,
     Code,
-    GetPassword
+    GetPassword,
+    SendEmail
 };
