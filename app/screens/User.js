@@ -28,9 +28,9 @@ const User = ({ navigation }) => {
 
     const Onlogout = () => {
         Alert.alert(
-            'Logout',
-            'Are you sure, yout want to logout from this device',
-            [{ text: 'Yes', onPress: logout }, { text: 'No', }],
+            'Đăng Xuất',
+            'Bạn có chắc muốn đăng xuất ra khỏi thiết bị này ?',
+            [{ text: 'Có', onPress: logout }, { text: 'Hủy', }],
             { cancelable: true }
         )
     }

@@ -23,7 +23,9 @@ export function login(data) {
                 });
                 return;
             }
-            resolve(res.data);
+            else {
+                reject(res);
+            }
         })
             .catch((error) => {
                 reject(error)

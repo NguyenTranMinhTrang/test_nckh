@@ -119,7 +119,6 @@ const Home = ({ navigation }) => {
 
                 if (!img.cancelled) {
                     const response = await cb(img);
-
                     if (response.status == "FAILED") {
                         showError(response.message);
                     }

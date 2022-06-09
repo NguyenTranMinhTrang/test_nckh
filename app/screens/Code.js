@@ -29,7 +29,7 @@ const Code = ({ navigation, route }) => {
         }
     }
 
-    const triggerTime = (targetTime = 30) => {
+    const triggerTime = (targetTime = 20) => {
         setTargetTime(targetTime);
         setActiveResend(false);
         const finalTime = +(new Date()) + targetTime * 1000;
@@ -38,8 +38,15 @@ const Code = ({ navigation, route }) => {
         }, 1000);
     }
 
-    const resendEmail = () => {
-        triggerTime();
+    const resendPin = async (email) => {
+        const res = await resendPIN(email);
+        if (res.status == "PENDING") {
+            showSuccess(res.message);
+            triggerTime();
+        }
+        else {
+            showError(res.message)
+        }
     }
 
     React.useEffect(() => {
@@ -141,7 +148,7 @@ const Code = ({ navigation, route }) => {
                         activeResend={activeResend}
                         timeLeft={timeLeft}
                         targetTime={targetTime}
-                        resendEmail={() => resendEmail()}
+                        resendEmail={() => resendPin(data.email)}
                         color="black"
                     />
                 </Pressable>

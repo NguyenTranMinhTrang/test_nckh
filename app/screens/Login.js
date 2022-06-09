@@ -82,9 +82,10 @@ const Login = ({ navigation }) => {
                     email,
                     password
                 });
+                console.log("Login: ", res);
 
                 if (res) {
-                    showSuccess("Login Success!")
+                    showSuccess("Đăng nhập thành công!")
                 }
 
                 if (!isUnmounted.current) {
