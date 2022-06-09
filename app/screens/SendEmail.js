@@ -3,9 +3,9 @@ import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, T
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import ResendTimer from "../components/ResendTimer";
-
-const SendEmail = ({ navigation }) => {
-
+import { resendVerification } from "../api/userAPI"
+const SendEmail = ({ navigation, route }) => {
+    const { data } = route.params
     const [timeLeft, setTimeLeft] = React.useState(null);
     const [targetTime, setTargetTime] = React.useState(null);
     const [activeResend, setActiveResend] = React.useState(false);
@@ -32,17 +32,15 @@ const SendEmail = ({ navigation }) => {
         }, 1000);
     }
 
-    const resendEmail = async () => {
-        /* const res = await resendPIN(email)
+    const resendEmail = async (id, email) => {
+        const res = await resendVerification(id, email)
         if (res.status == "PENDING") {
             showSuccess(res.message)
             triggerTime();
         }
         else {
             showError(res.message)
-        } */
-        console.log("OK");
-        triggerTime();
+        }
     }
 
     React.useEffect(() => {
@@ -131,7 +129,7 @@ const SendEmail = ({ navigation }) => {
                     activeResend={activeResend}
                     timeLeft={timeLeft}
                     targetTime={targetTime}
-                    resendEmail={() => resendEmail()}
+                    resendEmail={() => resendEmail(data.id, data.email)}
                 />
             </View>
         )
