@@ -147,24 +147,6 @@ const History = ({ navigation }) => {
             )
         }
 
-        function renderFooter() {
-            return (
-                <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: SIZES.padding }}>
-                    <TouchableOpacity
-                        onPress={() => handleLoadMore()}
-                    >
-                        {
-                            isLoad ?
-                                <ActivityIndicator size="large" />
-                                :
-                                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Tải Thêm ...</Text>
-
-                        }
-                    </TouchableOpacity>
-                </View>
-            )
-        }
-
         return (
             <View
                 style={{
@@ -184,7 +166,6 @@ const History = ({ navigation }) => {
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => `${item.animalID} - ${index}`}
                         renderItem={renderItem}
-                        ListFooterComponent={renderFooter}
                     />
 
                 </View>

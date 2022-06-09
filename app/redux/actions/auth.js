@@ -1,5 +1,5 @@
 import { setUserData, clearUserData } from "../../utils/utils";
-import { postUser } from "../../api/userAPI"
+import { postUser, singUp } from "../../api/userAPI"
 import store from '../stores';
 import types from '../types';
 import endpoint from "../../api/endpoint";
@@ -32,7 +32,7 @@ export function login(data) {
 }
 
 export function signup(data) {
-    return postUser(data.email, data.password);
+    return singUp(data.email, data.password);
 }
 
 export function logout() {

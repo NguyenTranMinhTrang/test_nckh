@@ -196,7 +196,7 @@ export const resetPassword = async (newPassword, token) => {
 
 export const postUser = async (email, password) => {
     try {
-        const res = axios.post(endpoint.SIGNUP, {
+        const res = await axios.post(endpoint.LOGIN, {
             "email": email,
             "password": password
         })
@@ -207,6 +207,24 @@ export const postUser = async (email, password) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
+    }
+}
+
+export const singUp = async (email, password) => {
+    try {
+        const res = await axios.post(endpoint.SIGNUP, {
+            "email": email,
+            "password": password
+        })
+        if (res) {
+            console.log(res);
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: error.message };
     }
 }

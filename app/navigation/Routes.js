@@ -11,8 +11,6 @@ const Stack = createNativeStackNavigator();
 export default function Routes() {
     const userData = useSelector((state) => state.auth.userData);
 
-    console.log("user data", userData)
-
     return (
         <NavigationContainer>
             <Stack.Navigator

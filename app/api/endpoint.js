@@ -1,6 +1,6 @@
-const IP = '192.168.1.116'
+const IP = '10.40.236.75'
 const localUrl = `http://${IP}:3000`
-const herokuUrl = `https://cherry-surprise-85276.herokuapp.com`
+//const herokuUrl = `https://cherry-surprise-85276.herokuapp.com`
 const BASE_URL = localUrl
 export default {
     BASE_URL,

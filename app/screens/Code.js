@@ -3,14 +3,52 @@ import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, T
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { showError, showSuccess } from "../components/showErrorMess";
-import { AntDesign } from '@expo/vector-icons';
 import ResendTimer from "../components/ResendTimer";
+import Header from "../components/Header";
 import { resendPIN, verifyPIN } from "../api/userAPI"
 
 
 const Code = ({ navigation, route }) => {
     const { data } = route.params
     const [code, setCode] = React.useState('');
+
+    const [timeLeft, setTimeLeft] = React.useState(null);
+    const [targetTime, setTargetTime] = React.useState(null);
+    const [activeResend, setActiveResend] = React.useState(false);
+    let resendTimerInterval;
+
+    const caculateTimeLeft = (finalTime) => {
+        const difference = finalTime - +new Date();
+        if (difference >= 0) {
+            setTimeLeft(Math.round(difference / 1000));
+        }
+        else {
+            setTimeLeft(null);
+            clearInterval(resendTimerInterval);
+            setActiveResend(true);
+        }
+    }
+
+    const triggerTime = (targetTime = 30) => {
+        setTargetTime(targetTime);
+        setActiveResend(false);
+        const finalTime = +(new Date()) + targetTime * 1000;
+        resendTimerInterval = setInterval(() => {
+            caculateTimeLeft(finalTime);
+        }, 1000);
+    }
+
+    const resendEmail = () => {
+        triggerTime();
+    }
+
+    React.useEffect(() => {
+        triggerTime();
+
+        return () => {
+            clearInterval(resendTimerInterval);
+        }
+    }, []);
 
     const isValid = () => {
         if (!code) {
@@ -37,34 +75,6 @@ const Code = ({ navigation, route }) => {
                 showError(res.message)
             }
         }
-    }
-
-    function renderHeader() {
-        return (
-            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
-                <TouchableOpacity
-                    style={{
-                        position: 'absolute',
-                        left: SIZES.padding,
-                        top: 15,
-                        height: 50,
-                        width: 50,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 25,
-                        backgroundColor: 'rgba(255,255,255,0.5)'
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <AntDesign
-                        name="arrowleft"
-                        size={30}
-                        color={COLORS.white}
-                    />
-                </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Nhập Mã Pin</Text>
-            </View>
-        )
     }
 
     function renderContent() {
@@ -127,7 +137,13 @@ const Code = ({ navigation, route }) => {
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
                     </View>
-
+                    <ResendTimer
+                        activeResend={activeResend}
+                        timeLeft={timeLeft}
+                        targetTime={targetTime}
+                        resendEmail={() => resendEmail()}
+                        color="black"
+                    />
                 </Pressable>
             </View >
         )
@@ -135,7 +151,7 @@ const Code = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
+            <Header title="Nhập Mã Pin" navigation={navigation} />
             {renderContent()}
         </SafeAreaView>
     )

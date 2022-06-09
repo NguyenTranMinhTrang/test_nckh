@@ -12,7 +12,8 @@ import {
     ActivityIndicator
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
-import { FontAwesome, Feather, AntDesign } from '@expo/vector-icons';
+import { FontAwesome, Feather } from '@expo/vector-icons';
+import Header from "../components/Header";
 
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
@@ -112,33 +113,6 @@ const Register = ({ navigation }) => {
         }
     }
 
-    function renderHeader() {
-        return (
-            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
-                <TouchableOpacity
-                    style={{
-                        position: 'absolute',
-                        left: SIZES.padding,
-                        top: 30,
-                        height: 50,
-                        width: 50,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 25,
-                        backgroundColor: 'rgba(255,255,255,0.5)'
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <AntDesign
-                        name="arrowleft"
-                        size={30}
-                        color={COLORS.white}
-                    />
-                </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đăng Ký Ngay !</Text>
-            </View>
-        )
-    }
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
     function renderFooter() {
         return (
@@ -242,7 +216,7 @@ const Register = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {renderHeader()}
+            <Header title="Đăng Ký Ngay !" navigation={navigation} />
             {renderFooter()}
         </View>
     )
