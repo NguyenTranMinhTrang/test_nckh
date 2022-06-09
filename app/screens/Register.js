@@ -71,9 +71,7 @@ const Register = ({ navigation }) => {
     }
 
     const onRegister = async () => {
-        navigation.navigate("SendEmail");
-        /* const checkValidData = isValid();
-
+        const checkValidData = isValid();
         if (checkValidData) {
             updateState({
                 isLoading: true
@@ -84,13 +82,19 @@ const Register = ({ navigation }) => {
                     password
                 });
 
-                if (res) {
+                if (res.status == "PENDING") {
                     showSuccess(res.message);
+                    const data = res.data
+                    navigation.navigate("SendEmail", {
+                        data
+                    });
+                }
+                else {
+                    showError(res.message)
                 }
                 updateState({
                     isLoading: false
                 })
-                navigation.navigate("SendEmail");
             } catch (error) {
                 if (error && error.status) {
                     if (error.status == "FAILED") {
@@ -106,7 +110,6 @@ const Register = ({ navigation }) => {
                 })
             }
         }
- */
     }
 
     function renderHeader() {

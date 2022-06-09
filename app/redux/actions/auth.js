@@ -1,4 +1,5 @@
-import { postUser, setUserData, clearUserData } from "../../utils/utils";
+import { setUserData, clearUserData } from "../../utils/utils";
+import { postUser } from "../../api/userAPI"
 import store from '../stores';
 import types from '../types';
 import endpoint from "../../api/endpoint";
@@ -14,7 +15,7 @@ export const saveUserData = (data) => {
 
 export function login(data) {
     return new Promise((resolve, reject) => {
-        return postUser(endpoint.LOGIN, data).then((res) => {
+        return postUser(data.email, data.password).then((res) => {
             if (res.status == "SUCCESS") {
                 setUserData(res.data).then(() => {
                     resolve(res.data);
@@ -31,7 +32,7 @@ export function login(data) {
 }
 
 export function signup(data) {
-    return postUser(endpoint.SIGNUP, data);
+    return postUser(data.email, data.password);
 }
 
 export function logout() {

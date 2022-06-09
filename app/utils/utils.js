@@ -1,27 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "../api/axiosClient";
-
-export async function postUser(url, data) {
-    return new Promise(async (resolve, reject) => {
-        axios.post(url, {
-            "email": data.email,
-            "password": data.password
-        })
-            .then(res => {
-                const { status } = res;
-
-                if (status !== 'SUCCESS') {
-                    return reject(res);
-                }
-
-                return resolve(res);
-            })
-            .catch(error => {
-                console.log("Error from request auth: ", error);
-                return reject({ status: "FAILED", message: "Lỗi Mạng !" });
-            })
-    })
-}
 
 export function setItem(key, data) {
     data = JSON.stringify(data);
