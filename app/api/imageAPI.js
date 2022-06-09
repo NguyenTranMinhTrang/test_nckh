@@ -4,7 +4,7 @@ export const getByID = async (id) => {
     //-----Use this-----
     //import { getByID } from "../api/imageAPI";
     // let res = await getByID(animalID)
-    // if (res.status == 1) {
+    // if (res.status == "SUCCESS") {
     //     console.log(res.data)
     // }
     // else {
@@ -12,59 +12,36 @@ export const getByID = async (id) => {
     // }
     try {
         const res = await axios.get(endpoint.ANIMAL_BY_ID, { params: { id: id } });
-        if (res.status == "SUCCESS") {
-            return { status: 1, data: res.data };
-        }
-        else {
-            return { status: 0, error: res.message };
-        }
+        if (res)
+            return res
+        else
+            throw Error("Không nhận được phản hồi")
     } catch (error) {
-        console.log(error)
+        return { status: "FAILED", message: error.message };
     }
 
 }
 export const upLoad = async (image) => {
-    // if (image) {
-    //     const formData = new FormData();
-    //     formData.append('image', {
-    //         name: new Date() + 'img',
-    //         uri: Platform.OS === 'android' ? image.uri : image.uri.replace('file://', ''),
-    //         type: 'image/jpg',
-    //     });
-    //     try {
-    //         const res = await axios.post(endpoint.IMAGE, formData, {
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //             transformRequest: formData => formData
-    //         });
-    //         return res.result
-    //     }
-    //     catch (err) {
-    //         console.log(err)
-    //     }
-    // } else {
-    //     alert('No photo selected');
-    // }
-    if (image) {
-        const data = {
-            name: image.filename || Math.floor(Math.random() * Math.floor(999999)),
-            base64: image.base64
-        }
-        try {
+    try {
+        if (image) {
+            const data = {
+                name: image.filename || Math.floor(Math.random() * Math.floor(999999)),
+                base64: image.base64
+            }
+
             const res = await axios.post(endpoint.IMAGE, data);
-            if (res.status == "SUCCESS") {
-                return { status: 1, data: res.data };
+            if (res) {
+                return res;
             }
             else {
-                return { status: 0, error: res.message };
+                throw Error("Không nhận được phản hồi")
             }
+
+        } else {
+            throw Error('Không có ảnh nào được chọn !');
         }
-        catch (err) {
-            console.log(err)
-        }
-    } else {
-        alert('Không có ảnh nào được chọn !');
+    }
+    catch (err) {
+        return { status: "FAILED", message: err.message };
     }
 }

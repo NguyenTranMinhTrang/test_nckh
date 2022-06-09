@@ -25,8 +25,8 @@ const Camera = async (cb, token) => {
         })
         if (!img.cancelled) {
             const response = await cb(img, token);
-            if (response.status == 1) {
-                return { status: 1, img: img };
+            if (response.status == "SUCCESS") {
+                return { status: "SUCCESS", img: img };
             }
             else {
                 return response;

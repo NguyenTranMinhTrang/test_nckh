@@ -78,53 +78,115 @@ const Home = ({ navigation }) => {
 
     const getInfo = async (id) => {
         let res = await getByID(id);
-        if (res) {
-            if (res.status == 1) {
-                navigation.navigate("ShowInfo", {
-                    data: res.data
-                });
-            }
-            else {
-                showError(res.error);
-            }
+
+        if (res.status == "SUCCESS") {
+            navigation.navigate("ShowInfo", {
+                data: res.data
+            });
         }
+        else {
+            showError(res.message);
+        }
+
 
     }
 
     // Camera 
 
     const Camera = async (cb) => {
-        const AskForPermission = async () => {
-            const result = await ImagePicker.requestCameraPermissionsAsync();
-            if (result.granted === false) {
-                alert('no permissions to access camera!', [{ text: 'ok' }]);
+        try {
+            const AskForPermission = async () => {
+                const result = await ImagePicker.requestCameraPermissionsAsync();
+                if (result.granted === false) {
+                    alert('no permissions to access camera!', [{ text: 'ok' }]);
+                    return false;
+                }
+
+                return true;
+            }
+            const hasPermission = await AskForPermission();
+            if (!hasPermission) {
+                return false;
+            }
+            else {
+                let img = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsEditing: false,
+                    aspect: [3, 3],
+                    quality: 1,
+                    base64: true,
+                })
+
+                if (!img.cancelled) {
+                    const response = await cb(img);
+
+                    if (response.status == "FAILED") {
+                        showError(response.message);
+                    }
+                    else {
+                        const data = response.data;
+                        const res = await postHistory(userData.id, data.id)
+                        if (res.status == "SUCCESS") {
+                            showSuccess(res.message)
+                        }
+                        else if (res.status == "FAILED") {
+                            showError(res.message);
+                        }
+
+                        navigation.navigate('ShowInfo', {
+                            data
+                        })
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        } catch (error) {
+            showError(error.message)
+            return false
+        }
+    }
+    // Library
+    const Library = async (cb) => {
+        try {
+            const AskForPermission = async () => {
+                const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (result.granted === false) {
+                    alert('no permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
+                    return false;
+                }
+                return true;
+            }
+            const hasPermission = await AskForPermission();
+            if (!hasPermission) {
                 return false;
             }
 
-            return true;
-        }
-        const hasPermission = await AskForPermission();
-        if (!hasPermission) {
-            return false;
-        }
-        else {
-            let img = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: false,
-                aspect: [3, 3],
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
                 quality: 1,
-                base64: true,
-            })
+                base64: true
+            });
 
-            if (!img.cancelled) {
-                const response = await cb(img);
 
-                if (response.status == 0) {
-                    showError(response.error);
+            if (!result.cancelled) {
+                const response = await cb(result);
+                if (response.status == "FAILED") {
+                    showError(response.message);
                 }
                 else {
                     const data = response.data;
-                    await postHistory(userData.id, data.id)
+                    const res = await postHistory(userData.id, data.id)
+                    if (res.status == "SUCCESS") {
+                        showSuccess(res.message)
+                    }
+                    else if (res.status == "FAILED") {
+                        showError(res.message);
+                    }
 
                     navigation.navigate('ShowInfo', {
                         data
@@ -135,57 +197,11 @@ const Home = ({ navigation }) => {
             }
 
             return false;
-        }
-    }
-    // Library
-    const Library = async (cb) => {
-        const AskForPermission = async () => {
-            const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (result.granted === false) {
-                alert('no permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
-                return false;
-            }
-            return true;
-        }
-        const hasPermission = await AskForPermission();
-        if (!hasPermission) {
-            return false;
+        } catch (error) {
+            showError(error.message)
+            return false
         }
 
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            base64: true
-        });
-
-
-        if (!result.cancelled) {
-            const response = await cb(result);
-
-            if (response.status == 0) {
-                showError(response.error);
-            }
-            else {
-                const data = response.data;
-                const res = await postHistory(userData.id, data.id)
-                if (res.status == 1) {
-                    showSuccess(res.message)
-                }
-                else if (res.status == 0) {
-                    showError(res.error);
-                }
-
-                navigation.navigate('ShowInfo', {
-                    data
-                })
-            }
-
-            return true;
-        }
-
-        return false;
     };
 
 

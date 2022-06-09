@@ -5,10 +5,11 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import { showError, showSuccess } from "../components/showErrorMess";
 import { AntDesign } from '@expo/vector-icons';
 import ResendTimer from "../components/ResendTimer";
+import { resendPIN, verifyPIN } from "../api/userAPI"
 
 
-const Code = ({ navigation }) => {
-
+const Code = ({ navigation, route }) => {
+    const { data } = route.params
     const [code, setCode] = React.useState('');
     const [timeLeft, setTimeLeft] = React.useState(null);
     const [targetTime, setTargetTime] = React.useState(null);
@@ -16,7 +17,6 @@ const Code = ({ navigation }) => {
     let resendTimerInterval;
 
     const caculateTimeLeft = (finalTime) => {
-        console.log(finalTime);
         const difference = finalTime - +new Date();
         if (difference >= 0) {
             setTimeLeft(Math.round(difference / 1000));
@@ -32,15 +32,20 @@ const Code = ({ navigation }) => {
         setTargetTime(targetTime);
         setActiveResend(false);
         const finalTime = +(new Date()) + targetTime * 1000;
-        console.log("Ban dau", finalTime);
         resendTimerInterval = setInterval(() => {
             caculateTimeLeft(finalTime);
         }, 1000);
     }
 
-    const resendEmail = async () => {
-        console.log("Hello");
-        triggerTime();
+    const resendEmail = async (email = data.email) => {
+        const res = await resendPIN(email)
+        if (res.status == "PENDING") {
+            showSuccess(res.message)
+            triggerTime();
+        }
+        else {
+            showError(res.message)
+        }
     }
 
     React.useEffect(() => {
@@ -61,11 +66,20 @@ const Code = ({ navigation }) => {
         }
     }
 
-    const handlePin = () => {
+    const handlePin = async (email, code) => {
         const checkValid = isValid();
         if (checkValid) {
-            console.log("OK");
-            navigation.navigate("GetPassword");
+            const res = await verifyPIN(email, code)
+            if (res.status == "SUCCESS") {
+                const data = res.data
+                showSuccess(res.message)
+                navigation.navigate("GetPassword", {
+                    data
+                });
+            }
+            else {
+                showError(res.message)
+            }
         }
     }
 
@@ -152,7 +166,7 @@ const Code = ({ navigation }) => {
                                 borderRadius: SIZES.radius
                             }}
 
-                            onPress={() => handlePin()}
+                            onPress={() => handlePin(data.email, code)}
                         >
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
@@ -161,7 +175,7 @@ const Code = ({ navigation }) => {
                         activeResend={activeResend}
                         timeLeft={timeLeft}
                         targetTime={targetTime}
-                        resendEmail={resendEmail}
+                        resendEmail={() => resendEmail(data.email)}
                     />
                 </Pressable>
             </View >

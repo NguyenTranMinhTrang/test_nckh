@@ -128,7 +128,7 @@ const User = ({ navigation }) => {
                                 }}
                                 onPress={async () => {
                                     let response = await Camera(uploadProfileImage, userData.token);
-                                    if (response.status == 1) {
+                                    if (response.status == "SUCCESS") {
                                         setShowChooseCamrera(false);
                                         const oldUserData = { ...userData };
                                         oldUserData.avatar = response.img.uri;
@@ -136,7 +136,7 @@ const User = ({ navigation }) => {
                                     }
                                     else {
                                         setShowChooseCamrera(false);
-                                        showError(response.error);
+                                        showError(response.message);
                                     }
                                 }}
                             >
@@ -156,7 +156,7 @@ const User = ({ navigation }) => {
                                 }}
                                 onPress={async () => {
                                     let response = await Library(uploadProfileImage, userData.token);
-                                    if (response.status == 1) {
+                                    if (response.status == "SUCCESS") {
                                         setShowChooseCamrera(false);
                                         const oldUserData = { ...userData };
                                         oldUserData.avatar = response.img.uri;
@@ -164,7 +164,7 @@ const User = ({ navigation }) => {
                                     }
                                     else {
                                         setShowChooseCamrera(false);
-                                        showError(response.error);
+                                        showError(response.message);
                                     }
                                 }}
                             >
