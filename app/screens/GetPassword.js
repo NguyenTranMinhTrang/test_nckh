@@ -5,10 +5,10 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
 import { AntDesign } from '@expo/vector-icons';
+import { resetPassword } from "../api/userAPI"
 
-
-const GetPassword = ({ navigation }) => {
-
+const GetPassword = ({ navigation, route }) => {
+    const { data } = route.params
     const [state, setState] = React.useState({
         password: '',
         confirmPassword: '',
@@ -17,10 +17,6 @@ const GetPassword = ({ navigation }) => {
     });
 
     const { password, confirmPassword, secureTextEntry, newSecureTextEntry } = state;
-
-    console.log(password);
-    console.log(confirmPassword);
-
 
     const updateState = (newState) => setState(() => (
         {
@@ -56,10 +52,17 @@ const GetPassword = ({ navigation }) => {
         return true;
     }
 
-    const onReset = async () => {
+    const onReset = async (password) => {
         const checkValidData = isValid();
         if (checkValidData) {
-            console.log("Ok");
+            const res = await resetPassword(password, data.token)
+            if (res.status == "SUCCESS") {
+                showSuccess(res.message)
+                navigation.navigate("Login")
+            }
+            else {
+                showError(res.message)
+            }
         }
     }
 
@@ -86,7 +89,7 @@ const GetPassword = ({ navigation }) => {
                         color={COLORS.white}
                     />
                 </TouchableOpacity>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đổi Mật Khẩu</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Đặt Lại Mật Khẩu</Text>
             </View>
         )
     }
@@ -183,7 +186,7 @@ const GetPassword = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={onReset}
+                            onPress={() => onReset(password)}
                         >
 
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đổi Mật Khẩu</Text>

@@ -21,7 +21,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
                     activeResend && (
 
                         <TouchableOpacity
-                            onPress={resendEmail}
+                            onPress={() => resendEmail()}
                         >
                             <Text style={{ ...FONTS.h3, textDecorationLine: "underline" }}>Gửi Lại !</Text>
                         </TouchableOpacity>

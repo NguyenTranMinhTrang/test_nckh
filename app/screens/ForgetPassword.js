@@ -5,6 +5,7 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
 import { AntDesign } from '@expo/vector-icons';
+import { requestPasswordReset } from "../api/userAPI"
 
 
 const ForgetPassword = ({ navigation }) => {
@@ -23,10 +24,20 @@ const ForgetPassword = ({ navigation }) => {
         return true;
     }
 
-    const handleGetPassword = () => {
+    const handleGetPassword = async (email) => {
         const checkValid = isValid();
         if (checkValid) {
-            navigation.navigate("Code");
+            const res = await requestPasswordReset(email)
+            if (res.status == "PENDING") {
+                const data = res.data
+                showSuccess(res.message)
+                navigation.navigate("Code", {
+                    data
+                });
+            }
+            else {
+                showError(res.message)
+            }
         }
     }
 
@@ -112,7 +123,7 @@ const ForgetPassword = ({ navigation }) => {
                                 borderRadius: SIZES.radius
                             }}
 
-                            onPress={() => handleGetPassword()}
+                            onPress={() => handleGetPassword(email)}
                         >
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lấy Mật Khẩu</Text>
                         </TouchableOpacity>

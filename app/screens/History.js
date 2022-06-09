@@ -29,11 +29,11 @@ const History = ({ navigation }) => {
 
     async function get_history(id) {
         let res = await getHistory(id)
-        if (res.status == 1) {
+        if (res.status == "SUCCESS") {
             setData(res.data)
         }
         else {
-            showError(res.error)
+            showError(res.message)
         }
     }
 
@@ -45,12 +45,13 @@ const History = ({ navigation }) => {
 
     const delete_history = async (id, animalID, time) => {
         let res = await deleteHistory(id, animalID, time)
-        if (res.status == 1) {
+        if (res.status == "SUCCESS") {
             showSuccess(res.message)
         }
         else {
-            showError(res.error)
+            showError(res.message)
         }
+        //Reset history after deleted
         get_history(id)
     }
 

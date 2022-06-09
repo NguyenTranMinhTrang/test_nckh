@@ -1,43 +1,43 @@
 import axios from './axiosClient'
 import endpoint from './endpoint';
-
+import { getDateByDMYStringFormat } from "../utils/dateUtils"
 export const postHistory = async (id, animalID) => {
-    var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
     try {
+        var date = getDateByDMYStringFormat();
+
         const res = await axios.post(endpoint.POST_HISTORY, {
             "id": id,
             "animalID": animalID,
             "time": date
         });
-        if (res.status == "SUCCESS") {
-            return { status: 1, message: res.message };
+        if (res) {
+            return res;
         }
         else {
-            return { status: 0, error: res.message };
+            throw Error("Không nhận được phản hồi")
         }
 
     } catch (error) {
-        console.log(err)
+        return { status: "FAILED", message: error.message };
     }
 
 }
-export const postChangePassword = async (email, password, newPassword) => {
+export const postChangePassword = async (id, password, newPassword) => {
     try {
         const res = await axios.post(endpoint.CHANGE_PASSWORD, {
-            "email": email,
+            "id": id,
             "password": password,
             "newPassword": newPassword
         })
-        if (res.status == "SUCCESS") {
-            return { status: 1, message: res.message };
+        if (res) {
+            return res;
         }
         else {
-            return { status: 0, error: res.message };
+            throw Error("Không nhận được phản hồi")
         }
     }
     catch (err) {
-        console.log(err)
+        return { status: "FAILED", message: err.message };
     }
 
 }
@@ -46,15 +46,15 @@ export const getHistory = async (id) => {
         const res = await axios.post(endpoint.GET_HISTORY, {
             "id": id
         })
-        if (res.status == "SUCCESS") {
-            return { status: 1, data: res.data };
+        if (res) {
+            return res
         }
         else {
-            return { status: 0, error: res.message };
+            throw Error("Không nhận được phản hồi")
         }
     }
     catch (err) {
-        console.log(err)
+        return { status: "FAILED", message: err.message };
     }
 }
 
@@ -65,27 +65,29 @@ export const deleteHistory = async (id, animalID, time) => {
             "animalID": animalID,
             "time": time
         })
-        if (res.status == "SUCCESS") {
-            return { status: 1, message: res.message };
+        if (res) {
+            return res;
         }
         else {
-            return { status: 0, error: res.message };
+            throw Error("Không nhận được phản hồi")
         }
     }
     catch (err) {
-        console.log(err)
+        return { status: "FAILED", message: err.message };
     }
+
 }
 
 export const uploadProfileImage = async (photo, token) => {
-    const formData = new FormData();
-    formData.append('profile', {
-        name: new Date() + '_profile',
-        uri: Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
-        type: 'image/jpg',
-    });
-
     try {
+        const formData = new FormData();
+        formData.append('profile', {
+            name: new Date() + '_profile',
+            uri: Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
+            type: 'image/jpg',
+        });
+
+
         const res = await axios.post(endpoint.UPLOAD_PROFILE, formData, {
             headers: {
                 Accept: 'application/json',
@@ -94,19 +96,100 @@ export const uploadProfileImage = async (photo, token) => {
             },
             transformRequest: formData => formData
         });
-        if (res.status == "SUCCESS") {
-            return { status: 1, message: res.message };
+        if (res) {
+            return res;
         }
         else {
-            return { status: 0, error: res.message };
+            throw Error("Không nhận được phản hồi")
         }
     } catch (error) {
-        console.log(error.message);
-        return { status: 0, error: "Lỗi Mạng !" };
+        return { status: "FAILED", message: err.message };
     }
 };
 
+export const requestPasswordReset = async (email) => {
+    try {
+        const res = await axios.post(endpoint.REQUEST_RESET_PASSWORD, {
+            "email": email
+        })
+        if (res) {
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: err.message };
+    }
+}
 
+export const resendVerification = async (id, email) => {
+    try {
+        const res = await axios.post(endpoint.RESEND_VERIFY_EMAIL, {
+            "id": id,
+            "email": email
+        })
+        if (res) {
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: err.message };
+    }
+}
 
+export const resendPIN = async (email) => {
+    try {
+        const res = await axios.post(endpoint.RESEND_PIN, {
+            "email": email
+        })
+        if (res) {
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: err.message };
+    }
+}
 
+export const verifyPIN = async (email, pin) => {
+    try {
+        const res = await axios.post(endpoint.VERIFY_PIN, {
+            "email": email,
+            "pin": pin
+        })
+        if (res) {
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: err.message };
+    }
+}
 
+export const resetPassword = async (newPassword, token) => {
+    try {
+        const res = await axios.post(endpoint.RESET_PASSWORD, {
+            "newPassword": newPassword
+        }, {
+            headers: {
+                Accept: 'application/json',
+                authorization: `JWT ${token}`
+            }
+        })
+        if (res) {
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: err.message };
+    }
+}
