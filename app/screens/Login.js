@@ -148,7 +148,7 @@ const Login = ({ navigation }) => {
                     <View style={styles.box_text}>
                         <FontAwesome name="user" size={20} color="black" />
                         <TextInput
-                            placeholder="Your Email"
+                            placeholder="Nhập Email ..."
                             style={styles.textInput}
                             onChangeText={(email) => updateState({ email })}
                         />
@@ -159,7 +159,7 @@ const Login = ({ navigation }) => {
                     >
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Your Password"
+                            placeholder="Nhập Password ..."
                             secureTextEntry={secureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}

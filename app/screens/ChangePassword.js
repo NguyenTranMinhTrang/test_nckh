@@ -103,7 +103,7 @@ const ChangePassword = ({ navigation, route }) => {
                     >
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Your Old Password"
+                            placeholder="Mật Khẩu Cũ ..."
                             secureTextEntry={secureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
@@ -129,7 +129,7 @@ const ChangePassword = ({ navigation, route }) => {
                     >
                         <FontAwesome name="lock" size={20} color="black" />
                         <TextInput
-                            placeholder="Your New Password"
+                            placeholder="Mật Khẩu Mới ..."
                             secureTextEntry={newSecureTextEntry ? true : false}
                             autoCapitalize="none"
                             style={styles.textInput}
