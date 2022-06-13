@@ -22,6 +22,16 @@ const Code = ({ navigation, route }) => {
         }
     }
 
+    const resendPIN = async (email) => {
+        const res = await resendPIN(email)
+        if (res.status == "PENDING") {
+            showSuccess(res.message)
+        }
+        else {
+            showError(res.message)
+        }
+    }
+
     const handlePin = async (email, code) => {
         const checkValid = isValid();
         if (checkValid) {

@@ -15,19 +15,25 @@ export const saveUserData = (data) => {
 
 export function login(data) {
     return new Promise((resolve, reject) => {
-        return postUser(data.email, data.password).then((res) => {
-            if (res.status == "SUCCESS") {
-                setUserData(res.data).then(() => {
-                    resolve(res.data);
-                    saveUserData(res.data);
-                });
-                return;
+        try {
+            const res = postUser(data.email, data.password)
+            if (res) {
+                if (res.status == "SUCCESS") {
+                    setUserData(res.data).then(() => {
+                        resolve(res.data);
+                        saveUserData(res.data);
+                    });
+                    return;
+                }
+                resolve(res.data);
             }
-            resolve(res.data);
-        })
-            .catch((error) => {
-                reject(error)
-            })
+            else {
+
+            }
+        } catch (error) {
+
+        }
+
     })
 }
 
