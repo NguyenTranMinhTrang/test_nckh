@@ -10,7 +10,7 @@ const ruada = require('../assets/images/10.jpg');
 const sumatra = require('../assets/images/11.jpg');
 const raica = require('../assets/images/16.jpg');
 const gaungua = require('../assets/images/30.jpg');
-
+const icon = require('../assets/images/icon.png');
 
 export default {
     tiger,
@@ -24,7 +24,8 @@ export default {
     ruada,
     sumatra,
     raica,
-    gaungua
+    gaungua,
+    icon
 }
 
 
