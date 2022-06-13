@@ -12,8 +12,7 @@ import { saveUserData } from './app/redux/actions/auth';
 const App = () => {
   useEffect(() => {
     (async () => {
-      const userData = await getUserData()
-      console.log("user data App.js", userData)
+      const userData = await getUserData();
       if (!!userData) {
         saveUserData(userData)
       }

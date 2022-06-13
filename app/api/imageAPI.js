@@ -42,6 +42,6 @@ export const upLoad = async (image) => {
         }
     }
     catch (err) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: "Đã có sự cố xảy ra trong quá trình gửi ảnh !" };
     }
 }

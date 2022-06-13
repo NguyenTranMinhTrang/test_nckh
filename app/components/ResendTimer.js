@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 
-const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
+const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail, color }) => {
     return (
         <View
             style={{
@@ -16,14 +16,14 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
                     marginTop: SIZES.padding,
                 }}
             >
-                <Text style={{ ...FONTS.h3_light, color: COLORS.white }}>Chưa nhận được mã pin ? </Text>
+                <Text style={{ ...FONTS.h3_light, color: color }}>Chưa nhận được mã pin ? </Text>
                 {
                     activeResend && (
 
                         <TouchableOpacity
                             onPress={() => resendEmail()}
                         >
-                            <Text style={{ ...FONTS.h3, color: COLORS.white, textDecorationLine: "underline" }}>Gửi Lại !</Text>
+                            <Text style={{ ...FONTS.h3, color: color, textDecorationLine: "underline" }}>Gửi Lại !</Text>
                         </TouchableOpacity>
 
                     )
@@ -33,7 +33,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
                         <TouchableOpacity
                             disabled={true}
                         >
-                            <Text style={{ ...FONTS.h3, color: COLORS.white, textDecorationLine: "underline", opacity: 0.5 }}>Gửi Lại !</Text>
+                            <Text style={{ ...FONTS.h3, color: color, textDecorationLine: "underline", opacity: 0.5 }}>Gửi Lại !</Text>
                         </TouchableOpacity>
                     )
                 }
@@ -41,7 +41,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail }) => {
             </View>
             {
                 !activeResend && (
-                    <Text style={{ ...FONTS.h3_light, color: COLORS.white }}>in {timeLeft || targetTime} second(s)</Text>
+                    <Text style={{ ...FONTS.h3_light, color: color }}>in {timeLeft || targetTime} second(s)</Text>
                 )
             }
 

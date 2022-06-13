@@ -36,8 +36,8 @@ export const postChangePassword = async (id, password, newPassword) => {
             throw Error("Không nhận được phản hồi")
         }
     }
-    catch (err) {
-        return { status: "FAILED", message: err.message };
+    catch (error) {
+        return { status: "FAILED", message: error.message };
     }
 
 }
@@ -53,8 +53,8 @@ export const getHistory = async (id) => {
             throw Error("Không nhận được phản hồi")
         }
     }
-    catch (err) {
-        return { status: "FAILED", message: err.message };
+    catch (error) {
+        return { status: "FAILED", message: error.message };
     }
 }
 
@@ -72,8 +72,8 @@ export const deleteHistory = async (id, animalID, time) => {
             throw Error("Không nhận được phản hồi")
         }
     }
-    catch (err) {
-        return { status: "FAILED", message: err.message };
+    catch (error) {
+        return { status: "FAILED", message: error.message };
     }
 
 }
@@ -103,7 +103,7 @@ export const uploadProfileImage = async (photo, token) => {
             throw Error("Không nhận được phản hồi")
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 };
 
@@ -119,7 +119,7 @@ export const requestPasswordReset = async (email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 }
 
@@ -136,7 +136,7 @@ export const resendVerification = async (id, email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 }
 
@@ -152,7 +152,7 @@ export const resendPIN = async (email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 }
 
@@ -169,7 +169,7 @@ export const verifyPIN = async (email, pin) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 }
 
@@ -190,23 +190,42 @@ export const resetPassword = async (newPassword, token) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
     }
 }
 
 export const postUser = async (email, password) => {
     try {
-        const res = axios.post(endpoint.SIGNUP, {
+        const res = await axios.post(endpoint.LOGIN, {
             "email": email,
             "password": password
         })
         if (res) {
+            console.log(res);
             return res;
         }
         else {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: err.message };
+        return { status: "FAILED", message: error.message };
+    }
+}
+
+export const singUp = async (email, password) => {
+    try {
+        const res = await axios.post(endpoint.SIGNUP, {
+            "email": email,
+            "password": password
+        })
+        if (res) {
+            console.log(res);
+            return res;
+        }
+        else {
+            throw Error("Không nhận được phản hồi");
+        }
+    } catch (error) {
+        return { status: "FAILED", message: error.message };
     }
 }

@@ -3,7 +3,8 @@ import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, T
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import ResendTimer from "../components/ResendTimer";
-import { resendVerification } from "../api/userAPI"
+import { resendVerification } from "../api/userAPI";
+import { showSuccess, showError } from "../components/showErrorMess";
 const SendEmail = ({ navigation, route }) => {
     const { data } = route.params
     const [timeLeft, setTimeLeft] = React.useState(null);
@@ -63,7 +64,7 @@ const SendEmail = ({ navigation, route }) => {
                         flexDirection: 'row',
                         height: 50,
                         alignItems: 'center',
-                        marginTop: SIZES.base
+                        marginTop: SIZES.base + 25
                     }}
                 >
                     <AntDesign
@@ -130,6 +131,7 @@ const SendEmail = ({ navigation, route }) => {
                     timeLeft={timeLeft}
                     targetTime={targetTime}
                     resendEmail={() => resendEmail(data.id, data.email)}
+                    color="white"
                 />
             </View>
         )

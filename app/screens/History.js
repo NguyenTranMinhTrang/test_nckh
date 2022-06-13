@@ -10,14 +10,13 @@ import {
     Alert,
     StatusBar,
     Platform,
-    ActivityIndicator
 } from "react-native";
 import { deleteHistory } from "../api/userAPI";
-import { getByID } from "../api/imageAPI";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import { getHistory } from "../api/userAPI";
+import { getByID } from "../api/imageAPI";
 import { useFocusEffect } from "@react-navigation/native";
 import { showError, showSuccess } from "../components/showErrorMess";
 
@@ -53,6 +52,18 @@ const History = ({ navigation }) => {
         }
         //Reset history after deleted
         get_history(id)
+    }
+
+    const showInfo = async (id) => {
+        const res = await getByID(id);
+        if (res.status == "SUCCESS") {
+            navigation.navigate("ShowInfo", {
+                data: res.data
+            });
+        }
+        else {
+            console.log(res.error)
+        }
     }
 
     // render
@@ -110,11 +121,13 @@ const History = ({ navigation }) => {
                     }}
 
                     onLongPress={() => Alert.alert(
-                        "Confirm",
-                        "Do you want to delele ?",
-                        [{ text: 'Yes', onPress: () => delete_history(userData.id, item.animalID, item.time) }, { text: 'No', }],
+                        "Xác Nhận",
+                        "Bạn có chắc muốn xóa dòng lịch sử này ?",
+                        [{ text: 'Có', onPress: () => delete_history(userData.id, item.animalID, item.time) }, { text: 'Hủy', }],
                         { cancelable: true }
                     )}
+
+                    onPress={() => showInfo(item.animalID)}
                 >
                     <View
                         style={{
@@ -147,24 +160,6 @@ const History = ({ navigation }) => {
             )
         }
 
-        function renderFooter() {
-            return (
-                <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: SIZES.padding }}>
-                    <TouchableOpacity
-                        onPress={() => handleLoadMore()}
-                    >
-                        {
-                            isLoad ?
-                                <ActivityIndicator size="large" />
-                                :
-                                <Text style={{ ...FONTS.h3, color: COLORS.white }}>Tải Thêm ...</Text>
-
-                        }
-                    </TouchableOpacity>
-                </View>
-            )
-        }
-
         return (
             <View
                 style={{
@@ -184,7 +179,6 @@ const History = ({ navigation }) => {
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => `${item.animalID} - ${index}`}
                         renderItem={renderItem}
-                        ListFooterComponent={renderFooter}
                     />
 
                 </View>

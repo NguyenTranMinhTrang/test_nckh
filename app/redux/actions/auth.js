@@ -1,5 +1,5 @@
 import { setUserData, clearUserData } from "../../utils/utils";
-import { postUser } from "../../api/userAPI"
+import { postUser, singUp } from "../../api/userAPI"
 import store from '../stores';
 import types from '../types';
 import endpoint from "../../api/endpoint";
@@ -15,30 +15,26 @@ export const saveUserData = (data) => {
 
 export function login(data) {
     return new Promise((resolve, reject) => {
-        try {
-            const res = postUser(data.email, data.password)
-            if (res) {
-                if (res.status == "SUCCESS") {
-                    setUserData(res.data).then(() => {
-                        resolve(res.data);
-                        saveUserData(res.data);
-                    });
-                    return;
-                }
-                resolve(res.data);
+        return postUser(data.email, data.password).then((res) => {
+            if (res.status == "SUCCESS") {
+                setUserData(res.data).then(() => {
+                    resolve(res.data);
+                    saveUserData(res.data);
+                });
+                return;
             }
             else {
-
+                reject(res);
             }
-        } catch (error) {
-
-        }
-
+        })
+            .catch((error) => {
+                reject(error)
+            })
     })
 }
 
 export function signup(data) {
-    return postUser(data.email, data.password);
+    return singUp(data.email, data.password);
 }
 
 export function logout() {
