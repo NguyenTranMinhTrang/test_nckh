@@ -23,7 +23,7 @@ const AnimalVertical = ({ item, contentStyle, onPress }) => {
                 resizeMode='cover'
                 style={{
                     width: SIZES.width * 0.45,
-                    height: SIZES.height * 0.35,
+                    height: SIZES.height * 0.3,
                     borderRadius: SIZES.radius
                 }}
             />

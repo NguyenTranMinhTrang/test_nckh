@@ -83,13 +83,42 @@ const video = [
     },
     {
         id: 5,
-        title: "Những Gì Bạn Chưa Biết Về 10 Loài Rùa Nằm Trong Sách Đỏ Việt Nam Đang Có Nguy Cơ Tuyệt Chủng",
+        title: "10 Loài Rùa Nằm Trong Sách Đỏ Việt Nam Đang Có Nguy Cơ Tuyệt Chủng",
         link: "https://www.youtube.com/watch?v=mZ7i0CEUiYU",
         image: require('../assets/images/turtle.jpg')
     },
 ];
 
+const news = [
+    {
+        id: 1,
+        title: "Thả gần 200 động vật hoang dã về tự nhiên",
+        link: "https://vnexpress.net/tha-gan-200-dong-vat-hoang-da-ve-tu-nhien-4461116.html",
+        image: require('../assets/images/news1.jpg')
+    },
+    {
+        id: 2,
+        title: "Chưa 'ông trùm' buôn bán động vật hoang dã nào bị đưa ra ánh sáng",
+        link: "https://thanhnien.vn/chua-ong-trum-buon-ban-dong-vat-hoang-da-nao-bi-dua-ra-anh-sang-post1457029.html",
+        image: require('../assets/images/news2.jpg')
+    },
+    {
+        id: 3,
+        title: "Chặt đứt chuỗi cung - cầu thịt thú rừng quý hiếm",
+        link: "https://thanhnien.vn/chat-dut-chuoi-cung-cau-thit-thu-rung-quy-hiem-post1448330.html",
+        image: require('../assets/images/news3.png')
+    },
+    {
+        id: 4,
+        title: "Hà Tĩnh: Thả hơn 50 cá thể động vật hoang dã quý hiếm về rừng tự nhiên",
+        link: "https://thanhnien.vn/ha-tinh-tha-hon-50-ca-the-dong-vat-hoang-da-quy-hiem-ve-rung-tu-nhien-post1462123.html",
+        image: require('../assets/images/news4.jpg')
+    },
+
+];
+
 export default {
     animals,
-    video
+    video,
+    news
 }

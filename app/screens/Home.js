@@ -1,18 +1,17 @@
 import React from "react";
-import { ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
-import { images, theme, COLORS, SIZES, FONTS, dummyData } from "../constants";
+import { Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
-import Bounce from "../components/bounce";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce } from "../components";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
 import * as ImagePicker from 'expo-image-picker';
-import { showError, showSuccess } from "../components/showErrorMess";
 import { FlatList } from "react-native-gesture-handler";
-import AnimalVertical from "../components/AnimalVertical";
 
+LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
@@ -20,7 +19,7 @@ const Home = ({ navigation }) => {
 
     // Data
 
-    data = dummyData.animals.sort(() => Math.random() - 0.5);
+    const data = dummyData.animals.sort(() => Math.random() - 0.5);
 
     const getInfo = async (id) => {
         let res = await getByID(id);
@@ -35,6 +34,16 @@ const Home = ({ navigation }) => {
         }
 
 
+    }
+
+    const openLink = async (url) => {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        }
+        else {
+            Alert.alert(`Hệ thống không thể mở được url này : ${url}`);
+        }
     }
 
     // Camera 
@@ -338,7 +347,7 @@ const Home = ({ navigation }) => {
     function renderImage() {
         return (
             <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2 }}>
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Hoang Dã</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Động Vật Hoang Dã</Text>
                 <FlatList
                     data={data}
                     horizontal
@@ -355,7 +364,56 @@ const Home = ({ navigation }) => {
                             onPress={() => getInfo(item.id)}
                         />
                     )}
-                    contentContainerStyle={{ padding: SIZES.padding }}
+                />
+            </View>
+        )
+    }
+
+    const renderVideo = () => {
+        return (
+            <View style={{ paddingBottom: SIZES.padding }}>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Video</Text>
+                <FlatList
+                    data={dummyData.video}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    listKey="Videos"
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({ item, index }) => (
+                        <VideoVertical
+                            item={item}
+                            contentStyle={{
+                                marginLeft: index == 0 ? 0 : SIZES.padding,
+                                marginRight: index == dummyData.video.length - 1 ? 0 : SIZES.padding
+                            }}
+                            onPress={() => openLink(item.link)}
+                        />
+                    )}
+                />
+            </View>
+        )
+    }
+
+    const renderNews = () => {
+        return (
+            <View>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Tin Tức</Text>
+                <FlatList
+                    data={dummyData.news}
+                    showsVerticalScrollIndicator={false}
+                    listKey="News"
+                    scrollEnabled={false}
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({ item, index }) => (
+                        <NewsVertical
+                            item={item}
+                            contentStyle={{
+                                marginVertical: SIZES.padding,
+                                marginTop: index == 0 ? SIZES.radius : SIZES.padding
+                            }}
+                            onPress={() => openLink(item.link)}
+                        />
+                    )}
                 />
             </View>
         )
@@ -372,6 +430,8 @@ const Home = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 {renderImage()}
+                {renderVideo()}
+                {renderNews()}
             </ScrollView>
         </SafeAreaView>
     )
