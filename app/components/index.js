@@ -4,6 +4,7 @@ import NewsVertical from "./NewsVertical";
 import ResendTimer from "./ResendTimer";
 import { showSuccess, showError } from "./showErrorMess";
 import VideoVertical from "./VideoVertical";
+import Alert from "./Alert";
 
 export {
     AnimalVertical,
@@ -12,5 +13,6 @@ export {
     ResendTimer,
     showError,
     showSuccess,
-    VideoVertical
+    VideoVertical,
+    Alert
 }

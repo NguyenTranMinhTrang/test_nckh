@@ -3,7 +3,7 @@ import { Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
-import { VideoVertical, NewsVertical, AnimalVertical, Bounce } from "../components";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert } from "../components";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
@@ -338,7 +338,6 @@ const Home = ({ navigation }) => {
 
                     </BlurView>
                 </Modal>
-
             </View>
         )
     }
