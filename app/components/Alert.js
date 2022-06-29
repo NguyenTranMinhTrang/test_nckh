@@ -9,7 +9,9 @@ import {
 import { COLORS, SIZES, FONTS, images } from "../constants";
 import { BlurView } from "expo-blur";
 
-const Alert = ({ number, title }) => {
+const Alert = ({ number, title, openModal, onPress, yes, no }) => {
+
+    console.log("Alert title : ", title);
 
     const array = [
         {
@@ -26,7 +28,7 @@ const Alert = ({ number, title }) => {
         },
         {
             type: "warning",
-            uri: images.errorAlert,
+            uri: images.warningAlert,
             color: COLORS.warning,
             yes: "Có",
             no: "Không"
@@ -38,7 +40,7 @@ const Alert = ({ number, title }) => {
         <Modal
             animationType="slide"
             transparent={true}
-            visible={true}
+            visible={openModal}
         >
             <BlurView
                 style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
@@ -54,7 +56,7 @@ const Alert = ({ number, title }) => {
                         left: 0,
                         right: 0
                     }}
-                //onPress={() => setShowChooseCamrera(false)}
+                    onPress={onPress}
                 ></TouchableOpacity>
 
                 {/* Content */}
@@ -77,7 +79,7 @@ const Alert = ({ number, title }) => {
                         }}
                     >
                         <Image
-                            source={array[0].uri}
+                            source={array[number].uri}
                             resizeMode="cover"
                             style={{
                                 height: '100%',
@@ -98,20 +100,63 @@ const Alert = ({ number, title }) => {
                             alignItems: "center"
                         }}
                     >
-                        <Text style={{ ...FONTS.h2, textAlign: "center" }}>Ảnh đã được dự đoán thành công !</Text>
-                        <TouchableOpacity
-                            style={{
-                                width: 100,
-                                height: 50,
-                                backgroundColor: array[0].color,
-                                marginTop: SIZES.padding,
-                                borderRadius: SIZES.radius,
-                                justifyContent: "center",
-                                alignItems: "center"
-                            }}
-                        >
-                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>{array[0].text}</Text>
-                        </TouchableOpacity>
+                        <Text style={{ ...FONTS.h2, textAlign: "center" }}>{title}</Text>
+                        {
+                            number == 2 ?
+                                <View
+                                    style={{
+                                        width: "100%",
+                                        flexDirection: "row",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
+                                    {/* Không */}
+                                    <TouchableOpacity
+                                        style={{
+                                            width: 100,
+                                            height: 50,
+                                            marginTop: SIZES.padding,
+                                            borderRadius: SIZES.radius,
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                        onPress={onPress}
+                                    >
+                                        <Text style={{ ...FONTS.h2, color: COLORS.error }}>Không</Text>
+                                    </TouchableOpacity>
+
+                                    {/* Có */}
+                                    <TouchableOpacity
+                                        style={{
+                                            paddingHorizontal: SIZES.base,
+                                            backgroundColor: array[number].color,
+                                            marginTop: SIZES.padding,
+                                            borderRadius: SIZES.radius,
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                        onPress={onPress}
+                                    >
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Có</Text>
+                                    </TouchableOpacity>
+
+                                </View>
+                                :
+                                <TouchableOpacity
+                                    style={{
+                                        width: 100,
+                                        height: 50,
+                                        backgroundColor: array[number].color,
+                                        marginTop: SIZES.padding,
+                                        borderRadius: SIZES.radius,
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                    onPress={onPress}
+                                >
+                                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>{array[number].text}</Text>
+                                </TouchableOpacity>
+                        }
                     </View>
                 </View>
             </BlurView>

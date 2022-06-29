@@ -1,9 +1,9 @@
 import React from "react";
-import { Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
-import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert } from "../components";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError } from "../components";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
@@ -16,6 +16,20 @@ LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
+    const [isLoading, setLoading] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState({
+        status: false,
+        title: "",
+        number: 0
+    });
+
+    const closeModal = () => {
+        setOpenModal({
+            status: false,
+            title: "",
+            number: 0
+        });
+    }
 
     // Data
 
@@ -37,13 +51,19 @@ const Home = ({ navigation }) => {
     }
 
     const openLink = async (url) => {
-        const supported = await Linking.canOpenURL(url);
+        console.log("hello");
+        setOpenModal({
+            status: true,
+            number: 2,
+            title: "Hello"
+        })
+        /* const supported = await Linking.canOpenURL(url);
         if (supported) {
             await Linking.openURL(url);
         }
         else {
             Alert.alert(`Hệ thống không thể mở được url này : ${url}`);
-        }
+        } */
     }
 
     // Camera 
@@ -73,33 +93,46 @@ const Home = ({ navigation }) => {
                 })
 
                 if (!img.cancelled) {
+                    setLoading(true);
                     const response = await cb(img);
                     if (response.status == "FAILED") {
-                        showError(response.message);
+                        console.log(response.message);
+                        setOpenModal({
+                            status: true,
+                            title: response.message,
+                            number: 1
+                        });
                     }
                     else {
                         const data = response.data;
-                        const res = await postHistory(userData.id, data.id)
+                        const res = await postHistory(userData.id, data.id);
                         if (res.status == "SUCCESS") {
-                            showSuccess(res.message)
+                            showSuccess(res.message);
                         }
                         else if (res.status == "FAILED") {
-                            showError(res.message);
+                            setOpenModal({
+                                status: true,
+                                title: res.message,
+                                number: 1
+                            });
+
                         }
 
                         navigation.navigate('ShowInfo', {
                             data
-                        })
+                        });
                     }
-
+                    setLoading(false);
                     return true;
                 }
 
+                setLoading(false);
                 return false;
             }
         } catch (error) {
-            showError(error.message)
-            return false
+            setLoading(false);
+            showError(error.message);
+            return false;
         }
     }
     // Library
@@ -332,12 +365,17 @@ const Home = ({ navigation }) => {
 
                                 onPress={() => setShowChooseCamrera(false)}
                             >
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+
+                                {
+                                    isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                                }
                             </TouchableOpacity>
                         </View>
 
                     </BlurView>
                 </Modal>
+                <Alert number={openModal.number} title={openModal.title} openModal={openModal.status} onPress={closeModal} />
             </View>
         )
     }
