@@ -9,9 +9,7 @@ import {
 import { COLORS, SIZES, FONTS, images } from "../constants";
 import { BlurView } from "expo-blur";
 
-const Alert = ({ number, title, openModal, onPress, yes, no }) => {
-
-    console.log("Alert title : ", title);
+const Alert = ({ number, title, openModal, onPress, yes }) => {
 
     const array = [
         {
@@ -30,8 +28,6 @@ const Alert = ({ number, title, openModal, onPress, yes, no }) => {
             type: "warning",
             uri: images.warningAlert,
             color: COLORS.warning,
-            yes: "Có",
-            no: "Không"
         },
     ];
 
@@ -107,35 +103,39 @@ const Alert = ({ number, title, openModal, onPress, yes, no }) => {
                                     style={{
                                         width: "100%",
                                         flexDirection: "row",
-                                        justifyContent: "flex-end",
                                     }}
                                 >
                                     {/* Không */}
                                     <TouchableOpacity
                                         style={{
-                                            width: 100,
-                                            height: 50,
+                                            flex: 0.45,
+                                            paddingVertical: SIZES.base,
                                             marginTop: SIZES.padding,
                                             borderRadius: SIZES.radius,
                                             justifyContent: "center",
-                                            alignItems: "center"
+                                            alignItems: "center",
+                                            backgroundColor: array[number].color
                                         }}
                                         onPress={onPress}
                                     >
-                                        <Text style={{ ...FONTS.h2, color: COLORS.error }}>Không</Text>
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Không</Text>
                                     </TouchableOpacity>
+
+                                    <View style={{ flex: 0.1 }}></View>
+
 
                                     {/* Có */}
                                     <TouchableOpacity
                                         style={{
-                                            paddingHorizontal: SIZES.base,
+                                            flex: 0.45,
+                                            paddingVertical: SIZES.base,
                                             backgroundColor: array[number].color,
                                             marginTop: SIZES.padding,
                                             borderRadius: SIZES.radius,
                                             justifyContent: "center",
                                             alignItems: "center"
                                         }}
-                                        onPress={onPress}
+                                        onPress={yes}
                                     >
                                         <Text style={{ ...FONTS.h2, color: COLORS.white }}>Có</Text>
                                     </TouchableOpacity>

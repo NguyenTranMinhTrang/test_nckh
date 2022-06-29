@@ -20,14 +20,16 @@ const Home = ({ navigation }) => {
     const [openModal, setOpenModal] = React.useState({
         status: false,
         title: "",
-        number: 0
+        number: 0,
+        yes: null
     });
 
     const closeModal = () => {
         setOpenModal({
             status: false,
             title: "",
-            number: 0
+            number: 0,
+            yes: null
         });
     }
 
@@ -50,20 +52,28 @@ const Home = ({ navigation }) => {
 
     }
 
-    const openLink = async (url) => {
-        console.log("hello");
-        setOpenModal({
-            status: true,
-            number: 2,
-            title: "Hello"
-        })
-        /* const supported = await Linking.canOpenURL(url);
+    const requestOpenLink = async (url) => {
+        closeModal();
+        const supported = await Linking.canOpenURL(url);
         if (supported) {
             await Linking.openURL(url);
         }
         else {
-            Alert.alert(`Hệ thống không thể mở được url này : ${url}`);
-        } */
+            setOpenModal({
+                status: true,
+                title: `Hệ thống không thể mở được url này : ${url}`,
+                number: 1
+            });
+        }
+    }
+
+    const openLink = (url) => {
+        setOpenModal({
+            status: true,
+            number: 2,
+            title: "Bạn có muốn mở video / tin tức này không ?",
+            yes: () => requestOpenLink(url)
+        });
     }
 
     // Camera 
@@ -375,7 +385,13 @@ const Home = ({ navigation }) => {
 
                     </BlurView>
                 </Modal>
-                <Alert number={openModal.number} title={openModal.title} openModal={openModal.status} onPress={closeModal} />
+                <Alert
+                    number={openModal.number}
+                    title={openModal.title}
+                    openModal={openModal.status}
+                    onPress={closeModal}
+                    yes={openModal.yes}
+                />
             </View>
         )
     }
