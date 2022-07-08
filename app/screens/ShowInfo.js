@@ -1,19 +1,26 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity, Animated } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
+import { PinchGestureHandler, State } from "react-native-gesture-handler";
 
 
 
 const ShowInfo = ({ navigation, route }) => {
     const [data, setData] = React.useState(null);
+    const scale = React.useRef(new Animated.Value(1)).current;
+
+
 
     React.useEffect(() => {
         let { data } = route.params;
         setData(data);
     })
 
+    const handlePinch = Animated.event([{ nativeEvent: { scale } }], { useNativeDriver: true })
+
     function renderImage() {
+        console.log(scale);
         return (
             <View
                 style={{
@@ -22,14 +29,28 @@ const ShowInfo = ({ navigation, route }) => {
                     alignItems: 'center'
                 }}
             >
-                <Image
-                    source={{ uri: `${data.img}` }}
-                    resizeMode='cover'
-                    style={{
-                        height: '100%',
-                        width: '100%',
+                <PinchGestureHandler
+                    onGestureEvent={handlePinch}
+                    onHandlerStateChange={(event) => {
+                        if (event.nativeEvent.oldState === State.ACTIVE && event.nativeEvent.scale < 1) {
+                            Animated.spring(scale, {
+                                toValue: 1,
+                                useNativeDriver: true
+                            }).start()
+                        }
                     }}
-                />
+                >
+                    <Animated.Image
+                        source={{ uri: `${data.img}` }}
+                        resizeMode='cover'
+                        style={{
+                            height: '100%',
+                            width: '100%',
+                            transform: [{ scale }]
+                        }}
+                    />
+                </PinchGestureHandler>
+
 
                 <TouchableOpacity
                     style={{
