@@ -4,6 +4,7 @@ import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
+import predict from "../../../back_end_nckh/predict_models/predict";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
@@ -173,24 +174,26 @@ const Home = ({ navigation }) => {
 
 
             if (!result.cancelled) {
+                const fileBuffer = Buffer.from(result.base64, 'base64');
                 const response = await cb(result);
-                if (response.status == "FAILED") {
-                    showError(response.message);
-                }
-                else {
-                    const data = response.data;
-                    const res = await postHistory(userData.id, data.id)
-                    if (res.status == "SUCCESS") {
-                        showSuccess(res.message)
-                    }
-                    else if (res.status == "FAILED") {
-                        showError(res.message);
-                    }
+                console.log(response)
+                // if (response.status == "FAILED") {
+                //     showError(response.message);
+                // }
+                // else {
+                //     const data = response.data;
+                //     const res = await postHistory(userData.id, data.id)
+                //     if (res.status == "SUCCESS") {
+                //         showSuccess(res.message)
+                //     }
+                //     else if (res.status == "FAILED") {
+                //         showError(res.message);
+                //     }
 
-                    navigation.navigate('ShowInfo', {
-                        data
-                    })
-                }
+                //     navigation.navigate('ShowInfo', {
+                //         data
+                //     })
+                // }
 
                 return true;
             }
@@ -388,7 +391,7 @@ const Home = ({ navigation }) => {
                                     marginBottom: SIZES.padding,
                                 }}
                                 onPress={async () => {
-                                    let isClosed = await Library(upLoad);
+                                    let isClosed = await Library(predict);
                                     if (isClosed) {
                                         setShowChooseCamrera(false);
                                     }
