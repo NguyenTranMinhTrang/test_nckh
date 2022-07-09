@@ -1,26 +1,71 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity, Animated } from "react-native";
+import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
-import { PinchGestureHandler, State } from "react-native-gesture-handler";
+import {
+    PinchGestureHandler,
+    State
+} from "react-native-gesture-handler";
+import Animated, {
+    Value,
+    block,
+    cond,
+    eq,
+    set,
+    useCode,
+} from "react-native-reanimated";
 
-
+import {
+    vec,
+    onGestureEvent,
+    timing,
+    pinchActive,
+    pinchBegan,
+    transformOrigin,
+    translate,
+} from "react-native-redash";
 
 const ShowInfo = ({ navigation, route }) => {
     const [data, setData] = React.useState(null);
-    const scale = React.useRef(new Animated.Value(1)).current;
-
-
+    const state = new Value(State.UNDETERMINED);
+    const scale = new Value(1);
+    const focal = vec.createValue(0, 0);
+    const origin = vec.createValue(0, 0);
+    const translation = vec.createValue(0, 0);
+    const adjustedFocal = vec.add(
+        {
+            x: - (SIZES.width) / 2,
+            y: - (SIZES.height * 0.4) / 2,
+        },
+        focal
+    );
+    const zIndex = cond(eq(state, State.ACTIVE), 3, 0);
 
     React.useEffect(() => {
         let { data } = route.params;
         setData(data);
     })
 
-    const handlePinch = Animated.event([{ nativeEvent: { scale } }], { useNativeDriver: true })
+    const handlePinch = onGestureEvent({
+        state,
+        scale,
+        focalX: focal.x,
+        focalY: focal.y
+    });
+
+    useCode(() => block([
+        cond(eq(state, State.BEGAN), vec.set(origin, adjustedFocal)),
+        cond(eq(state, State.ACTIVE), vec.set(translation, vec.minus(vec.sub(origin, adjustedFocal)))),
+        cond(eq(state, State.END), [
+            set(translation.x, timing({ from: translation.x, to: 0 })),
+            set(translation.y, timing({ from: translation.y, to: 0 })),
+            set(scale, timing({ from: scale, to: 1 }))
+        ]),
+    ]), [focal, origin, state]);
 
     function renderImage() {
-        console.log(scale);
+
+
         return (
             <View
                 style={{
@@ -29,26 +74,27 @@ const ShowInfo = ({ navigation, route }) => {
                     alignItems: 'center'
                 }}
             >
-                <PinchGestureHandler
-                    onGestureEvent={handlePinch}
-                    onHandlerStateChange={(event) => {
-                        if (event.nativeEvent.oldState === State.ACTIVE && event.nativeEvent.scale < 1) {
-                            Animated.spring(scale, {
-                                toValue: 1,
-                                useNativeDriver: true
-                            }).start()
-                        }
-                    }}
-                >
-                    <Animated.Image
-                        source={{ uri: `${data.img}` }}
-                        resizeMode='cover'
+                <PinchGestureHandler {...handlePinch}>
+                    <Animated.View
                         style={{
                             height: '100%',
                             width: '100%',
-                            transform: [{ scale }]
+                            zIndex
                         }}
-                    />
+                    >
+                        <Animated.Image
+                            source={{ uri: `${data.img}` }}
+                            resizeMode='cover'
+                            style={{
+                                height: '100%',
+                                width: '100%',
+                                transform: [
+                                    ...translate(translation),
+                                    ...transformOrigin(origin, { scale })
+                                ]
+                            }}
+                        />
+                    </Animated.View>
                 </PinchGestureHandler>
 
 
