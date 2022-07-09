@@ -74,8 +74,7 @@ const History = ({ navigation }) => {
                 style={{
                     flexDirection: 'row',
                     height: 50,
-                    alignItems: 'center',
-                    marginTop: SIZES.base
+                    alignItems: 'center'
                 }}
             >
                 <AntDesign

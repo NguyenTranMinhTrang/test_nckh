@@ -1,81 +1,42 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
-import { images, theme, COLORS, SIZES, FONTS } from "../constants";
-import { Entypo } from '@expo/vector-icons';
+import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 import predict from "../../../back_end_nckh/predict_models/predict";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError } from "../components";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
 import * as ImagePicker from 'expo-image-picker';
-import { showError, showSuccess } from "../components/showErrorMess";
+import { FlatList } from "react-native-gesture-handler";
+
+LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
 const Home = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
+    const [isLoading, setLoading] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState({
+        status: false,
+        title: "",
+        number: 0,
+        yes: null
+    });
+
+    const closeModal = () => {
+        setOpenModal({
+            status: false,
+            title: "",
+            number: 0,
+            yes: null
+        });
+    }
 
     // Data
 
-    let data = [
-        {
-            id: 22,
-            name: "Hổ",
-            image: images.tiger,
-        },
-        {
-            id: 7,
-            name: "Cá Sấu",
-            image: images.crocodile,
-        },
-        {
-            id: 23,
-            name: "Công Lục",
-            image: images.peafowl,
-        },
-        {
-            id: 12,
-            name: "Voi",
-            image: images.elephant,
-        },
-        {
-            id: 3,
-            name: "Gấu Mực",
-            image: images.gaumuc,
-        },
-        {
-            id: 5,
-            name: "Bồ Câu",
-            image: images.nicola,
-        },
-        {
-            id: 25,
-            name: "Rồng Đất",
-            image: images.lizard,
-        },
-        {
-            id: 10,
-            name: "Rùa Da",
-            image: images.ruada,
-        },
-        {
-            id: 11,
-            name: "Tê Giác",
-            image: images.sumatra,
-        },
-        {
-            id: 16,
-            name: "Rái Cá",
-            image: images.raica,
-        },
-        {
-            id: 30,
-            name: "Gấu Ngựa",
-            image: images.gaungua,
-        },
-    ];
-    data = data.sort(() => Math.random() - 0.5)
+    const data = dummyData.animals.sort(() => Math.random() - 0.5);
 
     const getInfo = async (id) => {
         let res = await getByID(id);
@@ -90,6 +51,30 @@ const Home = ({ navigation }) => {
         }
 
 
+    }
+
+    const requestOpenLink = async (url) => {
+        closeModal();
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        }
+        else {
+            setOpenModal({
+                status: true,
+                title: `Hệ thống không thể mở được url này : ${url}`,
+                number: 1
+            });
+        }
+    }
+
+    const openLink = (url) => {
+        setOpenModal({
+            status: true,
+            number: 2,
+            title: "Bạn có muốn mở video / tin tức này không ?",
+            yes: () => requestOpenLink(url)
+        });
     }
 
     // Camera 
@@ -119,33 +104,46 @@ const Home = ({ navigation }) => {
                 })
 
                 if (!img.cancelled) {
+                    setLoading(true);
                     const response = await cb(img);
                     if (response.status == "FAILED") {
-                        showError(response.message);
+                        console.log(response.message);
+                        setOpenModal({
+                            status: true,
+                            title: response.message,
+                            number: 1
+                        });
                     }
                     else {
                         const data = response.data;
-                        const res = await postHistory(userData.id, data.id)
+                        const res = await postHistory(userData.id, data.id);
                         if (res.status == "SUCCESS") {
-                            showSuccess(res.message)
+                            showSuccess(res.message);
                         }
                         else if (res.status == "FAILED") {
-                            showError(res.message);
+                            setOpenModal({
+                                status: true,
+                                title: res.message,
+                                number: 1
+                            });
+
                         }
 
                         navigation.navigate('ShowInfo', {
                             data
-                        })
+                        });
                     }
-
+                    setLoading(false);
                     return true;
                 }
 
+                setLoading(false);
                 return false;
             }
         } catch (error) {
-            showError(error.message)
-            return false
+            setLoading(false);
+            showError(error.message);
+            return false;
         }
     }
     // Library
@@ -215,25 +213,12 @@ const Home = ({ navigation }) => {
             <View
                 style={{
                     flexDirection: 'row',
-                    height: 50,
                     alignItems: 'center',
                     justifyContent: avatar ? "space-between" : "center",
-                    marginTop: SIZES.base,
-                    paddingHorizontal: SIZES.padding
+                    paddingHorizontal: SIZES.padding,
+                    marginBottom: SIZES.padding
                 }}
             >
-                <View
-                    style={{
-                        width: SIZES.width * 0.5,
-                        backgroundColor: COLORS.primary,
-                        borderRadius: SIZES.radius * 2,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: 50,
-                    }}
-                >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Home</Text>
-                </View>
 
                 {
                     avatar ?
@@ -264,7 +249,7 @@ const Home = ({ navigation }) => {
                                     borderRadius: 15,
                                     backgroundColor: COLORS.primary,
                                     position: 'absolute',
-                                    right: SIZES.padding,
+                                    left: SIZES.padding + 40,
                                     bottom: 0
                                 }}
                             ></View>
@@ -272,50 +257,31 @@ const Home = ({ navigation }) => {
                         :
                         <></>
                 }
-            </View>
-        )
-    }
 
-    function renderCamera() {
-        return (
-            <View
-                style={{
-                    width: SIZES.width,
-                    paddingHorizontal: SIZES.base * 2,
-                    paddingTop: SIZES.padding * 2
-                }}
-            >
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Khám Phá</Text>
                 <View
                     style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between'
+                        width: SIZES.width * 0.5,
+                        backgroundColor: COLORS.primary,
+                        borderRadius: SIZES.radius * 2,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: 50,
                     }}
                 >
-                    <View
-                        style={{
-                            flex: 0.75,
-                        }}
-                    >
-                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Thế Giới Động Vật</Text>
-                        <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>Chụp ảnh để nhận diện các loài động vật hoang dã ngay!</Text>
-                    </View>
-                    <View style={{ flex: 0.2 }}>
-                        <TouchableOpacity
-                            style={{
-                                height: 70,
-                                width: 70,
-                                borderRadius: SIZES.radius * 2,
-                                backgroundColor: COLORS.primary,
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Home</Text>
+                </View>
 
-                            onPress={() => setShowChooseCamrera(true)}
-                        >
-                            <Entypo name="camera" size={50} color={COLORS.white} />
-                        </TouchableOpacity>
-                    </View>
+                <View>
+                    <TouchableOpacity
+                        style={{
+                            height: 60,
+                            width: 60
+                        }}
+
+                        onPress={() => setShowChooseCamrera(true)}
+                    >
+                        <Bounce />
+                    </TouchableOpacity>
                 </View>
                 <Modal
                     animationType="slide"
@@ -412,63 +378,98 @@ const Home = ({ navigation }) => {
 
                                 onPress={() => setShowChooseCamrera(false)}
                             >
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+
+                                {
+                                    isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                                }
                             </TouchableOpacity>
                         </View>
 
                     </BlurView>
                 </Modal>
+                <Alert
+                    number={openModal.number}
+                    title={openModal.title}
+                    openModal={openModal.status}
+                    onPress={closeModal}
+                    yes={openModal.yes}
+                />
             </View>
         )
     }
 
+
     function renderImage() {
-        const renderItem = ({ item }) => {
-            return (
-                <TouchableOpacity
-                    style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: SIZES.radius,
-                        marginRight: SIZES.padding,
-                        ...styles.shadow
-                    }}
-
-                    onPress={() => getInfo(item.id)}
-                >
-                    <Image
-                        source={item.image}
-                        resizeMode='cover'
-                        style={{
-                            width: SIZES.width * 0.45,
-                            height: SIZES.height * 0.35,
-                            borderRadius: SIZES.radius
-                        }}
-                    />
-
-                    <Text style={{
-                        position: 'absolute',
-                        ...FONTS.h2,
-                        color: COLORS.white,
-                        bottom: SIZES.padding * 2
-                    }}
-                    >
-                        {item.name}
-                    </Text>
-                </TouchableOpacity>
-            )
-        }
-
         return (
-            <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2, paddingHorizontal: SIZES.padding }}>
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Hoang Dã</Text>
+            <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2 }}>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Động Vật Hoang Dã</Text>
                 <FlatList
                     data={data}
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    listKey="Animals"
                     keyExtractor={item => `${item.id}`}
-                    renderItem={renderItem}
-                    contentContainerStyle={{ padding: SIZES.padding }}
+                    renderItem={({ item, index }) => (
+                        <AnimalVertical
+                            item={item}
+                            contentStyle={{
+                                marginLeft: index == 0 ? 0 : SIZES.padding,
+                                marginRight: index == data.length - 1 ? 0 : SIZES.padding
+                            }}
+                            onPress={() => getInfo(item.id)}
+                        />
+                    )}
+                />
+            </View>
+        )
+    }
+
+    const renderVideo = () => {
+        return (
+            <View style={{ paddingBottom: SIZES.padding }}>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Video</Text>
+                <FlatList
+                    data={dummyData.video}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    listKey="Videos"
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({ item, index }) => (
+                        <VideoVertical
+                            item={item}
+                            contentStyle={{
+                                marginLeft: index == 0 ? 0 : SIZES.padding,
+                                marginRight: index == dummyData.video.length - 1 ? 0 : SIZES.padding
+                            }}
+                            onPress={() => openLink(item.link)}
+                        />
+                    )}
+                />
+            </View>
+        )
+    }
+
+    const renderNews = () => {
+        return (
+            <View>
+                <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Tin Tức</Text>
+                <FlatList
+                    data={dummyData.news}
+                    showsVerticalScrollIndicator={false}
+                    listKey="News"
+                    scrollEnabled={false}
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({ item, index }) => (
+                        <NewsVertical
+                            item={item}
+                            contentStyle={{
+                                marginVertical: SIZES.padding,
+                                marginTop: index == 0 ? SIZES.radius : SIZES.padding
+                            }}
+                            onPress={() => openLink(item.link)}
+                        />
+                    )}
                 />
             </View>
         )
@@ -477,8 +478,17 @@ const Home = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {renderCamera()}
-            {renderImage()}
+            <ScrollView
+                contentContainerStyle={{
+                    paddingBottom: 60 + SIZES.padding,
+                    paddingHorizontal: SIZES.padding
+                }}
+                showsVerticalScrollIndicator={false}
+            >
+                {renderImage()}
+                {renderVideo()}
+                {renderNews()}
+            </ScrollView>
         </SafeAreaView>
     )
 }

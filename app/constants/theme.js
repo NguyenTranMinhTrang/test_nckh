@@ -6,6 +6,8 @@ export const COLORS = {
   tabbar: "#000000",
   primary: "#45d279",
   white: "#FFFFFF",
+  error: "#E24C4B",
+  warning: "#FFC048",
   lightGray: "#64676D",
   lightGray2: "#EFEFF0",
   lightGray3: '#D4D5D6',
