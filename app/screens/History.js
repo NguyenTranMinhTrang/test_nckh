@@ -166,7 +166,7 @@ const History = ({ navigation }) => {
                     paddingHorizontal: SIZES.padding,
                 }}
             >
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Của Bạn</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lịch sử dự đoán</Text>
                 <View
                     style={{
                         marginTop: SIZES.padding,

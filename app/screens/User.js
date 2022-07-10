@@ -43,6 +43,40 @@ const User = ({ navigation }) => {
         setShowChooseCamrera(true);
     }
 
+    const handleCamera = async () => {
+        let img = await Camera();
+        if (img) {
+            let response = await uploadProfileImage(img, userData.token)
+            if (response.status == "SUCCESS") {
+                setShowChooseCamrera(false);
+                const oldUserData = { ...userData };
+                oldUserData.avatar = img.uri;
+                actions.saveUserData(oldUserData);
+            }
+            else {
+                setShowChooseCamrera(false);
+                showError(response.message);
+            }
+        }
+    }
+
+    const handleLibrary = async () => {
+        let img = await Library();
+        if (img) {
+            let response = await uploadProfileImage(img, userData.token);
+            if (response.status == "SUCCESS") {
+                setShowChooseCamrera(false);
+                const oldUserData = { ...userData };
+                oldUserData.avatar = img.uri;
+                actions.saveUserData(oldUserData);
+            }
+            else {
+                setShowChooseCamrera(false);
+                showError(response.message);
+            }
+        }
+    }
+
     // render
     function renderHeader() {
         return (
@@ -125,19 +159,7 @@ const User = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.base,
                                 }}
-                                onPress={async () => {
-                                    let response = await Camera(uploadProfileImage, userData.token);
-                                    if (response.status == "SUCCESS") {
-                                        setShowChooseCamrera(false);
-                                        const oldUserData = { ...userData };
-                                        oldUserData.avatar = response.img.uri;
-                                        actions.saveUserData(oldUserData);
-                                    }
-                                    else {
-                                        setShowChooseCamrera(false);
-                                        showError(response.message);
-                                    }
-                                }}
+                                onPress={() => handleCamera()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
                             </TouchableOpacity>
@@ -153,19 +175,7 @@ const User = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.padding,
                                 }}
-                                onPress={async () => {
-                                    let response = await Library(uploadProfileImage, userData.token);
-                                    if (response.status == "SUCCESS") {
-                                        setShowChooseCamrera(false);
-                                        const oldUserData = { ...userData };
-                                        oldUserData.avatar = response.img.uri;
-                                        actions.saveUserData(oldUserData);
-                                    }
-                                    else {
-                                        setShowChooseCamrera(false);
-                                        showError(response.message);
-                                    }
-                                }}
+                                onPress={() => handleLibrary()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
                             </TouchableOpacity>

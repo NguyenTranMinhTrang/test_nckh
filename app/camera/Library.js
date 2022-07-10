@@ -26,14 +26,16 @@ const Library = async (cb, token) => {
 
 
     if (!img.cancelled) {
-        const response = await cb(img, token);
-        if (response.status == "SUCCESS") {
-            return { status: "SUCCESS", img: img };
-        }
-        else {
-            return response;
-        }
+        return img;
+        // const response = await cb(img, token);
+        // if (response.status == "SUCCESS") {
+        //     return { status: "SUCCESS", img: img };
+        // }
+        // else {
+        //     return response;
+        // }
     }
+    return false;
 };
 
 export default Library;
