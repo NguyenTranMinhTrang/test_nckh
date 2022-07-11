@@ -10,6 +10,7 @@ import ForgetPassword from "./ForgetPassword";
 import Code from "./Code";
 import GetPassword from "./GetPassword";
 import SendEmail from "./SendEmail";
+import Ask from "./Ask";
 
 export {
     Home,
@@ -23,5 +24,6 @@ export {
     ForgetPassword,
     Code,
     GetPassword,
-    SendEmail
+    SendEmail,
+    Ask
 };

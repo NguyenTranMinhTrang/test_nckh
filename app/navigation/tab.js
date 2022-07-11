@@ -1,16 +1,20 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, User, History } from "../screens/index";
+import { Home, User, History, Ask } from "../screens/index";
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import Svg, { Path } from "react-native-svg";
+import { useSelector } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+
+    const userData = useSelector((state) => state.auth.userData);
+
     const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
         var isSelected = accessibilityState.selected;
 
@@ -83,7 +87,7 @@ const Tabs = () => {
         >
             <Tab.Screen
                 name="User"
-                component={User}
+                component={Object.keys(userData).length === 0 ? Ask : User}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome name="user-o" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />
@@ -115,7 +119,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="History"
-                component={History}
+                component={Object.keys(userData).length === 0 ? Ask : History}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome5 name="history" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />

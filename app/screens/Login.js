@@ -15,7 +15,7 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 
 import validator from "../utils/validations";
-import { showError, showSuccess } from "../components/showErrorMess";
+import { showError, showSuccess, Header } from "../components";
 import actions from '../redux/actions';
 // render
 const Login = ({ navigation }) => {
@@ -82,10 +82,10 @@ const Login = ({ navigation }) => {
                     email,
                     password
                 });
-                console.log("Login: ", res);
 
                 if (res) {
-                    showSuccess("Đăng nhập thành công!")
+                    showSuccess("Đăng nhập thành công!");
+                    navigation.navigate("Home");
                 }
 
                 if (!isUnmounted.current) {
@@ -115,9 +115,7 @@ const Login = ({ navigation }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flex: 1, paddingHorizontal: SIZES.padding, paddingBottom: SIZES.padding, justifyContent: 'flex-end' }}>
-                <Text style={{ ...FONTS.h1, color: COLORS.white }}>Xin Chào !</Text>
-            </View>
+            <Header title="Xin chào !" navigation={navigation} />
         )
     }
 

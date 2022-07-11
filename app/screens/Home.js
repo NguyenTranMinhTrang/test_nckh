@@ -211,7 +211,7 @@ const Home = ({ navigation }) => {
                 style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: avatar ? "space-between" : "center",
+                    justifyContent: avatar ? "space-between" : "space-around",
                     paddingHorizontal: SIZES.padding,
                     marginBottom: SIZES.padding
                 }}
@@ -270,11 +270,6 @@ const Home = ({ navigation }) => {
 
                 <View>
                     <TouchableOpacity
-                        style={{
-                            height: 60,
-                            width: 60
-                        }}
-
                         onPress={() => setShowChooseCamrera(true)}
                     >
                         <Bounce />

@@ -1,5 +1,6 @@
 import React from "react";
-import { Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail } from "../screens";
+import { Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ShowInfo, ChangePassword } from "../screens";
+
 
 export default function (Stack) {
     return (

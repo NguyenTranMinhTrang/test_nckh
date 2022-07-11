@@ -9,7 +9,7 @@ import {
 import { COLORS, SIZES, FONTS, images } from "../constants";
 import { BlurView } from "expo-blur";
 
-const Alert = ({ number, title, openModal, onPress, yes }) => {
+const Alert = ({ number, title, openModal, onPress, yes, no = null }) => {
 
     const array = [
         {
@@ -116,7 +116,7 @@ const Alert = ({ number, title, openModal, onPress, yes }) => {
                                             alignItems: "center",
                                             backgroundColor: array[number].color
                                         }}
-                                        onPress={onPress}
+                                        onPress={no ? no : onPress}
                                     >
                                         <Text style={{ ...FONTS.h2, color: COLORS.white }}>Không</Text>
                                     </TouchableOpacity>
