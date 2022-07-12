@@ -3,7 +3,7 @@ import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaVie
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
-import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError } from "../components";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError, showSuccess } from "../components";
 // Camera
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
@@ -115,17 +115,15 @@ const Home = ({ navigation }) => {
                     }
                     else {
                         const data = response.data;
-                        const res = await postHistory(userData.id, data.id);
-                        if (res.status == "SUCCESS") {
-                            showSuccess(res.message);
-                        }
-                        else if (res.status == "FAILED") {
-                            setOpenModal({
-                                status: true,
-                                title: res.message,
-                                number: 1
-                            });
 
+                        if (Object.keys(userData).length !== 0) {
+                            const res = await postHistory(userData.id, data.id);
+                            if (res.status == "SUCCESS") {
+                                showSuccess(res.message);
+                            }
+                            else if (res.status == "FAILED") {
+                                showError(res.message);
+                            }
                         }
 
                         navigation.navigate('ShowInfo', {
@@ -177,12 +175,14 @@ const Home = ({ navigation }) => {
                 }
                 else {
                     const data = response.data;
-                    const res = await postHistory(userData.id, data.id)
-                    if (res.status == "SUCCESS") {
-                        showSuccess(res.message)
-                    }
-                    else if (res.status == "FAILED") {
-                        showError(res.message);
+                    if (Object.keys(userData).length !== 0) {
+                        const res = await postHistory(userData.id, data.id)
+                        if (res.status == "SUCCESS") {
+                            showSuccess(res.message)
+                        }
+                        else if (res.status == "FAILED") {
+                            showError(res.message);
+                        }
                     }
 
                     navigation.navigate('ShowInfo', {

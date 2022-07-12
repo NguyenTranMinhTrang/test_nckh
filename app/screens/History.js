@@ -7,24 +7,27 @@ import {
     StyleSheet,
     Text,
     Image,
-    Alert,
     StatusBar,
     Platform,
 } from "react-native";
 import { deleteHistory } from "../api/userAPI";
-import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import { getHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
 import { useFocusEffect } from "@react-navigation/native";
-import { showError, showSuccess } from "../components/showErrorMess";
+import { showError, showSuccess, Alert } from "../components";
 
 
 const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [data, setData] = React.useState([]);
     const [isLoad, setIsLoad] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState({
+        status: false,
+        yes: null
+    });
 
     async function get_history(id) {
         let res = await getHistory(id)
@@ -97,6 +100,13 @@ const History = ({ navigation }) => {
                 >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>Lịch Sử</Text>
                 </View>
+                <Alert
+                    number={2}
+                    title={"Bạn có chắc muốn xóa dòng lịch sử này ?"}
+                    openModal={openModal.status}
+                    yes={openModal.yes}
+                    onPress={() => setOpenModal({ status: false, yes: null })}
+                />
             </View>
         )
     }
@@ -119,12 +129,16 @@ const History = ({ navigation }) => {
                         borderColor: '#606d87',
                     }}
 
-                    onLongPress={() => Alert.alert(
-                        "Xác Nhận",
-                        "Bạn có chắc muốn xóa dòng lịch sử này ?",
-                        [{ text: 'Có', onPress: () => delete_history(userData.id, item.animalID, item.time) }, { text: 'Hủy', }],
-                        { cancelable: true }
-                    )}
+                    onLongPress={() => setOpenModal({
+                        status: true,
+                        yes: async () => {
+                            await delete_history(userData.id, item.animalID, item.time);
+                            setOpenModal({
+                                status: false,
+                                yes: null
+                            });
+                        }
+                    })}
 
                     onPress={() => showInfo(item.animalID)}
                 >

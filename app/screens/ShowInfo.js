@@ -71,7 +71,7 @@ const ShowInfo = ({ navigation, route }) => {
                 style={{
                     height: '40%',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
                 }}
             >
                 <PinchGestureHandler {...handlePinch}>

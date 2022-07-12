@@ -208,7 +208,11 @@ export const postUser = async (email, password) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = "Không nhận được phản hồi. Hãy kiểm tra đường truyền của bạn và thử lại !";
+        }
+        return { status: "FAILED", message: message };
     }
 }
 

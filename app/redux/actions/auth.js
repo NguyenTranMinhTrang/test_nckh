@@ -2,7 +2,6 @@ import { setUserData, clearUserData } from "../../utils/utils";
 import { postUser, singUp } from "../../api/userAPI"
 import store from '../stores';
 import types from '../types';
-import endpoint from "../../api/endpoint";
 
 const { dispatch } = store;
 

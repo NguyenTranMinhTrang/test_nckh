@@ -8,7 +8,6 @@ import {
     Modal,
     StatusBar,
     Platform,
-    Alert,
     Image
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
@@ -19,24 +18,22 @@ import { BlurView } from "expo-blur";
 import Camera from "../camera/Camera";
 import Library from "../camera/Library";
 import { uploadProfileImage } from "../api/userAPI"
-import { showError } from "../components/showErrorMess";
+import { showError, Alert, showSuccess } from "../components"
 
 
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState(false);
 
     const Onlogout = () => {
-        Alert.alert(
-            'Đăng Xuất',
-            'Bạn có chắc muốn đăng xuất ra khỏi thiết bị này ?',
-            [{ text: 'Có', onPress: logout }, { text: 'Hủy', }],
-            { cancelable: true }
-        )
+        setOpenModal(true);
     }
 
     const logout = () => {
         actions.logout();
+        showSuccess("Đăng xuất thành công !");
+        navigation.navigate("Start");
     }
 
     const takeAvatar = () => {
@@ -53,6 +50,16 @@ const User = ({ navigation }) => {
                     alignItems: 'center'
                 }}
             >
+                {/* Modal */}
+                <Alert
+                    openModal={openModal}
+                    number={2}
+                    title={"Bạn có chắc muốn đăng xuất ra khỏi thiết bị này ?"}
+                    yes={logout}
+                    onPress={() => setOpenModal(false)}
+                />
+
+                {/* Render */}
                 <AntDesign
                     name="arrowleft"
                     size={50}
