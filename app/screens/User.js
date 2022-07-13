@@ -8,7 +8,8 @@ import {
     Modal,
     StatusBar,
     Platform,
-    Image
+    Image,
+    ActivityIndicator
 } from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
@@ -25,6 +26,7 @@ const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
     const [openModal, setOpenModal] = React.useState(false);
+    const [isLoading, setLoading] = React.useState(false);
 
     const Onlogout = () => {
         setOpenModal(true);
@@ -38,6 +40,44 @@ const User = ({ navigation }) => {
 
     const takeAvatar = () => {
         setShowChooseCamrera(true);
+    }
+
+    const handleCamera = async () => {
+        let img = await Camera();
+        if (img) {
+            setLoading(true);
+            let response = await uploadProfileImage(img, userData.token)
+            if (response.status == "SUCCESS") {
+                setShowChooseCamrera(false);
+                const oldUserData = { ...userData };
+                oldUserData.avatar = img.uri;
+                actions.saveUserData(oldUserData);
+            }
+            else {
+                setShowChooseCamrera(false);
+                showError(response.message);
+            }
+        }
+        setLoading(false);
+    }
+
+    const handleLibrary = async () => {
+        let img = await Library();
+        if (img) {
+            setLoading(true);
+            let response = await uploadProfileImage(img, userData.token);
+            if (response.status == "SUCCESS") {
+                setShowChooseCamrera(false);
+                const oldUserData = { ...userData };
+                oldUserData.avatar = img.uri;
+                actions.saveUserData(oldUserData);
+            }
+            else {
+                setShowChooseCamrera(false);
+                showError(response.message);
+            }
+        }
+        setLoading(false);
     }
 
     // render
@@ -132,19 +172,7 @@ const User = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.base,
                                 }}
-                                onPress={async () => {
-                                    let response = await Camera(uploadProfileImage, userData.token);
-                                    if (response.status == "SUCCESS") {
-                                        setShowChooseCamrera(false);
-                                        const oldUserData = { ...userData };
-                                        oldUserData.avatar = response.img.uri;
-                                        actions.saveUserData(oldUserData);
-                                    }
-                                    else {
-                                        setShowChooseCamrera(false);
-                                        showError(response.message);
-                                    }
-                                }}
+                                onPress={() => handleCamera()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
                             </TouchableOpacity>
@@ -160,19 +188,7 @@ const User = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.padding,
                                 }}
-                                onPress={async () => {
-                                    let response = await Library(uploadProfileImage, userData.token);
-                                    if (response.status == "SUCCESS") {
-                                        setShowChooseCamrera(false);
-                                        const oldUserData = { ...userData };
-                                        oldUserData.avatar = response.img.uri;
-                                        actions.saveUserData(oldUserData);
-                                    }
-                                    else {
-                                        setShowChooseCamrera(false);
-                                        showError(response.message);
-                                    }
-                                }}
+                                onPress={() => handleLibrary()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
                             </TouchableOpacity>
@@ -189,7 +205,12 @@ const User = ({ navigation }) => {
 
                                 onPress={() => setShowChooseCamrera(false)}
                             >
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
+                                {
+                                    isLoading ?
+                                        <ActivityIndicator size="large" color={COLORS.white} />
+                                        :
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
+                                }
                             </TouchableOpacity>
                         </View>
 

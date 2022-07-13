@@ -5,11 +5,13 @@ import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError, showSuccess } from "../components";
 // Camera
+import Camera from "../camera/Camera";
+import Library from "../camera/Library";
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
-import * as ImagePicker from 'expo-image-picker';
 import { FlatList } from "react-native-gesture-handler";
+
 
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
@@ -76,131 +78,69 @@ const Home = ({ navigation }) => {
         });
     }
 
-    // Camera 
-
-    const Camera = async (cb) => {
-        try {
-            const AskForPermission = async () => {
-                const result = await ImagePicker.requestCameraPermissionsAsync();
-                if (result.granted === false) {
-                    alert('no permissions to access camera!', [{ text: 'ok' }]);
-                    return false;
-                }
-
-                return true;
-            }
-            const hasPermission = await AskForPermission();
-            if (!hasPermission) {
-                return false;
+    //Camera
+    const handleCamera = async () => {
+        let img = await Camera();
+        if (img) {
+            setLoading(true);
+            let response = await upLoad(img);
+            if (response.status == "FAILED") {
+                console.log(response.message);
+                setOpenModal({
+                    status: true,
+                    title: response.message,
+                    number: 1
+                });
             }
             else {
-                let img = await ImagePicker.launchCameraAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                    allowsEditing: false,
-                    aspect: [3, 3],
-                    quality: 1,
-                    base64: true,
-                })
-
-                if (!img.cancelled) {
-                    setLoading(true);
-                    const response = await cb(img);
-                    if (response.status == "FAILED") {
-                        console.log(response.message);
-                        setOpenModal({
-                            status: true,
-                            title: response.message,
-                            number: 1
-                        });
+                const data = response.data;
+                if (Object.keys(userData).length !== 0) {
+                    const res = await postHistory(userData.id, data.id);
+                    if (res.status == "SUCCESS") {
+                        showSuccess(res.message);
                     }
-                    else {
-                        const data = response.data;
-
-                        if (Object.keys(userData).length !== 0) {
-                            const res = await postHistory(userData.id, data.id);
-                            if (res.status == "SUCCESS") {
-                                showSuccess(res.message);
-                            }
-                            else if (res.status == "FAILED") {
-                                showError(res.message);
-                            }
-                        }
-
-                        navigation.navigate('ShowInfo', {
-                            data
-                        });
+                    else if (res.status == "FAILED") {
+                        showError(res.message);
                     }
-                    setLoading(false);
-                    return true;
                 }
 
-                setLoading(false);
-                return false;
+                navigation.navigate('ShowInfo', {
+                    data
+                });
             }
-        } catch (error) {
-            setLoading(false);
-            showError(error.message);
-            return false;
         }
+        setLoading(false);
     }
-    // Library
-    const Library = async (cb) => {
-        try {
-            const AskForPermission = async () => {
-                const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                if (result.granted === false) {
-                    alert('no permissions to access media library! Please set the permission in your device.', [{ text: 'ok' }]);
-                    return false;
-                }
-                return true;
+
+    //Library
+    const handleLibrary = async () => {
+        let img = await Library();
+        if (img) {
+            setLoading(true);
+            let response = await upLoad(img);
+            //const fileBuffer = Buffer.from(img.base64, 'base64');
+            if (response.status == "FAILED") {
+                showError(response.message);
             }
-            const hasPermission = await AskForPermission();
-            if (!hasPermission) {
-                return false;
-            }
-
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-                base64: true
-            });
-
-
-            if (!result.cancelled) {
-                const response = await cb(result);
-                if (response.status == "FAILED") {
-                    showError(response.message);
-                }
-                else {
-                    const data = response.data;
-                    if (Object.keys(userData).length !== 0) {
-                        const res = await postHistory(userData.id, data.id)
-                        if (res.status == "SUCCESS") {
-                            showSuccess(res.message)
-                        }
-                        else if (res.status == "FAILED") {
-                            showError(res.message);
-                        }
+            else {
+                const data = response.data;
+                if (Object.keys(userData).length !== 0) {
+                    const res = await postHistory(userData.id, data.id);
+                    if (res.status == "SUCCESS") {
+                        showSuccess(res.message);
                     }
-
-                    navigation.navigate('ShowInfo', {
-                        data
-                    })
+                    else if (res.status == "FAILED") {
+                        showError(res.message);
+                    }
                 }
 
-                return true;
+                navigation.navigate('ShowInfo', {
+                    data
+                })
             }
-
-            return false;
-        } catch (error) {
-            showError(error.message)
-            return false
         }
-
-    };
-
+        setLoading(false);
+    }
 
     // Render
 
@@ -327,12 +267,7 @@ const Home = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.base,
                                 }}
-                                onPress={async () => {
-                                    let isClosed = await Camera(upLoad);
-                                    if (isClosed) {
-                                        setShowChooseCamrera(false);
-                                    }
-                                }}
+                                onPress={() => handleCamera()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
                             </TouchableOpacity>
@@ -348,12 +283,8 @@ const Home = ({ navigation }) => {
                                     borderRadius: SIZES.radius * 2,
                                     marginBottom: SIZES.padding,
                                 }}
-                                onPress={async () => {
-                                    let isClosed = await Library(upLoad);
-                                    if (isClosed) {
-                                        setShowChooseCamrera(false);
-                                    }
-                                }}
+
+                                onPress={() => handleLibrary()}
                             >
                                 <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
                             </TouchableOpacity>

@@ -10,7 +10,7 @@ const AskForPermission = async () => {
 }
 
 
-const Library = async (cb, token) => {
+const Library = async () => {
     const hasPermission = await AskForPermission();
     if (!hasPermission) {
         return;
@@ -26,14 +26,16 @@ const Library = async (cb, token) => {
 
 
     if (!img.cancelled) {
-        const response = await cb(img, token);
-        if (response.status == "SUCCESS") {
-            return { status: "SUCCESS", img: img };
-        }
-        else {
-            return response;
-        }
+        return img;
+        // const response = await cb(img, token);
+        // if (response.status == "SUCCESS") {
+        //     return { status: "SUCCESS", img: img };
+        // }
+        // else {
+        //     return response;
+        // }
     }
+    return false;
 };
 
 export default Library;

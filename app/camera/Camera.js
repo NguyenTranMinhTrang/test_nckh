@@ -10,7 +10,7 @@ const AskForPermission = async () => {
     return true;
 }
 
-const Camera = async (cb, token) => {
+const Camera = async () => {
     const hasPermission = await AskForPermission();
     if (!hasPermission) {
         return;
@@ -24,14 +24,16 @@ const Camera = async (cb, token) => {
             base64: true,
         })
         if (!img.cancelled) {
-            const response = await cb(img, token);
-            if (response.status == "SUCCESS") {
-                return { status: "SUCCESS", img: img };
-            }
-            else {
-                return response;
-            }
+            return img;
+            // const response = await cb(img, token);
+            // if (response.status == "SUCCESS") {
+            //     return { status: "SUCCESS", img: img };
+            // }
+            // else {
+            //     return response;
+            // }
         }
+        return false;
 
     }
 }
