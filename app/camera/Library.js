@@ -27,13 +27,6 @@ const Library = async () => {
 
     if (!img.cancelled) {
         return img;
-        // const response = await cb(img, token);
-        // if (response.status == "SUCCESS") {
-        //     return { status: "SUCCESS", img: img };
-        // }
-        // else {
-        //     return response;
-        // }
     }
     return false;
 };
