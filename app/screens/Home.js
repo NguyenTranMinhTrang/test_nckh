@@ -85,7 +85,6 @@ const Home = ({ navigation }) => {
             setLoading(true);
             let response = await upLoad(img);
             if (response.status == "FAILED") {
-                console.log(response.message);
                 setOpenModal({
                     status: true,
                     title: response.message,
@@ -104,10 +103,12 @@ const Home = ({ navigation }) => {
                     }
                 }
 
+
                 navigation.navigate('ShowInfo', {
                     data
                 });
             }
+            setShowChooseCamrera(false);
         }
         setLoading(false);
     }
@@ -138,6 +139,7 @@ const Home = ({ navigation }) => {
                     data
                 })
             }
+            setShowChooseCamrera(false);
         }
         setLoading(false);
     }
