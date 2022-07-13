@@ -5,6 +5,10 @@ import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 import { showError, showSuccess } from "../components/showErrorMess";
 import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert } from "../components";
+
+//Predict model
+import { predict } from "../../models/predict"
+
 // Camera
 import Camera from "../camera/Camera";
 import Library from "../camera/Library";
@@ -79,28 +83,30 @@ const Home = ({ navigation }) => {
         let img = await Library();
         if (img) {
             setLoading(true);
-            let response = await upLoad(img);
-            //const fileBuffer = Buffer.from(img.base64, 'base64');
-            if (response.status == "FAILED") {
-                showError(response.message);
-            }
-            else {
-                const data = response.data;
-                const res = await postHistory(userData.id, data.id)
-                if (res.status == "SUCCESS") {
-                    showSuccess(res.message)
-                    setShowChooseCamrera(false);
-                }
-                else if (res.status == "FAILED") {
-                    showError(res.message);
-                }
+            // let response = await upLoad(img);
+            const fileBuffer = Buffer.from(img.base64, 'base64');
+            const id = await predict(fileBuffer);
+            console.log(id)
+            // if (response.status == "FAILED") {
+            //     showError(response.message);
+            // }
+            // else {
+            //     const data = response.data;
+            //     const res = await postHistory(userData.id, data.id)
+            //     if (res.status == "SUCCESS") {
+            //         showSuccess(res.message)
+            //         setShowChooseCamrera(false);
+            //     }
+            //     else if (res.status == "FAILED") {
+            //         showError(res.message);
+            //     }
 
-                navigation.navigate('ShowInfo', {
-                    data
-                })
-            }
+            //     navigation.navigate('ShowInfo', {
+            //         data
+            //     })
+            // }
         }
-        setLoading(false);
+        // setLoading(false);
     }
 
     // Data
