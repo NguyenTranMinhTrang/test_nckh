@@ -1,6 +1,9 @@
 import axios from './axiosClient'
 import endpoint from './endpoint';
 import { getDateByDMYStringFormat } from "../utils/dateUtils"
+
+const messageError = "Không nhận được phản hồi. Hãy kiểm tra đường truyền của bạn và thử lại !";
+
 export const postHistory = async (id, animalID) => {
     try {
         var date = getDateByDMYStringFormat();
@@ -18,7 +21,11 @@ export const postHistory = async (id, animalID) => {
         }
 
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 
 }
@@ -37,7 +44,11 @@ export const postChangePassword = async (id, password, newPassword) => {
         }
     }
     catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 
 }
@@ -54,7 +65,11 @@ export const getHistory = async (id) => {
         }
     }
     catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -73,7 +88,11 @@ export const deleteHistory = async (id, animalID, time) => {
         }
     }
     catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 
 }
@@ -103,7 +122,11 @@ export const uploadProfileImage = async (photo, token) => {
             throw Error("Không nhận được phản hồi")
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 };
 
@@ -119,7 +142,11 @@ export const requestPasswordReset = async (email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -136,7 +163,11 @@ export const resendVerification = async (id, email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -152,7 +183,11 @@ export const resendPIN = async (email) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -169,7 +204,11 @@ export const verifyPIN = async (email, pin) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -190,7 +229,11 @@ export const resetPassword = async (newPassword, token) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
 
@@ -210,7 +253,7 @@ export const postUser = async (email, password) => {
     } catch (error) {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
-            message = "Không nhận được phản hồi. Hãy kiểm tra đường truyền của bạn và thử lại !";
+            message = messageError;
         }
         return { status: "FAILED", message: message };
     }
@@ -230,6 +273,10 @@ export const singUp = async (email, password) => {
             throw Error("Không nhận được phản hồi");
         }
     } catch (error) {
-        return { status: "FAILED", message: error.message };
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }

@@ -48,15 +48,14 @@ const User = ({ navigation }) => {
             setLoading(true);
             let response = await uploadProfileImage(img, userData.token)
             if (response.status == "SUCCESS") {
-                setShowChooseCamrera(false);
                 const oldUserData = { ...userData };
                 oldUserData.avatar = img.uri;
                 actions.saveUserData(oldUserData);
             }
             else {
-                setShowChooseCamrera(false);
                 showError(response.message);
             }
+            setShowChooseCamrera(false);
         }
         setLoading(false);
     }
@@ -67,15 +66,14 @@ const User = ({ navigation }) => {
             setLoading(true);
             let response = await uploadProfileImage(img, userData.token);
             if (response.status == "SUCCESS") {
-                setShowChooseCamrera(false);
                 const oldUserData = { ...userData };
                 oldUserData.avatar = img.uri;
                 actions.saveUserData(oldUserData);
             }
             else {
-                setShowChooseCamrera(false);
                 showError(response.message);
             }
+            setShowChooseCamrera(false);
         }
         setLoading(false);
     }
