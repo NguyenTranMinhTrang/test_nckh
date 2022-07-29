@@ -21,19 +21,16 @@ const Library = async () => {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
-        base64: true
+        base64: true,
+        storageOptions: {
+            skipBackup: true,
+            path: 'images',
+        },
     });
 
 
     if (!img.cancelled) {
         return img;
-        // const response = await cb(img, token);
-        // if (response.status == "SUCCESS") {
-        //     return { status: "SUCCESS", img: img };
-        // }
-        // else {
-        //     return response;
-        // }
     }
     return false;
 };
