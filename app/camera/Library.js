@@ -21,7 +21,11 @@ const Library = async () => {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
-        base64: true
+        base64: true,
+        storageOptions: {
+            skipBackup: true,
+            path: 'images',
+        },
     });
 
 
