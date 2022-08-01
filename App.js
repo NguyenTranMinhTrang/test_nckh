@@ -6,11 +6,26 @@ import { useFonts } from 'expo-font';
 import Routes from './app/navigation/Routes';
 import { getUserData } from './app/utils/utils';
 import { saveUserData } from './app/redux/actions/auth';
-
+import Tflite from 'tflite-react-native';
+let tflite = new Tflite();
 
 // screen for stack & tabs
 const App = () => {
+
   useEffect(() => {
+    (() => {
+      tflite.loadModel({
+        model: 'model.tflite',// required
+        labels: 'model.txt',  // required
+        numThreads: 1,                              // defaults to 1  
+      },
+        (err, res) => {
+          if (err)
+            console.log(err);
+          else
+            console.log("Load model success");
+        });
+    })();
     (async () => {
       const userData = await getUserData();
       if (!!userData) {
@@ -31,7 +46,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Routes />
+      <Routes tflite={tflite} />
       <FlashMessage
         position="top"
       />

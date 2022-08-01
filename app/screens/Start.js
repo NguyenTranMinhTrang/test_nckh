@@ -113,7 +113,7 @@ const Start = ({ navigation }) => {
             >
                 <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Chào Mừng Đến Với</Text>
                 <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Thế Giới Động Vật !</Text>
-                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5, paddingHorizontal: SIZES.padding }}>Nhận diện và bảo về các loài động vật hoang dã với app chúng tôi !</Text>
+                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5, paddingHorizontal: SIZES.padding }}>Nhận diện và bảo về các loài động vật hoang dã với ứng dụng của chúng tôi !</Text>
                 <TouchableOpacity
                     style={[{
                         marginTop: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2,

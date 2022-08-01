@@ -4,7 +4,6 @@ import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError, showSuccess } from "../components";
-import Tflite from 'tflite-react-native';
 import { AnimalInfo } from '../database/db'
 
 // Camera
@@ -15,14 +14,9 @@ import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
 import { FlatList } from "react-native-gesture-handler";
 
-
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
-const Home = ({ navigation }) => {
-    let tflite = new Tflite();
-    React.useEffect(() => {
-        loadModel();
-    }, [])
+const Home = ({ navigation, tflite }) => {
 
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
@@ -86,97 +80,59 @@ const Home = ({ navigation }) => {
         });
     }
 
-    const loadModel = () => {
-        tflite.loadModel({
-            model: 'model.tflite',// required
-            labels: 'model.txt',  // required
-            numThreads: 1,                              // defaults to 1  
-        },
-            (err, res) => {
-                if (err)
-                    console.log(err);
-                else
-                    console.log("Load model success");
-            });
-
-    }
-
-    const runModel = async (imagePath) => {
-        loadModel();
-        tflite.runModelOnImage({
-            path: imagePath,  // required
-            imageMean: 0, // defaults to 127.5
-            imageStd: 1,  // defaults to 127.5
-            numResults: 3,    // defaults to 5
-            threshold: 0.5   // defaults to 0.1
-        },
-            (err, res) => {
-                if (err) {
-                    console.log(err);
-                    return { status: "FAILED", message: err }
-                }
-                else {
-                    return { status: "SUCCESS", data: err }
-                }
-
-            });
-    }
-
     //Camera
     const handleCamera = async () => {
-        loadModel()
         let img = await Camera();
-        // let imagePath = Platform.OS === 'ios' ? img.uri : 'file://' + img.path;
-        // console.log(imagePath)
-        // setLoading(true);
-        // tflite.runModelOnImage({
-        //     path: imagePath,  // required
-        //     imageMean: 128.0, // defaults to 127.5
-        //     imageStd: 128.0,  // defaults to 127.5
-        //     numResults: 3,    // defaults to 5
-        //     threshold: 0.05   // defaults to 0.1
-        // },
-        //     (err, res) => {
-        //         if (err)
-        //             console.log(err);
-        //         else
-        //             console.log(res);
-        //     });
-        // if (img) {
-        //     setLoading(true);
-        //     let response = await upLoad(img);
-        //     if (response.status == "FAILED") {
-        //         console.log(response.message);
-        //         setOpenModal({
-        //             status: true,
-        //             title: response.message,
-        //             number: 1
-        //         });
-        //     }
-        //     else {
-        //         const data = response.data;
-        //         if (Object.keys(userData).length !== 0) {
-        //             const res = await postHistory(userData.id, data.id);
-        //             if (res.status == "SUCCESS") {
-        //                 showSuccess(res.message);
-        //             }
-        //             else if (res.status == "FAILED") {
-        //                 showError(res.message);
-        //             }
-        //         }
+        let imagePath = Platform.OS === 'ios' ? img.uri : 'file://' + img.path;
+        if (img) {
+            setLoading(true);
+            tflite.runModelOnImage({
+                path: imagePath,  // required
+                imageMean: 0, // defaults to 127.5
+                imageStd: 1,  // defaults to 127.5
+                numResults: 1,    // defaults to 5
+                threshold: 0.5   // defaults to 0.1
+            },
+                async (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        if (res.length !== 0) {
+                            //Get data from database
+                            if (res[0].index === 30) {
+                                showError("Dự đoán không thành công")
+                            }
+                            else {
+                                const data = AnimalInfo[res[0].index]
+                                //Check if user logged in
+                                if (Object.keys(userData).length !== 0) {
+                                    const res = await postHistory(userData.id, data.id);
+                                    if (res.status == "SUCCESS") {
+                                        showSuccess(res.message);
+                                    }
+                                    else if (res.status == "FAILED") {
+                                        showError(res.message);
+                                    }
+                                }
 
-        //         navigation.navigate('ShowInfo', {
-        //             data
-        //         });
-        //     }
-        // }
-        // setLoading(false);
+                                navigation.navigate('ShowInfo', {
+                                    data
+                                })
+                            }
+                        }
+                    }
+                    setLoading(false);
+                });
+        }
+        else {
+            showError("Chọn ảnh không thành công! Hãy thử lại")
+        }
     }
 
     //Library
     const handleLibrary = async () => {
         let img = await Library();
-        // let response = await upLoad(img);
         let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
         if (img) {
             setLoading(true);
@@ -184,49 +140,47 @@ const Home = ({ navigation }) => {
                 path: imagePath,  // required
                 imageMean: 0, // defaults to 127.5
                 imageStd: 1,  // defaults to 127.5
-                numResults: 3,    // defaults to 5
+                numResults: 1,    // defaults to 5
                 threshold: 0.5   // defaults to 0.1
             },
-                (err, res) => {
+                async (err, res) => {
                     if (err) {
                         console.log(err);
                     }
                     else {
                         if (res.length !== 0) {
-                            const data = AnimalInfo[res[0].index]
-                            navigation.navigate('ShowInfo', {
-                                data
-                            })
+                            //Get data from database
+                            if (res[0].index === 30) {
+                                showError("Dự đoán không thành công")
+                            }
+                            else {
+                                const data = AnimalInfo[res[0].index]
+                                //Check if user logged in
+                                if (Object.keys(userData).length !== 0) {
+                                    const res = await postHistory(userData.id, data.id);
+                                    if (res.status == "SUCCESS") {
+                                        showSuccess(res.message);
+                                    }
+                                    else if (res.status == "FAILED") {
+                                        showError(res.message);
+                                    }
+                                }
+
+                                navigation.navigate('ShowInfo', {
+                                    data
+                                })
+                            }
                         }
-
-
                     }
-
+                    setLoading(false);
                 });
-            // if (response.status == "FAILED") {
-            //     showError(response.message);
-            // }
-            // else {
-            // if (Object.keys(userData).length !== 0) {
-            //     const res = await postHistory(userData.id, data.id);
-            //     if (res.status == "SUCCESS") {
-            //         showSuccess(res.message);
-            //     }
-            //     else if (res.status == "FAILED") {
-            //         showError(res.message);
-            //     }
-            // }
-
-            // navigation.navigate('ShowInfo', {
-            //     data
-            // })
-            // }
         }
-        setLoading(false);
+        else {
+            showError("Chọn ảnh không thành công! Hãy thử lại")
+        }
     }
 
     // Render
-
     function renderHeader() {
         const avatar = userData?.avatar;
         return (
@@ -387,7 +341,7 @@ const Home = ({ navigation }) => {
 
                                 {
                                     isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cancel</Text>
+                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
                                 }
                             </TouchableOpacity>
                         </View>
