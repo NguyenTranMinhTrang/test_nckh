@@ -83,7 +83,7 @@ const Home = ({ navigation, tflite }) => {
     //Camera
     const handleCamera = async () => {
         let img = await Camera();
-        let imagePath = Platform.OS === 'ios' ? img.uri : 'file://' + img.path;
+        let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
         if (img) {
             setLoading(true);
             tflite.runModelOnImage({
