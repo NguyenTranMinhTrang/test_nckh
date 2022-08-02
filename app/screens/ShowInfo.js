@@ -83,7 +83,7 @@ const ShowInfo = ({ navigation, route }) => {
                         }}
                     >
                         <Animated.Image
-                            source={require(`../database/avt/1.jpg`)}
+                            source={data.img}
                             resizeMode='cover'
                             style={{
                                 height: '100%',

@@ -2,12 +2,12 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword } from "../screens";
+import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword, RealtimeCamera } from "../screens";
 import Tabs from "./tab";
 
 const Stack = createNativeStackNavigator();
 
-export default function Routes() {
+export default function Routes({ tflite }) {
     const userData = useSelector((state) => state.auth.userData);
 
     return (
@@ -20,8 +20,9 @@ export default function Routes() {
             >
                 <Stack.Screen
                     name="Tabs"
-                    component={Tabs}
-                />
+                >
+                    {props => < Tabs {...props} tflite={tflite} />}
+                </Stack.Screen>
 
                 <Stack.Screen
                     name="ShowInfo"
@@ -32,6 +33,10 @@ export default function Routes() {
                     name="ChangePassword"
                     component={ChangePassword}
                 />
+                {/* <Stack.Screen
+                    name="RealtimeCamera"
+                    component={RealtimeCamera}
+                /> */}
                 <Stack.Screen
                     name="Start"
                     component={Start}

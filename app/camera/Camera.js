@@ -22,6 +22,10 @@ const Camera = async () => {
             aspect: [3, 3],
             quality: 1,
             base64: true,
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
         })
         if (!img.cancelled) {
             return img;

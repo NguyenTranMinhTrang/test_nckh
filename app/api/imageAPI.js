@@ -41,7 +41,11 @@ export const upLoad = async (image) => {
             throw Error('Không có ảnh nào được chọn !');
         }
     }
-    catch (err) {
-        return { status: "FAILED", message: "Đã có sự cố xảy ra trong quá trình gửi ảnh !" };
+    catch (error) {
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
     }
 }
