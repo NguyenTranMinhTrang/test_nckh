@@ -101,7 +101,11 @@ const Home = ({ navigation, tflite }) => {
                         if (res.length !== 0) {
                             //Get data from database
                             if (res[0].index === 30) {
-                                showError("Dự đoán không thành công")
+                                setOpenModal({
+                                    status: true,
+                                    title: "Dự đoán ảnh không thành công !",
+                                    number: 1
+                                });
                             }
                             else {
                                 const data = AnimalInfo[res[0].index]
@@ -123,6 +127,7 @@ const Home = ({ navigation, tflite }) => {
                         }
                     }
                     setLoading(false);
+                    setShowChooseCamrera(false);
                 });
         }
         else {
@@ -151,10 +156,15 @@ const Home = ({ navigation, tflite }) => {
                         if (res.length !== 0) {
                             //Get data from database
                             if (res[0].index === 30) {
-                                showError("Dự đoán không thành công")
+                                // Fail to predict animal
+                                setOpenModal({
+                                    status: true,
+                                    title: "Dự đoán ảnh không thành công !",
+                                    number: 1
+                                });
                             }
                             else {
-                                const data = AnimalInfo[res[0].index]
+                                const data = AnimalInfo[res[0].index];
                                 //Check if user logged in
                                 if (Object.keys(userData).length !== 0) {
                                     const res = await postHistory(userData.id, data.id);
@@ -173,6 +183,7 @@ const Home = ({ navigation, tflite }) => {
                         }
                     }
                     setLoading(false);
+                    setShowChooseCamrera(false);
                 });
         }
         else {
