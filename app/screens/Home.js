@@ -101,7 +101,11 @@ const Home = ({ navigation, tflite }) => {
                         if (res.length !== 0) {
                             //Get data from database
                             if (res[0].index === 30) {
-                                showError("Dự đoán không thành công")
+                                setOpenModal({
+                                    status: true,
+                                    title: "Dự đoán không thành công",
+                                    number: 1
+                                });
                             }
                             else {
                                 const data = AnimalInfo[res[0].index]
@@ -120,6 +124,13 @@ const Home = ({ navigation, tflite }) => {
                                     data
                                 })
                             }
+                        }
+                        else {
+                            setOpenModal({
+                                status: true,
+                                title: "Dự đoán không thành công",
+                                number: 1
+                            });
                         }
                     }
                     setLoading(false);
@@ -151,7 +162,11 @@ const Home = ({ navigation, tflite }) => {
                         if (res.length !== 0) {
                             //Get data from database
                             if (res[0].index === 30) {
-                                showError("Dự đoán không thành công")
+                                setOpenModal({
+                                    status: true,
+                                    title: "Dự đoán không thành công",
+                                    number: 1
+                                });
                             }
                             else {
                                 const data = AnimalInfo[res[0].index]
@@ -170,6 +185,13 @@ const Home = ({ navigation, tflite }) => {
                                     data
                                 })
                             }
+                        }
+                        else {
+                            setOpenModal({
+                                status: true,
+                                title: "Dự đoán không thành công",
+                                number: 1
+                            });
                         }
                     }
                     setLoading(false);

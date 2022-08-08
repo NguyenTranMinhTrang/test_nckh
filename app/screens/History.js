@@ -180,7 +180,7 @@ const History = ({ navigation }) => {
                     paddingHorizontal: SIZES.padding,
                 }}
             >
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Của Bạn</Text>
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Các động vật bạn vừa tìm kiếm</Text>
                 <View
                     style={{
                         marginTop: SIZES.padding,

@@ -191,6 +191,7 @@ android {
 }
 
 dependencies {
+    compile project(':tflite-react-native')
     compile 'com.android.support:multidex:1.0.1'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion

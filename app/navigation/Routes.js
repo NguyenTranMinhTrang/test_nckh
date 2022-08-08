@@ -33,10 +33,10 @@ export default function Routes({ tflite }) {
                     name="ChangePassword"
                     component={ChangePassword}
                 />
-                {/* <Stack.Screen
+                <Stack.Screen
                     name="RealtimeCamera"
                     component={RealtimeCamera}
-                /> */}
+                />
                 <Stack.Screen
                     name="Start"
                     component={Start}

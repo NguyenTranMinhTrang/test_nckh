@@ -11,7 +11,7 @@ import Code from "./Code";
 import GetPassword from "./GetPassword";
 import SendEmail from "./SendEmail";
 import Ask from "./Ask";
-// import RealtimeCamera from "./RealtimeCamera";
+import RealtimeCamera from "./RealtimeCamera";
 
 export {
     Home,
@@ -27,5 +27,5 @@ export {
     GetPassword,
     SendEmail,
     Ask,
-    // RealtimeCamera
+    RealtimeCamera
 };

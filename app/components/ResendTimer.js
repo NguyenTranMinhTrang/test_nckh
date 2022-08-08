@@ -41,7 +41,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail, color })
             </View>
             {
                 !activeResend && (
-                    <Text style={{ ...FONTS.h3_light, color: color }}>in {timeLeft || targetTime} second(s)</Text>
+                    <Text style={{ ...FONTS.h3_light, color: color }}>sau {timeLeft || targetTime} giây(s)</Text>
                 )
             }
 
