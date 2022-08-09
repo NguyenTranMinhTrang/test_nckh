@@ -25,6 +25,11 @@ import {
     translate,
 } from "react-native-redash";
 
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const ShowInfo = ({ navigation, route }) => {
     const [data, setData] = React.useState(null);
     const state = new Value(State.UNDETERMINED);

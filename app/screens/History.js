@@ -19,7 +19,6 @@ import { getByID } from "../api/imageAPI";
 import { useFocusEffect } from "@react-navigation/native";
 import { showError, showSuccess, Alert } from "../components";
 
-
 const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [data, setData] = React.useState([]);
