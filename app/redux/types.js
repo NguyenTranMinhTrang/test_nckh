@@ -1,5 +1,6 @@
 export default {
     LOGIN: "LOGIN",
     REGISTER: "RESGISTER",
+    MODEL: "MODEL",
     CLEAR_REDUX_STATE: "CLEAR_REDUX_STATE"
 }

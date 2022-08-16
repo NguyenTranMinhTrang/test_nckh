@@ -7,7 +7,7 @@ import Tabs from "./tab";
 
 const Stack = createNativeStackNavigator();
 
-export default function Routes({ tflite }) {
+export default function Routes() {
     const userData = useSelector((state) => state.auth.userData);
 
     return (
@@ -20,9 +20,8 @@ export default function Routes({ tflite }) {
             >
                 <Stack.Screen
                     name="Tabs"
-                >
-                    {props => < Tabs {...props} tflite={tflite} />}
-                </Stack.Screen>
+                    component={Tabs}
+                />
 
                 <Stack.Screen
                     name="ShowInfo"

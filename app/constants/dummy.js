@@ -65,8 +65,8 @@ const video = [
     },
     {
         id: 2,
-        title: "Thế giới động vật",
-        link: "https://www.youtube.com/watch?v=ejM5oB9GYyQ",
+        title: "Animals That Call The Jungle Home",
+        link: "https://www.youtube.com/watch?v=AhP5Tg_BLIk",
         image: require('../assets/images/animal_world.jpg')
     },
     {

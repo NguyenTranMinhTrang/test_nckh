@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = ({ tflite }) => {
+const Tabs = () => {
 
     const userData = useSelector((state) => state.auth.userData);
 
@@ -103,6 +103,7 @@ const Tabs = ({ tflite }) => {
             />
             <Tab.Screen
                 name="Home"
+                component={Home}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="home" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />
@@ -115,9 +116,8 @@ const Tabs = ({ tflite }) => {
                     )
                 }}
 
-            >
-                {props => < Home {...props} tflite={tflite} />}
-            </Tab.Screen>
+            />
+
             <Tab.Screen
                 name="History"
                 component={Object.keys(userData).length === 0 ? Ask : History}

@@ -1,18 +1,20 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-// import { RNCamera } from 'react-native-camera-tflite';
-import outputs from '../../Output.json';
+import { RNCamera } from 'react-native-camera-tflite';
+import { useRef } from 'react';
+import outputs from '../../Output1.json';
 import _ from 'lodash';
 let _currentInstant = 0;
 
 const RealtimeCamera = ({ navigation }) => {
-    const [output, setOutput] = React.useState("");
+    const [output, setOutput] = React.useState("Hi");
 
+    const [cameraRef, setCameraRef] = React.useState(null)
     const modelParams = {
-        file: "model.tflite",
-        inputDimX: 150,
-        inputDimY: 150,
-        outputDim: 31,
+        file: "mobilenet_v1_1.0_224.tflite",
+        inputDimX: 224,
+        inputDimY: 224,
+        outputDim: 1001,
         freqms: 0
     };
 
@@ -22,17 +24,16 @@ const RealtimeCamera = ({ navigation }) => {
         const outputData = _.chain(orderedData).take(3).map(item => `${item[1]}: ${item[0]}`).join('\n').value();
         const time = Date.now() - (_currentInstant || Date.now());
         const output = `Guesses:\n${outputData}\nTime:${time} ms`;
-        setOutput((state) => {
-            output
-        });
+        setOutput(output);
         _currentInstant = Date.now();
+        // console.log(data)
     }
 
     return (
         <View style={styles.container}>
             <RNCamera
-                ref={ref => {
-                    this.camera = ref;
+                ref={(ref) => {
+                    setCameraRef(ref)
                 }}
                 style={styles.preview}
                 type={RNCamera.Constants.Type.back}

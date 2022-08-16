@@ -37,6 +37,7 @@ const Alert = ({ number, title, openModal, onPress, yes, no = null }) => {
             animationType="slide"
             transparent={true}
             visible={openModal}
+            statusBarTranslucent={true}
         >
             <BlurView
                 style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}

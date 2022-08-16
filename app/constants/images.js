@@ -1,5 +1,5 @@
-const tiger = require('../database/avt/22.jpg');
-const crocodile = require('../database/avt/7.jpg');
+const tiger = require('../assets/images/22.jpg');
+const crocodile = require('../assets/images/7.jpg');
 const peafowl = require('../database/avt/23.jpg');
 const turtle = require('../assets/images/turtle.jpg');
 const successAlert = require('../assets/images/checked.png');

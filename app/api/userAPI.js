@@ -25,6 +25,9 @@ export const postHistory = async (id, animalID) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng ! Lưu lịch sử không thành công !";
+        }
         return { status: "FAILED", message: message };
     }
 
@@ -48,6 +51,9 @@ export const postChangePassword = async (id, password, newPassword) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
+        }
         return { status: "FAILED", message: message };
     }
 
@@ -68,6 +74,9 @@ export const getHistory = async (id) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }
@@ -91,6 +100,9 @@ export const deleteHistory = async (id, animalID, time) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }
@@ -126,6 +138,9 @@ export const uploadProfileImage = async (photo, token) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
+        }
         return { status: "FAILED", message: message };
     }
 };
@@ -145,6 +160,9 @@ export const requestPasswordReset = async (email) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }
@@ -167,6 +185,9 @@ export const resendVerification = async (id, email) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
+        }
         return { status: "FAILED", message: message };
     }
 }
@@ -186,6 +207,9 @@ export const resendPIN = async (email) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }
@@ -207,6 +231,9 @@ export const verifyPIN = async (email, pin) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }
@@ -233,6 +260,9 @@ export const resetPassword = async (newPassword, token) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
+        }
         return { status: "FAILED", message: message };
     }
 }
@@ -255,6 +285,9 @@ export const postUser = async (email, password) => {
         if (error.code === 'ECONNABORTED') {
             message = messageError;
         }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
+        }
         return { status: "FAILED", message: message };
     }
 }
@@ -276,6 +309,9 @@ export const singUp = async (email, password) => {
         let message = error.message;
         if (error.code === 'ECONNABORTED') {
             message = messageError;
+        }
+        else if (message == "Network Error") {
+            message = "Không có kết nối mạng !";
         }
         return { status: "FAILED", message: message };
     }

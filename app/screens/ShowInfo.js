@@ -4,103 +4,92 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import {
     PinchGestureHandler,
-    State
+    GestureHandlerRootView
 } from "react-native-gesture-handler";
-import Animated, {
-    Value,
-    block,
-    cond,
-    eq,
-    set,
-    useCode,
-} from "react-native-reanimated";
 
-import {
-    vec,
-    onGestureEvent,
-    timing,
-    pinchActive,
-    pinchBegan,
-    transformOrigin,
-    translate,
-} from "react-native-redash";
+import Animated, {
+    useAnimatedStyle,
+    useAnimatedGestureHandler,
+    useSharedValue,
+    withTiming
+} from "react-native-reanimated";
 
 import { LogBox } from 'react-native';
 
-LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-LogBox.ignoreAllLogs();//Ignore all log notifications
+LogBox.ignoreLogs(['Easing']); // Ignore log notification by message
 
 const ShowInfo = ({ navigation, route }) => {
     const [data, setData] = React.useState(null);
-    const state = new Value(State.UNDETERMINED);
-    const scale = new Value(1);
-    const focal = vec.createValue(0, 0);
-    const origin = vec.createValue(0, 0);
-    const translation = vec.createValue(0, 0);
-    const adjustedFocal = vec.add(
-        {
-            x: - (SIZES.width) / 2,
-            y: - (SIZES.height * 0.4) / 2,
-        },
-        focal
-    );
-    const zIndex = cond(eq(state, State.ACTIVE), 3, 0);
 
     React.useEffect(() => {
         let { data } = route.params;
         setData(data);
-    })
-
-    const handlePinch = onGestureEvent({
-        state,
-        scale,
-        focalX: focal.x,
-        focalY: focal.y
     });
 
-    useCode(() => block([
-        cond(eq(state, State.BEGAN), vec.set(origin, adjustedFocal)),
-        cond(eq(state, State.ACTIVE), vec.set(translation, vec.minus(vec.sub(origin, adjustedFocal)))),
-        cond(eq(state, State.END), [
-            set(translation.x, timing({ from: translation.x, to: 0 })),
-            set(translation.y, timing({ from: translation.y, to: 0 })),
-            set(scale, timing({ from: scale, to: 1 }))
-        ]),
-    ]), [focal, origin, state]);
+    const scale = useSharedValue(1);
+    const focalX = useSharedValue(0);
+    const focalY = useSharedValue(0);
+
+    const pinchHandler = useAnimatedGestureHandler({
+        onActive: (event) => {
+            scale.value = event.scale;
+            focalX.value = event.focalX;
+            focalY.value = event.focalY;
+        },
+        onEnd: () => {
+            scale.value = withTiming(1);
+        }
+    })
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: focalX.value },
+                { translateY: focalY.value },
+                { translateX: - SIZES.width / 2 },
+                { translateY: - (SIZES.height * 0.4) / 2 },
+                { scale: scale.value },
+                { translateX: - focalX.value },
+                { translateY: - focalY.value },
+                { translateX: SIZES.width / 2 },
+                { translateY: (SIZES.height * 0.4) / 2 },
+            ]
+        }
+    })
 
     function renderImage() {
-
-
         return (
             <View
                 style={{
-                    height: '40%',
+                    height: SIZES.height * 0.4,
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
             >
-                <PinchGestureHandler {...handlePinch}>
-                    <Animated.View
-                        style={{
-                            height: '100%',
-                            width: '100%',
-                            zIndex
-                        }}
-                    >
-                        <Animated.Image
-                            source={data.img}
-                            resizeMode='cover'
+                <GestureHandlerRootView
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                    }}
+                >
+                    <PinchGestureHandler onGestureEvent={pinchHandler}>
+                        <Animated.View
                             style={{
                                 height: '100%',
                                 width: '100%',
-                                transform: [
-                                    ...translate(translation),
-                                    ...transformOrigin(origin, { scale })
-                                ]
                             }}
-                        />
-                    </Animated.View>
-                </PinchGestureHandler>
+                        >
+                            <Animated.Image
+                                source={data.img}
+                                resizeMode='cover'
+                                style={[{
+                                    height: '100%',
+                                    width: '100%',
+                                }, animatedStyle]}
+                            />
+                        </Animated.View>
+                    </PinchGestureHandler>
+                </GestureHandlerRootView>
 
 
                 <TouchableOpacity

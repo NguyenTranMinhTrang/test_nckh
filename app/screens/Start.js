@@ -1,5 +1,14 @@
 import React from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, StatusBar, Platform } from "react-native";
+import {
+    View,
+    Text,
+    SafeAreaView,
+    Image,
+    TouchableOpacity,
+    StyleSheet,
+    StatusBar,
+    Platform
+} from "react-native";
 import { images, theme, COLORS, SIZES, FONTS } from "../constants";
 import { Feather } from '@expo/vector-icons';
 
@@ -16,7 +25,11 @@ const Start = ({ navigation }) => {
     function renderImage() {
         return (
             <View
-                style={{ width: SIZES.width, flexDirection: 'row' }}
+                style={{
+                    width: SIZES.width,
+                    flexDirection: 'row',
+                    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+                }}
             >
                 <View
                     style={{
@@ -111,9 +124,9 @@ const Start = ({ navigation }) => {
                     alignItems: 'center'
                 }}
             >
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Chào Mừng Đến Với</Text>
-                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: 5 }}>Thế Giới Động Vật !</Text>
-                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', marginBottom: 5, paddingHorizontal: SIZES.padding }}>Nhận diện và bảo về các loài động vật hoang dã với ứng dụng của chúng tôi !</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center' }}>Chào Mừng Đến Với</Text>
+                <Text style={{ ...FONTS.h1, color: COLORS.white, textAlign: 'center', marginBottom: SIZES.padding }}>Thế Giới Động Vật</Text>
+                <Text style={{ ...FONTS.body4, color: COLORS.lightGray, textAlign: 'center', paddingHorizontal: SIZES.padding }}>Nhận diện và bảo về các loài động vật hoang dã với ứng dụng của chúng tôi !</Text>
                 <TouchableOpacity
                     style={[{
                         marginTop: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2,
@@ -122,13 +135,21 @@ const Start = ({ navigation }) => {
                         flexDirection: 'row',
                         borderRadius: SIZES.radius * 2,
                         alignItems: 'center',
-                        height: 55
+                        height: 55,
+                        justifyContent: "center"
                     }, styles.shadow]}
 
                     onPress={() => navigation.navigate('Tabs')}
                 >
-                    <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, paddingLeft: SIZES.padding }} >Bắt Đầu Thôi</Text>
+                    <View
+                        style={{
+                            position: "absolute",
+                            left: 0
+                        }}
+                    >
+                        <Feather name="arrow-right-circle" size={50} color="white" iconStyle={{ paddingLeft: 5 }} />
+                    </View>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }} >Bắt Đầu Thôi</Text>
                 </TouchableOpacity>
             </View>
         )

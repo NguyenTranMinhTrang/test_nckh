@@ -7,10 +7,12 @@ import Routes from './app/navigation/Routes';
 import { getUserData } from './app/utils/utils';
 import { saveUserData } from './app/redux/actions/auth';
 import Tflite from 'tflite-react-native';
-let tflite = new Tflite();
+import actions from './app/redux/actions';
 
 // screen for stack & tabs
 const App = () => {
+
+  const [tflite, setTflite] = React.useState(new Tflite());
 
   useEffect(() => {
     (() => {
@@ -24,6 +26,7 @@ const App = () => {
             console.log(err);
           else
             console.log("Load model success");
+          actions.loadModel(tflite);
         });
     })();
     (async () => {
@@ -32,6 +35,10 @@ const App = () => {
         saveUserData(userData)
       }
     })();
+
+    return () => {
+      setTflite({});
+    }
   }, [])
   const [loaded] = useFonts({
     "Roboto-Black": require('./app/assets/fonts/Roboto-Black.ttf'),
@@ -46,7 +53,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <Routes tflite={tflite} />
+      <Routes />
       <FlashMessage
         position="top"
       />

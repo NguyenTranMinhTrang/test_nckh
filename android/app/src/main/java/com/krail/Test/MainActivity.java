@@ -2,17 +2,20 @@ package com.krail.Test;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.content.Intent;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import expo.modules.devlauncher.DevLauncherController;
+import expo.modules.devmenu.react.DevMenuAwareReactActivity;
 
 import expo.modules.ReactActivityDelegateWrapper;
 
-public class MainActivity extends ReactActivity {
+public class MainActivity extends DevMenuAwareReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    // Set the theme to AppTheme BEFORE onCreate to support 
+    // Set the theme to AppTheme BEFORE onCreate to support
     // coloring the background, status bar, and navigation bar.
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
@@ -30,15 +33,27 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
-    return new ReactActivityDelegateWrapper(this,
-      new ReactActivityDelegate(this, getMainComponentName())
-    );
+    return DevLauncherController.wrapReactActivityDelegate(
+        this,
+        () -> new ReactActivityDelegateWrapper(
+            this,
+            new ReactActivityDelegate(this, getMainComponentName())));
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    if (DevLauncherController.tryToHandleIntent(this, intent)) {
+      return;
+    }
+    super.onNewIntent(intent);
   }
 
   /**
    * Align the back button behavior with Android S
    * where moving root activities to background instead of finishing activities.
-   * @see <a href="https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
+   * 
+   * @see <a href=
+   *      "https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
    */
   @Override
   public void invokeDefaultOnBackPressed() {
