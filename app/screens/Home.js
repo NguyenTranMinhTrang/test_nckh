@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, NativeModules, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
@@ -11,6 +11,8 @@ import Camera from "../camera/Camera";
 import Library from "../camera/Library";
 import { postHistory } from "../api/userAPI";
 import { FlatList } from "react-native-gesture-handler";
+import { getNews } from '../api/imageAPI'
+import * as cheerio from "cheerio";
 
 
 const Home = ({ navigation }) => {
@@ -25,6 +27,14 @@ const Home = ({ navigation }) => {
         number: 0,
         yes: null
     });
+
+    const [news, setNews] = React.useState(null);
+
+    React.useEffect(() => {
+        (async () => {
+            await getNewsFromAPI()
+        })();
+    }, []);
 
     const closeModal = () => {
         setOpenModal({
@@ -68,73 +78,103 @@ const Home = ({ navigation }) => {
         });
     }
 
+    const getNewsFromAPI = async () => {
+        let data = await getNews()
+        const $ = cheerio.load(data)
+        const article = []
+        $('.item-news.item-news-common ', data).each((index, element) => {
+            const title = $(element).find('h3.title-news > a').text().trim()
+            const url = $(element).find('h3.title-news > a').attr('href')
+            const source = $(element).find('img').attr('data-src')
+            const description = $(element).find('p.description > a').text().trim()
+            if (title && url && source) {
+                description ?
+                    article.push({
+                        id: index,
+                        title: title,
+                        link: url,
+                        image: source,
+                        description: description
+                    }) :
+                    article.push({
+                        id: index,
+                        title: title,
+                        link: url,
+                        image: source,
+                    })
+            }
+        })
+        if (article) {
+            setNews(article)
+        }
+    }
+
     //Camera
     const handleCamera = async () => {
-        navigation.navigate('RealtimeCamera')
-        // let img = await Camera();
-        // let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
-        // if (img) {
-        //     setLoading(true);
-        //     tflite.runModelOnImage({
-        //         path: imagePath,  // required
-        //         imageMean: 0, // defaults to 127.5
-        //         imageStd: 1,  // defaults to 127.5
-        //         numResults: 3,    // defaults to 5
-        //         threshold: 0.6   // defaults to 0.1
-        //     },
-        //         async (err, res) => {
-        //             if (err) {
-        //                 console.log(err);
-        //             }
-        //             else {
-        //                 console.log(res)
-        //                 if (res.length !== 0) {
-        //                     //Get data from database
-        //                     if (res[0].index === 30) {
-        //                         setOpenModal({
-        //                             status: true,
-        //                             title: "Dự đoán không thành công",
-        //                             number: 1
-        //                         });
-        //                     }
-        //                     else {
-        //                         const data = AnimalInfo[res[0].index]
-        //                         //Check if user logged in
-        //                         if (Object.keys(userData).length !== 0) {
-        //                             const res = await postHistory(userData.id, data.id);
-        //                             if (res.status == "SUCCESS") {
-        //                                 showSuccess(res.message);
-        //                             }
-        //                             else if (res.status == "FAILED") {
-        //                                 showError(res.message);
-        //                             }
-        //                         }
+        setLoading(true);
+        let img = await Camera();
+        let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
+        if (img) {
+            tflite.runModelOnImage({
+                path: imagePath,  // required
+                imageMean: 0, // defaults to 127.5
+                imageStd: 1,  // defaults to 127.5
+                numResults: 3,    // defaults to 5
+                threshold: 0.6   // defaults to 0.1
+            },
+                async (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(res)
+                        if (res.length !== 0) {
+                            //Get data from database
+                            if (res[0].index === 30) {
+                                setOpenModal({
+                                    status: true,
+                                    title: "Dự đoán không thành công",
+                                    number: 1
+                                });
+                            }
+                            else {
+                                const data = AnimalInfo[res[0].index]
+                                //Check if user logged in
+                                if (Object.keys(userData).length !== 0) {
+                                    const res = await postHistory(userData.id, data.id);
+                                    if (res.status == "SUCCESS") {
+                                        showSuccess(res.message);
+                                    }
+                                    else if (res.status == "FAILED") {
+                                        showError(res.message);
+                                    }
+                                }
 
-        //                         setShowChooseCamrera(false);
-        //                         navigation.navigate('ShowInfo', {
-        //                             data
-        //                         })
-        //                     }
-        //                 }
-        //                 else {
-        //                     setOpenModal({
-        //                         status: true,
-        //                         title: "Dự đoán không thành công",
-        //                         number: 1
-        //                     });
-        //                 }
-        //             }
-        //         });
-        //     setLoading(false);
-        // }
+                                setShowChooseCamrera(false);
+                                navigation.navigate('ShowInfo', {
+                                    data
+                                })
+                            }
+                        }
+                        else {
+                            setOpenModal({
+                                status: true,
+                                title: "Dự đoán không thành công",
+                                number: 1
+                            });
+                        }
+                    }
+                });
+        }
+        setLoading(false);
     }
 
     //Library
     const handleLibrary = async () => {
+        setLoading(true);
         let img = await Library();
         let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
         if (img) {
-            setLoading(true);
             tflite.runModelOnImage({
                 path: imagePath,  // required
                 imageMean: 0, // defaults to 127.5
@@ -185,9 +225,8 @@ const Home = ({ navigation }) => {
                         }
                     }
                 });
-            setLoading(false);
         }
-
+        setLoading(false);
     }
 
     // Render
@@ -426,25 +465,28 @@ const Home = ({ navigation }) => {
                 horizontal={true}
                 scrollEnabled={false}
             >
-                <View>
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Tin Tức</Text>
-                    <FlatList
-                        data={dummyData.news}
-                        showsVerticalScrollIndicator={false}
-                        listKey="News"
-                        keyExtractor={item => `${item.id}`}
-                        renderItem={({ item, index }) => (
-                            <NewsVertical
-                                item={item}
-                                contentStyle={{
-                                    marginVertical: SIZES.padding,
-                                    marginTop: index == 0 ? SIZES.radius : SIZES.padding
-                                }}
-                                onPress={() => openLink(item.link)}
+                {
+                    news ?
+                        <View>
+                            <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Tin Tức</Text>
+                            <FlatList
+                                data={news}
+                                showsVerticalScrollIndicator={false}
+                                listKey="News"
+                                keyExtractor={item => `${item.id}`}
+                                renderItem={({ item, index }) => (
+                                    <NewsVertical
+                                        item={item}
+                                        contentStyle={{
+                                            marginVertical: SIZES.padding,
+                                            marginTop: index == 0 ? SIZES.radius : SIZES.padding
+                                        }}
+                                        onPress={() => openLink(item.link)}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                </View>
+                        </View> : null
+                }
             </ScrollView>
         )
     }

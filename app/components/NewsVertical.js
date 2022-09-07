@@ -11,33 +11,41 @@ import { AntDesign } from '@expo/vector-icons';
 
 const NewsVertical = ({ item, contentStyle, onPress }) => {
     return (
-        <TouchableOpacity
-            style={{ flexDirection: "row", ...contentStyle }}
-            onPress={onPress}
+        <View
+            style={{
+                width: 300,
+                ...contentStyle
+            }}
         >
+            <TouchableOpacity
+                style={{ flexDirection: "row", ...contentStyle }}
+                onPress={onPress}
+            >
 
-            {/* Image */}
+                {/* Image */}
 
-            <ImageBackground
-                source={item.image}
-                resizeMode="cover"
-                style={{
-                    height: 130,
-                    width: 130,
-                    marginBottom: SIZES.radius
-                }}
+                <ImageBackground
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
+                    style={{
+                        height: 130,
+                        width: 130,
+                        marginBottom: SIZES.radius
+                    }}
 
-                imageStyle={{
-                    borderRadius: SIZES.radius
-                }}
-            />
+                    imageStyle={{
+                        borderRadius: SIZES.radius
+                    }}
+                />
 
-            {/* Details */}
+                {/* Details */}
 
-            <View style={{ flex: 1, marginLeft: SIZES.base }}>
-                <Text style={{ ...FONTS.h3, color: COLORS.white }}>{item.title}</Text>
-            </View>
-        </TouchableOpacity>
+                <View style={{ flexShrink: 1, marginLeft: SIZES.base }}>
+                    <Text style={{ ...FONTS.h3, color: COLORS.white }}>{item.title}</Text>
+                    {/* <Text style={{ ...FONTS.h4, color: COLORS.white }}>{item.description}</Text> */}
+                </View>
+            </TouchableOpacity >
+        </View >
     )
 }
 

@@ -18,7 +18,7 @@ const Camera = async () => {
     else {
         let img = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: false,
+            allowsEditing: true,
             aspect: [3, 3],
             quality: 1,
             base64: true,

@@ -15,7 +15,7 @@ import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import { getHistory } from "../api/userAPI";
-import { getByID } from "../api/imageAPI";
+import { AnimalInfo } from '../database/db'
 import { useFocusEffect } from "@react-navigation/native";
 import { showError, showSuccess, Alert } from "../components";
 
@@ -56,16 +56,19 @@ const History = ({ navigation }) => {
         get_history(id)
     }
 
-    const showInfo = async (id) => {
-        const res = await getByID(id);
-        if (res.status == "SUCCESS") {
+    const getInfo = async (id) => {
+        const data = AnimalInfo[id - 1]
+
+        if (data) {
             navigation.navigate("ShowInfo", {
-                data: res.data
+                data
             });
         }
         else {
-            console.log(res.error)
+            showError("Xảy ra lỗi khi tìm kiếm thông tin con vật");
         }
+
+
     }
 
     // render
@@ -139,7 +142,7 @@ const History = ({ navigation }) => {
                         }
                     })}
 
-                    onPress={() => showInfo(item.animalID)}
+                    onPress={() => getInfo(item.animalID)}
                 >
                     <View
                         style={{

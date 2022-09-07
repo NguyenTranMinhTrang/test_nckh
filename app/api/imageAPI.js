@@ -49,3 +49,21 @@ export const upLoad = async (image) => {
         return { status: "FAILED", message: message };
     }
 }
+
+export const getNews = async () => {
+    try {
+        const vnexpress = "https://timkiem.vnexpress.net/?search_q=%C4%91%E1%BB%99ng%20v%E1%BA%ADt%20hoang%20d%C3%A3&cate_code=khoa-hoc&media_type=all&latest=&fromdate=&todate=&date_format=all&"
+        let res = await axios.get(vnexpress)
+        if (res)
+            return res
+        else {
+            throw Error("Không nhận được phản hồi từ trang tin tức")
+        }
+    } catch (error) {
+        let message = error.message;
+        if (error.code === 'ECONNABORTED') {
+            message = messageError;
+        }
+        return { status: "FAILED", message: message };
+    }
+}

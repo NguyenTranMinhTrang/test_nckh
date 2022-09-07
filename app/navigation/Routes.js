@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword, RealtimeCamera } from "../screens";
+import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword } from "../screens";
 import Tabs from "./tab";
 
 const Stack = createNativeStackNavigator();
@@ -31,10 +31,6 @@ export default function Routes() {
                 <Stack.Screen
                     name="ChangePassword"
                     component={ChangePassword}
-                />
-                <Stack.Screen
-                    name="RealtimeCamera"
-                    component={RealtimeCamera}
                 />
                 <Stack.Screen
                     name="Start"
