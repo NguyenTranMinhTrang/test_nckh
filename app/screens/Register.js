@@ -9,7 +9,8 @@ import {
     Pressable,
     KeyboardAvoidingView,
     Keyboard,
-    ActivityIndicator
+    ActivityIndicator,
+    ScrollView
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, Feather } from '@expo/vector-icons';
@@ -18,6 +19,9 @@ import Header from "../components/Header";
 import validator from "../utils/validations";
 import { showError, showSuccess } from "../components/showErrorMess";
 import actions from "../redux/actions";
+import { FormProvider, useForm } from "react-hook-form";
+import InputField from "../components/InputField";
+import InputPassword from "../components/InputPassword";
 
 
 // render
@@ -35,6 +39,24 @@ const Register = ({ navigation }) => {
 
     const { isLoading, email, password, confirm, secureTextEntry, confirmSecureTextEntry } = data;
 
+
+    const {
+        control,
+        formState: { errors },
+    } = useForm({
+        mode: 'all',
+        defaultValues: {
+            userName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            dayOfBirth: "",
+            fullName: "",
+            phoneNumber: "",
+        },
+    })
+
+    console.log('errors: ', errors);
 
     const updateState = (newState) => setData(() => (
         {
@@ -126,90 +148,81 @@ const Register = ({ navigation }) => {
                     borderTopRightRadius: 30,
                 }}
             >
-                <Pressable
-                    style={{
-                        flex: 1,
-                        paddingHorizontal: SIZES.padding,
-                        paddingVertical: 30,
-                    }}
-                    onPress={Keyboard.dismiss}
-                >
-                    <Text style={{ ...FONTS.h3_light }}>Email</Text>
-                    <View style={styles.box_text}>
-                        <FontAwesome name="user" size={20} color="black" />
-                        <TextInput
-                            placeholder="Nhập Email ..."
-                            style={styles.textInput}
-                            onChangeText={(email) => updateState({ email })}
-                        />
-                    </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu</Text>
-                    <View style={styles.box_text}>
-                        <FontAwesome name="lock" size={20} color="black" />
-                        <TextInput
-                            placeholder="Nhập Mật Khẩu ..."
-                            secureTextEntry={secureTextEntry ? true : false}
-                            autoCapitalize="none"
-                            style={styles.textInput}
-                            onChangeText={(password) => updateState({ password })}
-                        />
-                        <TouchableOpacity
-                            onPress={updateSecureTextEntry}
-                        >
-                            {
-                                secureTextEntry ?
-                                    <Feather name="eye-off" size={20} color="black" />
-                                    :
-                                    <Feather name="eye" size={20} color="black" />
-                            }
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Xác Nhận Mật Khẩu</Text>
-                    <View
-                        style={styles.box_text}
-                    >
-                        <FontAwesome name="lock" size={20} color="black" />
-                        <TextInput
-                            placeholder="Xác Nhận Mật Khẩu ..."
-                            secureTextEntry={confirmSecureTextEntry ? true : false}
-                            autoCapitalize="none"
-                            style={styles.textInput}
-                            onChangeText={(confirm) => updateState({ confirm })}
-                        />
-                        <TouchableOpacity
-                            onPress={updateConfirmSecureTextEntry}
-                        >
-                            {
-                                confirmSecureTextEntry ?
-                                    <Feather name="eye-off" size={20} color="black" />
-                                    :
-                                    <Feather name="eye" size={20} color="black" />
-                            }
-                        </TouchableOpacity>
-                    </View>
-                    <View
+                <ScrollView>
+                    <Pressable
                         style={{
-                            alignItems: 'center',
-                            marginTop: 50,
+                            flex: 1,
+                            paddingHorizontal: SIZES.padding,
+                            paddingVertical: 30,
                         }}
+                        onPress={Keyboard.dismiss}
                     >
-                        <TouchableOpacity
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
-                                height: 50,
-                                backgroundColor: COLORS.primary,
-                                borderRadius: SIZES.radius
+
+                        <InputField
+                            control={control}
+                            name="userName"
+                            title="Username"
+                            iconName="user"
+                            required={true}
+                        />
+
+                        <InputField
+                            control={control}
+                            name="email"
+                            title="Email"
+                            iconName="mail-sharp"
+                            iconType="Ion"
+                            required={true}
+                        />
+
+                        <InputPassword
+                            control={control}
+                            name="password"
+                            title="Mật khẩu"
+                            iconName="lock"
+                            required={true}
+                        />
+
+                        <InputPassword
+                            control={control}
+                            name="confirmPassword"
+                            title="Xác Nhận Mật Khẩu"
+                            iconName="lock"
+                            required={true}
+                            rules={{
+                                validate: (value) => {
+                                    if (!value) {
+                                        return "Trường thông tin không được bỏ trống!"
+                                    }
+                                }
                             }}
-                            onPress={onRegister}
+                        />
+
+
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                marginTop: 50,
+                            }}
                         >
-                            {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Ký</Text>
-                            }
-                        </TouchableOpacity>
-                    </View>
-                </Pressable>
+                            <TouchableOpacity
+                                style={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    height: 50,
+                                    backgroundColor: COLORS.primary,
+                                    borderRadius: SIZES.radius
+                                }}
+                                onPress={onRegister}
+                            >
+                                {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
+                                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Ký</Text>
+                                }
+                            </TouchableOpacity>
+                        </View>
+                    </Pressable>
+                </ScrollView>
             </KeyboardAvoidingView>
         )
     }

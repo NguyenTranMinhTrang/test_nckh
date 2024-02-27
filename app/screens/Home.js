@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform } from "react-native";
+import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform, FlatList } from "react-native";
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import Library from "../camera/Library";
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
-import { FlatList } from "react-native-gesture-handler";
 
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
@@ -288,7 +287,8 @@ const Home = ({ navigation, tflite }) => {
                                 alignItems: 'center',
                                 width: '85%',
                                 backgroundColor: COLORS.lightGray2,
-                                borderRadius: SIZES.radius
+                                borderRadius: SIZES.radius,
+                                padding: 16
                             }}
                         >
                             <View
@@ -343,7 +343,7 @@ const Home = ({ navigation, tflite }) => {
                                     backgroundColor: COLORS.primary,
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    marginBottom: SIZES.padding * 2,
+                                    marginBottom: 8,
                                     borderRadius: SIZES.radius
                                 }}
 
