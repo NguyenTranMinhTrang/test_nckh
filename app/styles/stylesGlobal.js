@@ -12,6 +12,12 @@ export const styleGlobal = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    alignCenter: {
+        alignItems: 'center',
+    },
+    justifyCenter: {
+        justifyContent: 'center',
+    },
     full: {
         flex: 1
     },
@@ -54,6 +60,12 @@ export const styleGlobal = StyleSheet.create({
     ph1: {
         paddingHorizontal: SIZES.base
     },
+    p1: {
+        padding: SIZES.base,
+    },
+    m2: {
+        padding: SIZES.base
+    },
     mr2: {
         marginRight: SIZES.base * 2
     },
@@ -71,6 +83,9 @@ export const styleGlobal = StyleSheet.create({
     },
     mh2: {
         marginHorizontal: SIZES.base * 2
+    },
+    p2: {
+        padding: SIZES.base,
     },
     pr2: {
         paddingRight: SIZES.base * 2
@@ -90,4 +105,7 @@ export const styleGlobal = StyleSheet.create({
     ph2: {
         paddingHorizontal: SIZES.base * 2
     },
+    radius: {
+        borderRadius: SIZES.base
+    }
 })

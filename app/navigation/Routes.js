@@ -13,7 +13,7 @@ export default function Routes({ tflite }) {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='Start'
+                initialRouteName='Register'
                 screenOptions={{
                     headerShown: false
                 }}
