@@ -5,7 +5,7 @@ const showError = (message) => {
         type: 'danger',
         icon: 'danger',
         duration: 10000,
-        message
+        message: message || 'Thao tác thất bại! Vui lòng thử lại.'
     })
 }
 
@@ -14,7 +14,7 @@ const showSuccess = (message) => {
         type: 'success',
         icon: 'success',
         duration: 10000,
-        message
+        message: message || 'Thao tác thành công!'
     })
 }
 

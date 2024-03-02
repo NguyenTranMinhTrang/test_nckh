@@ -1,86 +1,59 @@
-import React from "react";
-import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, SafeAreaView, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
-import { FontAwesome, Feather } from '@expo/vector-icons';
 import { showError, showSuccess } from "../components/showErrorMess";
-import ResendTimer from "../components/ResendTimer";
 import Header from "../components/Header";
 import { resendPIN, verifyPIN } from "../api/userAPI"
+import CountOtp from "../components/CountOtp";
+import OTPTextView from "react-native-otp-textinput";
+import { styleGlobal } from "../styles/stylesGlobal";
+import Loading from "../components/Loading";
 
+const COUNT = 4;
 
 const Code = ({ navigation, route }) => {
-    const { data } = route.params
-    const [code, setCode] = React.useState('');
+    const { email, userName } = route.params;
 
-    const [timeLeft, setTimeLeft] = React.useState(null);
-    const [targetTime, setTargetTime] = React.useState(null);
-    const [activeResend, setActiveResend] = React.useState(false);
-    let resendTimerInterval;
+    const refCountDown = useRef();
+    const refCode = useRef();
+    const refLoading = useRef();
 
-    const caculateTimeLeft = (finalTime) => {
-        const difference = finalTime - +new Date();
-        if (difference >= 0) {
-            setTimeLeft(Math.round(difference / 1000));
-        }
-        else {
-            setTimeLeft(null);
-            clearInterval(resendTimerInterval);
-            setActiveResend(true);
-        }
-    }
-
-    const triggerTime = (targetTime = 20) => {
-        setTargetTime(targetTime);
-        setActiveResend(false);
-        const finalTime = +(new Date()) + targetTime * 1000;
-        resendTimerInterval = setInterval(() => {
-            caculateTimeLeft(finalTime);
-        }, 1000);
-    }
-
-    const resendPin = async (email) => {
-        const res = await resendPIN(email);
-        if (res.status == "PENDING") {
-            showSuccess(res.message);
-            triggerTime();
+    const onResend = async () => {
+        refLoading?.current?.onOpen();
+        const res = await resendPIN(email, userName);
+        refLoading?.current?.onClose();
+        if (res.resultCode == 0) {
+            showSuccess('Đã gửi mã OTP thành công!');
+            refCountDown?.current?.onCountDown();
         }
         else {
             showError(res.message)
         }
     }
 
-    React.useEffect(() => {
-        triggerTime();
-
-        return () => {
-            clearInterval(resendTimerInterval);
-        }
+    useEffect(() => {
+        refCountDown?.current?.onCountDown();
     }, []);
 
-    const isValid = () => {
-        if (!code) {
-            showError("Bạn chưa nhập mã pin !");
-            return false;
-        }
-        else {
-            return true;
+
+    const handleTextChange = (text) => {
+        console.log('text: ', text);
+        refCode.current = text;
+        if (text && text.length === COUNT) {
+            Keyboard.dismiss();
         }
     }
 
-    const handlePin = async (email, code) => {
-        const checkValid = isValid();
-        if (checkValid) {
-            const res = await verifyPIN(email, code)
-            if (res.status == "SUCCESS") {
-                const data = res.data
-                showSuccess(res.message)
-                navigation.navigate("GetPassword", {
-                    data
-                });
-            }
-            else {
-                showError(res.message)
-            }
+    const handlePin = async () => {
+        refLoading?.current?.onOpen();
+        const res = await verifyPIN(userName, email, refCode.current);
+        refLoading?.current?.onClose();
+        if (res.resultCode == 0) {
+            showSuccess();
+            navigation.navigate("Login");
+        }
+        else {
+            showError(res.message);
         }
     }
 
@@ -104,22 +77,12 @@ const Code = ({ navigation, route }) => {
                     onPress={Keyboard.dismiss}
                 >
                     {/* Mã Pin  */}
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Pin</Text>
-                    <View
-                        style={styles.box_text}
-                    >
-                        <FontAwesome name="lock" size={20} color="black" />
-                        <TextInput
-                            placeholder="Mã Pin ..."
-                            value={code}
-                            autoCapitalize="none"
-                            style={styles.textInput}
-                            keyboardType="number-pad"
-                            onChangeText={(code) => setCode(code)}
+                    <Text style={[{ ...FONTS.h3, textAlign: 'center' }, styleGlobal.mb2]}>Mã pin đã được gửi đến tài khoản: {email}</Text>
 
-                        />
-                    </View>
-
+                    <OTPTextView
+                        inputCount={COUNT}
+                        handleTextChange={handleTextChange}
+                    />
 
                     {/* Button get password */}
 
@@ -127,8 +90,7 @@ const Code = ({ navigation, route }) => {
                         style={{
                             alignItems: 'center',
                             marginTop: SIZES.padding,
-                        }}
-                    >
+                        }}>
                         <TouchableOpacity
                             style={{
                                 justifyContent: 'center',
@@ -139,17 +101,13 @@ const Code = ({ navigation, route }) => {
                                 borderRadius: SIZES.radius
                             }}
 
-                            onPress={() => handlePin(data.email, code)}
-                        >
+                            onPress={handlePin}>
                             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
                     </View>
-                    <ResendTimer
-                        activeResend={activeResend}
-                        timeLeft={timeLeft}
-                        targetTime={targetTime}
-                        resendEmail={() => resendPin(data.email)}
-                        color="black"
+                    <CountOtp
+                        ref={refCountDown}
+                        onResend={onResend}
                     />
                 </Pressable>
             </View >
@@ -160,6 +118,7 @@ const Code = ({ navigation, route }) => {
         <SafeAreaView style={styles.container}>
             <Header title="Nhập Mã Pin" navigation={navigation} />
             {renderContent()}
+            <Loading ref={refLoading} />
         </SafeAreaView>
     )
 }

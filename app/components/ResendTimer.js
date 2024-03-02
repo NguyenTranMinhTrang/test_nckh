@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, SafeAreaView, TextInput, Pressable, Keyboard, StyleSheet, TouchableOpacity } from "react-native";
-import { COLORS, SIZES, FONTS } from "../constants";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SIZES, FONTS } from "../constants";
 
-const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail, color }) => {
+const ResendTimer = ({ timeLeft, resendEmail, color, activeResend }) => {
     return (
         <View
             style={{
@@ -41,7 +41,7 @@ const ResendTimer = ({ activeResend, timeLeft, targetTime, resendEmail, color })
             </View>
             {
                 !activeResend && (
-                    <Text style={{ ...FONTS.h3_light, color: color }}>in {timeLeft || targetTime} second(s)</Text>
+                    <Text style={{ ...FONTS.h3_light, color: color }}>in {timeLeft} second(s)</Text>
                 )
             }
 

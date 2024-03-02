@@ -171,10 +171,11 @@ export const resendVerification = async (id, email) => {
     }
 }
 
-export const resendPIN = async (email) => {
+export const resendPIN = async (email, userName) => {
     try {
         const res = await axios.post(endpoint.RESEND_PIN, {
-            "email": email
+            email,
+            userName
         })
         if (res) {
             return res;
@@ -191,11 +192,12 @@ export const resendPIN = async (email) => {
     }
 }
 
-export const verifyPIN = async (email, pin) => {
+export const verifyPIN = async (userName, email, otp) => {
     try {
         const res = await axios.post(endpoint.VERIFY_PIN, {
-            "email": email,
-            "pin": pin
+            userName,
+            email,
+            otp
         })
         if (res) {
             return res;

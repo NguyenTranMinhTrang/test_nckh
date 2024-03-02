@@ -15,8 +15,8 @@ export default {
     DELETE_HISTORY: "/user/deleteHistory",
     UPLOAD_PROFILE: "/user/uploadProfile",
     REQUEST_RESET_PASSWORD: "/user/requestPasswordReset",
-    VERIFY_PIN: "/user/verifyPinCode",
-    RESEND_PIN: "/user/resendPIN",
+    VERIFY_PIN: "/user/verifyOtp",
+    RESEND_PIN: "/user/resendOtp",
     RESET_PASSWORD: "/user/resetPassword",
     RESEND_VERIFY_EMAIL: "/user/resendVerificationLink"
 }

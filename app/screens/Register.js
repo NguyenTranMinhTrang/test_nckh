@@ -21,6 +21,7 @@ import axiosClient from "../api/axiosClient";
 import endpoint from "../api/endpoint";
 import { format } from "date-fns";
 import { styleGlobal } from "../styles/stylesGlobal";
+import { showError } from "../components";
 
 
 // render
@@ -55,10 +56,15 @@ const Register = ({ navigation }) => {
             }
         );
         console.log('response: ', response);
+        if (response?.resultCode === 0) {
+            navigation.navigate('Code', { email: values?.email, userName: values?.userName })
+        } else {
+            showError();
+        }
         refLoading?.current?.onClose();
     }
 
-    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 10 : 0;
 
     function renderFooter() {
         return (
