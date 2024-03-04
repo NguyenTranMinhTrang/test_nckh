@@ -1,5 +1,5 @@
 import React from "react";
-import { FontAwesome, Feather, AntDesign, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const Icon = (props) => {
     const {
@@ -19,6 +19,8 @@ const Icon = (props) => {
             return <AntDesign name={name} size={size} color={color} style={style} />;
         case 'Ion':
             return <Ionicons name={name} size={size} color={color} style={style} />;
+        case 'Ma':
+            return <MaterialIcons name={name} size={size} color={color} style={style} />;
         default:
             return <></>;
     }

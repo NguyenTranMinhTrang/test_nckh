@@ -85,7 +85,7 @@ export const styleGlobal = StyleSheet.create({
         marginHorizontal: SIZES.base * 2
     },
     p2: {
-        padding: SIZES.base,
+        padding: SIZES.base * 2,
     },
     pr2: {
         paddingRight: SIZES.base * 2

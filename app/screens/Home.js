@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useRef } from "react";
 import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform, FlatList } from "react-native";
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
 import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
 import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError, showSuccess } from "../components";
 import { AnimalInfo } from '../database/db'
-
 // Camera
 import Camera from "../camera/Camera";
 import Library from "../camera/Library";
 import { upLoad } from "../api/imageAPI";
 import { postHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
+import axiosClient from "../api/axiosClient";
+import endpoint from "../api/endpoint";
+import ButtonReportFloat from "../components/ButtonReportFloat";
+import Loading from '../components/Loading';
 
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
@@ -26,6 +29,8 @@ const Home = ({ navigation, tflite }) => {
         number: 0,
         yes: null
     });
+
+    const refLoading = useRef(null);
 
     const closeModal = () => {
         setOpenModal({
@@ -42,7 +47,6 @@ const Home = ({ navigation, tflite }) => {
 
     const getInfo = async (id) => {
         const data = AnimalInfo[id - 1]
-
         if (data) {
             navigation.navigate("ShowInfo", {
                 data
@@ -134,56 +138,91 @@ const Home = ({ navigation, tflite }) => {
         }
     }
 
+    const onPredictImage = async (image) => {
+        const formData = new FormData();
+        let imagePath = Platform.OS === 'android' ? image.uri : image.uri.replace('file://', '')
+        formData.append('image', {
+            name: new Date() + '_profile',
+            uri: imagePath,
+            type: 'image/jpg',
+        });
+        const response = await axiosClient.post(endpoint.PREDICT_ANIMAL, formData, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            transformRequest: formData => formData
+        });
+        return response;
+    }
+
     //Library
     const handleLibrary = async () => {
         let img = await Library();
-        let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
         if (img) {
-            setLoading(true);
-            tflite.runModelOnImage({
-                path: imagePath,  // required
-                imageMean: 0, // defaults to 127.5
-                imageStd: 1,  // defaults to 127.5
-                numResults: 1,    // defaults to 5
-                threshold: 0.5   // defaults to 0.1
-            },
-                async (err, res) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                        if (res.length !== 0) {
-                            //Get data from database
-                            if (res[0].index === 30) {
-                                // Fail to predict animal
-                                setOpenModal({
-                                    status: true,
-                                    title: "Dự đoán ảnh không thành công !",
-                                    number: 1
-                                });
-                            }
-                            else {
-                                const data = AnimalInfo[res[0].index];
-                                //Check if user logged in
-                                if (Object.keys(userData).length !== 0) {
-                                    const res = await postHistory(userData.id, data.id);
-                                    if (res.status == "SUCCESS") {
-                                        showSuccess(res.message);
-                                    }
-                                    else if (res.status == "FAILED") {
-                                        showError(res.message);
-                                    }
-                                }
+            setShowChooseCamrera(false);
+            setTimeout(async () => {
+                refLoading?.current?.onOpen();
+                const response = await onPredictImage(img);
+                console.log('response: ', response);
+                refLoading?.current?.onClose();
+                if (response?.resultCode == 0) {
+                    navigation.navigate('ShowInfo', {
+                        data: response?.data
+                    })
+                } else {
+                    setOpenModal({
+                        status: true,
+                        title: "Dự đoán ảnh không thành công !",
+                        number: 1
+                    });
+                }
+            }, 200);
+            // setLoading(true);
+            // tflite.runModelOnImage({
+            //     path: imagePath,  // required
+            //     imageMean: 0, // defaults to 127.5
+            //     imageStd: 1,  // defaults to 127.5
+            //     numResults: 1,    // defaults to 5
+            //     threshold: 0.5   // defaults to 0.1
+            // },
+            //     async (err, res) => {
+            //         if (err) {
+            //             console.log(err);
+            //         }
+            //         else {
+            //             if (res.length !== 0) {
+            //                 //Get data from database
+            //                 if (res[0].index === 30) {
+            //                     // Fail to predict animal
+            //                     setOpenModal({
+            //                         status: true,
+            //                         title: "Dự đoán ảnh không thành công !",
+            //                         number: 1
+            //                     });
+            //                 }
+            //                 else {
+            //                     const data = AnimalInfo[res[0].index];
+            //                     //Check if user logged in
+            //                     if (Object.keys(userData).length !== 0) {
+            //                         const res = await postHistory(userData.id, data.id);
+            //                         if (res.status == "SUCCESS") {
+            //                             showSuccess(res.message);
+            //                         }
+            //                         else if (res.status == "FAILED") {
+            //                             showError(res.message);
+            //                         }
+            //                     }
 
-                                navigation.navigate('ShowInfo', {
-                                    data
-                                })
-                            }
-                        }
-                    }
-                    setLoading(false);
-                    setShowChooseCamrera(false);
-                });
+            //                     navigation.navigate('ShowInfo', {
+            //                         data
+            //                     })
+            //                 }
+            //             }
+            //         }
+            //         setLoading(false);
+            //         setShowChooseCamrera(false);
+            //     });
         }
         else {
             showError("Chọn ảnh không thành công! Hãy thử lại")
@@ -192,7 +231,7 @@ const Home = ({ navigation, tflite }) => {
 
     // Render
     function renderHeader() {
-        const avatar = userData?.avatar;
+        const avatar = userData?.avt;
         return (
             <View
                 style={{
@@ -454,12 +493,13 @@ const Home = ({ navigation, tflite }) => {
                     paddingBottom: 60 + SIZES.padding,
                     paddingHorizontal: SIZES.padding
                 }}
-                showsVerticalScrollIndicator={false}
-            >
+                showsVerticalScrollIndicator={false}>
                 {renderImage()}
                 {renderVideo()}
                 {renderNews()}
             </ScrollView>
+            <Loading ref={refLoading} />
+            <ButtonReportFloat onPress={() => navigation.navigate('Report')} />
         </SafeAreaView>
     )
 }

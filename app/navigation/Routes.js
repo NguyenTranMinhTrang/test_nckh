@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword, RealtimeCamera } from "../screens";
 import Tabs from "./tab";
+import Report from '../screens/Report';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +14,7 @@ export default function Routes({ tflite }) {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='Register'
+                initialRouteName='Home'
                 screenOptions={{
                     headerShown: false
                 }}
@@ -64,6 +65,11 @@ export default function Routes({ tflite }) {
                 <Stack.Screen
                     name="SendEmail"
                     component={SendEmail}
+                />
+
+                <Stack.Screen
+                    name="Report"
+                    component={Report}
                 />
             </Stack.Navigator>
         </NavigationContainer>

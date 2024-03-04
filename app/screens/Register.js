@@ -23,7 +23,6 @@ import { format } from "date-fns";
 import { styleGlobal } from "../styles/stylesGlobal";
 import { showError } from "../components";
 
-
 // render
 const Register = ({ navigation }) => {
     const refLoading = useRef(null);
@@ -76,8 +75,7 @@ const Register = ({ navigation }) => {
                     backgroundColor: COLORS.white,
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
-                }}
-            >
+                }}>
                 <Pressable
                     style={{
                         flex: 1,

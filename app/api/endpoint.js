@@ -18,5 +18,7 @@ export default {
     VERIFY_PIN: "/user/verifyOtp",
     RESEND_PIN: "/user/resendOtp",
     RESET_PASSWORD: "/user/resetPassword",
-    RESEND_VERIFY_EMAIL: "/user/resendVerificationLink"
+    RESEND_VERIFY_EMAIL: "/user/resendVerificationLink",
+    PREDICT_ANIMAL: '/redList/predictAnimal',
+    CREATE_REPORT: '/report/createReport',
 }

@@ -1,117 +1,56 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
     View,
     Text,
     TouchableOpacity,
     StyleSheet,
-    TextInput,
     Platform,
     KeyboardAvoidingView,
     Pressable,
-    Keyboard,
-    ActivityIndicator
+    Keyboard
 } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
-import { FontAwesome, Feather } from '@expo/vector-icons';
-
-import validator from "../utils/validations";
 import { showError, showSuccess, Header } from "../components";
-import actions from '../redux/actions';
+import { useForm } from "react-hook-form";
+import InputField from "../components/InputField";
+import InputPassword from "../components/InputPassword";
+import Loading from "../components/Loading";
+import { postUser } from "../api/userAPI";
+import { saveUserData } from "../redux/actions/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STORAGE_KEY } from "../constants/AppConstant";
 // render
 const Login = ({ navigation }) => {
+    const refLoading = useRef(null);
 
-    const isUnmounted = React.useRef(false);
-
-    const [data, setData] = React.useState({
-        isLoading: false,
-        id: '',
-        email: '',
-        password: '',
-        avatar: '',
-        token: '',
-        secureTextEntry: true,
-    });
-
-    React.useEffect(
-        () => () => {
-            isUnmounted.current = true;
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        mode: 'all',
+        defaultValues: {
+            userName: "minhtrang",
+            password: "123456",
         },
-        [],
-    );
+    })
 
-
-    const { isLoading, email, password, secureTextEntry } = data;
-
-    const updateState = (newState) => setData(() => (
-        {
-            ...data,
-            ...newState
-        }
-    ))
-
-    function updateSecureTextEntry() {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        })
-    }
-
-    const isValid = () => {
-        const error = validator({
-            email,
-            password
-        });
-
-        if (error) {
-            showError(error);
-            return false;
-        }
-        return true;
-    }
-
-
-    const onLogin = async () => {
-        const checkValidData = isValid();
-
-        if (checkValidData) {
-            updateState({
-                isLoading: true
-            })
-            try {
-                const res = await actions.login({
-                    email,
-                    password
-                });
-
-                if (res) {
-                    showSuccess("Đăng nhập thành công!");
-                    navigation.navigate("Home");
-                }
-
-                if (!isUnmounted.current) {
-                    updateState({
-                        isLoading: false
-                    })
-                }
-
-            } catch (error) {
-                if (error && error.status) {
-                    if (error.status == "FAILED") {
-                        showError(error.message);
-                    }
-                }
-                else {
-                    showError("There is an error occurd!");
-                    console.log(error);
-                }
-                updateState({
-                    isLoading: false
-                })
+    const onLogin = async (values) => {
+        try {
+            const res = await postUser(values.userName, values.password);
+            if (res?.resultCode === 0) {
+                console.log(res);
+                saveUserData(res?.data);
+                await AsyncStorage.setItem(STORAGE_KEY.USER_DATA, JSON.stringify(res?.data));
+                showSuccess();
+                navigation.navigate("Home");
+            } else {
+                showError();
             }
+        } catch (error) {
+            showError();
         }
-
     }
-
 
     function renderHeader() {
         return (
@@ -140,48 +79,29 @@ const Login = ({ navigation }) => {
 
                     }}
 
-                    onPress={Keyboard.dismiss}
-                >
-                    <Text style={{ ...FONTS.h3_light }}>Email</Text>
-                    <View style={styles.box_text}>
-                        <FontAwesome name="user" size={20} color="black" />
-                        <TextInput
-                            placeholder="Nhập Email ..."
-                            style={styles.textInput}
-                            onChangeText={(email) => updateState({ email })}
-                        />
-                    </View>
-                    <Text style={{ ...FONTS.h3_light, marginTop: 35 }}>Mật Khẩu</Text>
-                    <View
-                        style={styles.box_text}
-                    >
-                        <FontAwesome name="lock" size={20} color="black" />
-                        <TextInput
-                            placeholder="Nhập Password ..."
-                            secureTextEntry={secureTextEntry ? true : false}
-                            autoCapitalize="none"
-                            style={styles.textInput}
-                            onChangeText={(password) => updateState({ password })}
-                        />
-                        <TouchableOpacity
-                            onPress={updateSecureTextEntry}
-                        >
-                            {
-                                secureTextEntry ?
-                                    <Feather name="eye-off" size={20} color="black" />
-                                    :
-                                    <Feather name="eye" size={20} color="black" />
-                            }
-                        </TouchableOpacity>
-                    </View>
+                    onPress={Keyboard.dismiss}>
+                    <InputField
+                        control={control}
+                        name="userName"
+                        title="Username"
+                        iconName="user"
+                        required={true}
+                    />
+
+                    <InputPassword
+                        control={control}
+                        name="password"
+                        title="Mật khẩu"
+                        iconName="lock"
+                        required={true}
+                    />
 
                     <View
                         style={{
                             flexDirection: 'row',
                             marginTop: SIZES.base,
                             justifyContent: "flex-end"
-                        }}
-                    >
+                        }}>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('ForgetPassword')}
                         >
@@ -204,11 +124,8 @@ const Login = ({ navigation }) => {
                                 backgroundColor: COLORS.primary,
                                 borderRadius: SIZES.radius
                             }}
-                            onPress={onLogin}
-                        >
-                            {!!isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Nhập</Text>
-                            }
+                            onPress={handleSubmit(onLogin)}>
+                            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Đăng Nhập</Text>
                         </TouchableOpacity>
                     </View>
                     <View
@@ -240,6 +157,7 @@ const Login = ({ navigation }) => {
         <View style={styles.container}>
             {renderHeader()}
             {renderFooter()}
+            <Loading ref={refLoading} />
         </View>
     )
 }

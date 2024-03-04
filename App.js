@@ -4,10 +4,11 @@ import { Provider } from 'react-redux';
 import store from "./app/redux/stores";
 import { useFonts } from 'expo-font';
 import Routes from './app/navigation/Routes';
-import { getUserData } from './app/utils/utils';
+import { getItem, getUserData } from './app/utils/utils';
 import { saveUserData } from './app/redux/actions/auth';
 import Tflite from 'tflite-react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { STORAGE_KEY } from './app/constants/AppConstant';
 let tflite = new Tflite();
 
 console.log('tflite: ', tflite);
@@ -16,21 +17,9 @@ console.log('tflite: ', tflite);
 const App = () => {
 
   useEffect(() => {
-    // (() => {
-    //   tflite.loadModel({
-    //     model: 'model.tflite',// required
-    //     labels: 'model.txt',  // required
-    //     numThreads: 1,                              // defaults to 1  
-    //   },
-    //     (err, res) => {
-    //       if (err)
-    //         console.log('Erorrrr: ', err);
-    //       else
-    //         console.log("Load model success");
-    //     });
-    // })();
     (async () => {
-      const userData = await getUserData();
+      const userData = await getItem(STORAGE_KEY.USER_DATA);
+      console.log('userData: ', userData);
       if (!!userData) {
         saveUserData(userData)
       }

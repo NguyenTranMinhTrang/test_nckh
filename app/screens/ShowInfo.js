@@ -26,7 +26,7 @@ import {
 } from "react-native-redash";
 
 const ShowInfo = ({ navigation, route }) => {
-    const [data, setData] = React.useState(null);
+    const [data, setData] = React.useState(route.params.data);
     const state = new Value(State.UNDETERMINED);
     const scale = new Value(1);
     const focal = vec.createValue(0, 0);
@@ -40,11 +40,6 @@ const ShowInfo = ({ navigation, route }) => {
         focal
     );
     const zIndex = cond(eq(state, State.ACTIVE), 3, 0);
-
-    React.useEffect(() => {
-        let { data } = route.params;
-        setData(data);
-    })
 
     const handlePinch = onGestureEvent({
         state,
@@ -64,8 +59,6 @@ const ShowInfo = ({ navigation, route }) => {
     ]), [focal, origin, state]);
 
     function renderImage() {
-
-
         return (
             <View
                 style={{
@@ -83,7 +76,7 @@ const ShowInfo = ({ navigation, route }) => {
                         }}
                     >
                         <Animated.Image
-                            source={data.img}
+                            source={{ uri: data.images[0]?.image_local_path }}
                             resizeMode='cover'
                             style={{
                                 height: '100%',
@@ -138,12 +131,12 @@ const ShowInfo = ({ navigation, route }) => {
                         padding: SIZES.padding,
                     }}
                 >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>{data.name}</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>{data.sciencename}</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>{data.vn_name}</Text>
+                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>{data.sc_name}</Text>
                     <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Tình trạng bảo tồn</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.conservation}</Text>
+                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.conservation_status}</Text>
                     <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Mô tả</Text>
-                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.description}</Text>
+                    <Text style={{ ...FONTS.body3, color: COLORS.lightGray, paddingTop: SIZES.base }}>{data.animal_infor}</Text>
                 </View>
             </ScrollView>
         )
@@ -152,10 +145,10 @@ const ShowInfo = ({ navigation, route }) => {
     return (
         <>
             {data &&
-                <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.black }}>
+                <View style={{ flex: 1, backgroundColor: COLORS.black }}>
                     {renderImage()}
                     {renderInfo()}
-                </SafeAreaView>
+                </View>
             }
         </>
     )

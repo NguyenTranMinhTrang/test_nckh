@@ -106,7 +106,6 @@ export const uploadProfileImage = async (photo, token) => {
             type: 'image/jpg',
         });
 
-
         const res = await axios.post(endpoint.UPLOAD_PROFILE, formData, {
             headers: {
                 Accept: 'application/json',
@@ -239,11 +238,11 @@ export const resetPassword = async (newPassword, token) => {
     }
 }
 
-export const postUser = async (email, password) => {
+export const postUser = async (userName, password) => {
     try {
         const res = await axios.post(endpoint.LOGIN, {
-            "email": email,
-            "password": password
+            userName,
+            password
         })
         if (res) {
             console.log(res);

@@ -41,7 +41,7 @@ const History = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            get_history(userData.id);
+            get_history(userData.userId);
         }, [])
     );
 

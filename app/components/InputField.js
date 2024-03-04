@@ -1,35 +1,38 @@
 import React from "react";
-import { Controller, useController, useFormContext } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { FONTS, COLORS } from "../constants";
 import Icon from "./Icon";
 import { styleGlobal } from "../styles/stylesGlobal";
 
-const InputField = (props) => {
-    const {
-        name,
-        placeHolder = "Nhập ...",
-        title,
-        required = false,
-        iconName,
-        iconType = 'Font',
-        rules,
-        control
-    } = props;
+const InputField = ({
+    name,
+    placeHolder = "Nhập ...",
+    title,
+    required = false,
+    iconName,
+    iconType = 'Font',
+    rules,
+    control,
+    styleTitle,
+    styleIcon,
+    styleTextInput,
+    readOnly = false
+}) => {
 
     return (
 
         <Controller
             control={control}
             rules={rules || {
-                required: required ? 'Field can not be empty!' : false
+                required: required ? 'Trường thông tin không được để trống!' : false
             }}
             render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
                 console.log('error: ', error);
                 return (
                     <View style={styleGlobal.mb2}>
                         <View style={[styleGlobal.flexRow]}>
-                            <Text style={[{ ...FONTS.h3_light }, styleGlobal.mr1]}>{title}</Text>
+                            <Text style={[{ ...FONTS.h3_light }, styleGlobal.mr1, styleTitle]}>{title}</Text>
                             {
                                 required ?
                                     <Text style={{ ...FONTS.h3_light, color: COLORS.error }}>*</Text>
@@ -39,14 +42,15 @@ const InputField = (props) => {
                             }
                         </View>
                         <View style={styles.box_text}>
-                            <Icon name={iconName} type={iconType} />
+                            <Icon name={iconName} type={iconType} style={styleIcon} />
                             <TextInput
-                                style={styles.textInput}
+                                style={[styles.textInput, styleTextInput]}
                                 placeholder={placeHolder}
                                 onChangeText={onChange}
                                 onBlur={onBlur}
                                 value={value}
                                 autoCapitalize={"none"}
+                                editable={!readOnly}
                             />
                         </View>
                         {
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
     box_text: {
         flexDirection: 'row',
         marginTop: 10,
-        borderBottomWidth: 1,
+        borderBottomWidth: 2,
         borderBottomColor: COLORS.lightGray,
         paddingBottom: 5
     },
