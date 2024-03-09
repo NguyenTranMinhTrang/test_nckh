@@ -24,7 +24,7 @@ const useRequest = () => {
         const requestIntercept = axiosClient.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = `${userData.accessToken}`;
+                    config.headers['Authorization'] = `${userData?.accessToken}`;
                 }
                 return config;
             }, (error) => Promise.reject(error)

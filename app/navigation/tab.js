@@ -15,6 +15,8 @@ const Tabs = ({ tflite }) => {
 
     const userData = useSelector((state) => state.auth.userData);
 
+    console.log('userData: ', userData);
+
     const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
         var isSelected = accessibilityState.selected;
 
@@ -87,7 +89,7 @@ const Tabs = ({ tflite }) => {
         >
             <Tab.Screen
                 name="User"
-                component={Object.keys(userData).length === 0 ? Ask : User}
+                component={userData ? User : Ask}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome name="user-o" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />
@@ -120,7 +122,7 @@ const Tabs = ({ tflite }) => {
             </Tab.Screen>
             <Tab.Screen
                 name="History"
-                component={Object.keys(userData).length === 0 ? Ask : History}
+                component={userData ? History : Ask}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome5 name="history" size={25} color={focused ? COLORS.primary : COLORS.lightGray} />

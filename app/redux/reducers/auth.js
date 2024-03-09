@@ -1,7 +1,7 @@
 import types from "../types";
 
 const initialState = {
-    userData: {}
+    userData: null
 }
 
 export default function (state = initialState, action) {

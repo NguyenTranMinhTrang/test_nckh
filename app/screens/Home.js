@@ -1,28 +1,26 @@
-import React, { useRef } from "react";
-import { ActivityIndicator, Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, Modal, StatusBar, Platform, FlatList } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Linking, LogBox, ScrollView, View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Image, StatusBar, Platform, FlatList } from "react-native";
 import { COLORS, SIZES, FONTS, dummyData } from "../constants";
-import { BlurView } from 'expo-blur';
 import { useSelector } from "react-redux";
-import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError, showSuccess } from "../components";
+import { VideoVertical, NewsVertical, AnimalVertical, Bounce, Alert, showError } from "../components";
 import { AnimalInfo } from '../database/db'
 // Camera
-import Camera from "../camera/Camera";
-import Library from "../camera/Library";
-import { upLoad } from "../api/imageAPI";
-import { postHistory } from "../api/userAPI";
-import { getByID } from "../api/imageAPI";
 import axiosClient from "../api/axiosClient";
 import endpoint from "../api/endpoint";
 import ButtonReportFloat from "../components/ButtonReportFloat";
 import Loading from '../components/Loading';
+import ModalImagePicker from "../components/ModalImagePicker";
+import useRequest from '../hook/useRequest';
+import { useImmer } from "use-immer";
 
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
 const Home = ({ navigation, tflite }) => {
-
     const userData = useSelector((state) => state.auth.userData);
-    const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
-    const [isLoading, setLoading] = React.useState(false);
+    const axiosPrivate = useRequest();
+    const [state, setState] = useImmer({
+        loading: true,
+    })
     const [openModal, setOpenModal] = React.useState({
         status: false,
         title: "",
@@ -31,6 +29,7 @@ const Home = ({ navigation, tflite }) => {
     });
 
     const refLoading = useRef(null);
+    const refPicker = useRef(null);
 
     const closeModal = () => {
         setOpenModal({
@@ -41,22 +40,40 @@ const Home = ({ navigation, tflite }) => {
         });
     }
 
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        let api = userData ? endpoint.GET_ANIMAL_AFTER_LOGIN : endpoint.GET_ANIMAL;
+        console.log('api: ', api);
+        const formData = new FormData();
+        formData.append('animalRedListId', '');
+        formData.append('status', '');
+        const response = await axiosPrivate.post(api, formData);
+        if (response?.resultCode === 0) {
+            setState(draft => {
+                draft.loading = false;
+                draft.data = response?.data?.sort(() => Math.random() - 0.5) || [];
+            })
+        } else {
+            showError('Dữ liệu động vật lỗi!');
+            setState(draft => {
+                draft.loading = false;
+                draft.data = [];
+            })
+        }
+        console.log('response: ', response);
+    }
+
     // Data
 
     const data = dummyData.animals.sort(() => Math.random() - 0.5);
 
-    const getInfo = async (id) => {
-        const data = AnimalInfo[id - 1]
-        if (data) {
-            navigation.navigate("ShowInfo", {
-                data
-            });
-        }
-        else {
-            showError("Xảy ra lỗi khi tìm kiếm thông tin con vật");
-        }
-
-
+    const getInfo = async (data) => {
+        navigation.navigate("ShowInfo", {
+            id: data.animal_red_list_id
+        });
     }
 
     const requestOpenLink = async (url) => {
@@ -83,61 +100,6 @@ const Home = ({ navigation, tflite }) => {
         });
     }
 
-    //Camera
-    const handleCamera = async () => {
-        let img = await Camera();
-        let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
-        if (img) {
-            setLoading(true);
-            tflite.runModelOnImage({
-                path: imagePath,  // required
-                imageMean: 0, // defaults to 127.5
-                imageStd: 1,  // defaults to 127.5
-                numResults: 1,    // defaults to 5
-                threshold: 0.5   // defaults to 0.1
-            },
-                async (err, res) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                        if (res.length !== 0) {
-                            //Get data from database
-                            if (res[0].index === 30) {
-                                setOpenModal({
-                                    status: true,
-                                    title: "Dự đoán ảnh không thành công !",
-                                    number: 1
-                                });
-                            }
-                            else {
-                                const data = AnimalInfo[res[0].index]
-                                //Check if user logged in
-                                if (Object.keys(userData).length !== 0) {
-                                    const res = await postHistory(userData.id, data.id);
-                                    if (res.status == "SUCCESS") {
-                                        showSuccess(res.message);
-                                    }
-                                    else if (res.status == "FAILED") {
-                                        showError(res.message);
-                                    }
-                                }
-
-                                navigation.navigate('ShowInfo', {
-                                    data
-                                })
-                            }
-                        }
-                    }
-                    setLoading(false);
-                    setShowChooseCamrera(false);
-                });
-        }
-        else {
-            showError("Chọn ảnh không thành công! Hãy thử lại")
-        }
-    }
-
     const onPredictImage = async (image) => {
         const formData = new FormData();
         let imagePath = Platform.OS === 'android' ? image.uri : image.uri.replace('file://', '')
@@ -146,30 +108,34 @@ const Home = ({ navigation, tflite }) => {
             uri: imagePath,
             type: 'image/jpg',
         });
-        const response = await axiosClient.post(endpoint.PREDICT_ANIMAL, formData, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data',
-            },
-            transformRequest: formData => formData
-        });
+        let response;
+        if (userData) {
+            response = await axiosPrivate.post(endpoint.PREDICT_AFTERLOGIN, formData);
+        } else {
+            response = await axiosPrivate.post(endpoint.PREDICT_ANIMAL, formData);
+        }
         return response;
     }
 
-    //Library
-    const handleLibrary = async () => {
-        let img = await Library();
+    const onChangeImage = async (img) => {
         if (img) {
-            setShowChooseCamrera(false);
+            refPicker?.current?.onClose();
             setTimeout(async () => {
                 refLoading?.current?.onOpen();
                 const response = await onPredictImage(img);
-                console.log('response: ', response);
                 refLoading?.current?.onClose();
                 if (response?.resultCode == 0) {
-                    navigation.navigate('ShowInfo', {
-                        data: response?.data
-                    })
+                    if (response?.data) {
+                        navigation.navigate('ShowInfo', {
+                            id: response?.data?.animal_red_list_id
+                        })
+                    } else {
+                        setOpenModal({
+                            status: true,
+                            title: "Dự đoán ảnh không thành công !",
+                            number: 1
+                        });
+                    }
                 } else {
                     setOpenModal({
                         status: true,
@@ -178,55 +144,11 @@ const Home = ({ navigation, tflite }) => {
                     });
                 }
             }, 200);
-            // setLoading(true);
-            // tflite.runModelOnImage({
-            //     path: imagePath,  // required
-            //     imageMean: 0, // defaults to 127.5
-            //     imageStd: 1,  // defaults to 127.5
-            //     numResults: 1,    // defaults to 5
-            //     threshold: 0.5   // defaults to 0.1
-            // },
-            //     async (err, res) => {
-            //         if (err) {
-            //             console.log(err);
-            //         }
-            //         else {
-            //             if (res.length !== 0) {
-            //                 //Get data from database
-            //                 if (res[0].index === 30) {
-            //                     // Fail to predict animal
-            //                     setOpenModal({
-            //                         status: true,
-            //                         title: "Dự đoán ảnh không thành công !",
-            //                         number: 1
-            //                     });
-            //                 }
-            //                 else {
-            //                     const data = AnimalInfo[res[0].index];
-            //                     //Check if user logged in
-            //                     if (Object.keys(userData).length !== 0) {
-            //                         const res = await postHistory(userData.id, data.id);
-            //                         if (res.status == "SUCCESS") {
-            //                             showSuccess(res.message);
-            //                         }
-            //                         else if (res.status == "FAILED") {
-            //                             showError(res.message);
-            //                         }
-            //                     }
+        }
+    }
 
-            //                     navigation.navigate('ShowInfo', {
-            //                         data
-            //                     })
-            //                 }
-            //             }
-            //         }
-            //         setLoading(false);
-            //         setShowChooseCamrera(false);
-            //     });
-        }
-        else {
-            showError("Chọn ảnh không thành công! Hãy thử lại")
-        }
+    const onOpenPicker = () => {
+        refPicker?.current?.onOpen();
     }
 
     // Render
@@ -291,113 +213,15 @@ const Home = ({ navigation, tflite }) => {
                         height: 50,
                     }}
                 >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Home</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>Trang chủ</Text>
                 </View>
 
                 <View>
                     <TouchableOpacity
-                        onPress={() => setShowChooseCamrera(true)}
-                    >
+                        onPress={onOpenPicker}>
                         <Bounce />
                     </TouchableOpacity>
                 </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showChooseCamera}
-                >
-                    <BlurView
-                        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-                        intensity={80}
-                        tint="dark"
-                    >
-                        {/* button to close modal */}
-                        <TouchableOpacity
-                            style={styles.absolute}
-                            onPress={() => setShowChooseCamrera(false)}
-                        >
-
-                        </TouchableOpacity>
-
-                        {/* Content */}
-                        <View
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '85%',
-                                backgroundColor: COLORS.lightGray2,
-                                borderRadius: SIZES.radius,
-                                padding: 16
-                            }}
-                        >
-                            <View
-                                style={{
-                                    backgroundColor: COLORS.lightGray2,
-                                    paddingBottom: SIZES.padding,
-                                    height: 90,
-                                    width: '100%',
-                                    alignItems: 'center',
-                                    borderTopLeftRadius: SIZES.radius,
-                                    borderTopRightRadius: SIZES.radius,
-                                }}
-                            >
-                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Chọn 1 tấm ảnh</Text>
-                            </View>
-                            {/* Camera */}
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.white,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: SIZES.radius * 2,
-                                    marginBottom: SIZES.base,
-                                }}
-                                onPress={() => handleCamera()}
-                            >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
-                            </TouchableOpacity>
-
-                            {/* Library */}
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.white,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: SIZES.radius * 2,
-                                    marginBottom: SIZES.padding,
-                                }}
-
-                                onPress={() => handleLibrary()}
-                            >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.primary,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: 8,
-                                    borderRadius: SIZES.radius
-                                }}
-
-                                onPress={() => setShowChooseCamrera(false)}
-                            >
-
-                                {
-                                    isLoading ? <ActivityIndicator size="large" color={COLORS.white} /> :
-                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
-                                }
-                            </TouchableOpacity>
-                        </View>
-
-                    </BlurView>
-                </Modal>
                 <Alert
                     number={openModal.number}
                     title={openModal.title}
@@ -409,13 +233,12 @@ const Home = ({ navigation, tflite }) => {
         )
     }
 
-
     function renderImage() {
         return (
             <View style={{ paddingVertical: Platform.OS === 'ios' ? SIZES.padding : SIZES.padding * 2 }}>
                 <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Động Vật Hoang Dã</Text>
                 <FlatList
-                    data={data}
+                    data={state.data}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     listKey="Animals"
@@ -427,7 +250,7 @@ const Home = ({ navigation, tflite }) => {
                                 marginLeft: index == 0 ? 0 : SIZES.padding,
                                 marginRight: index == data.length - 1 ? 0 : SIZES.padding
                             }}
-                            onPress={() => getInfo(item.id)}
+                            onPress={getInfo}
                         />
                     )}
                 />
@@ -485,9 +308,14 @@ const Home = ({ navigation, tflite }) => {
         )
     }
 
-    return (
-        <SafeAreaView style={styles.container}>
-            {renderHeader()}
+    const renderBody = () => {
+        if (state.loading) {
+            return (
+                <Loading initalState={true} />
+            )
+        }
+
+        return (
             <ScrollView
                 contentContainerStyle={{
                     paddingBottom: 60 + SIZES.padding,
@@ -498,6 +326,14 @@ const Home = ({ navigation, tflite }) => {
                 {renderVideo()}
                 {renderNews()}
             </ScrollView>
+        )
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {renderHeader()}
+            {renderBody()}
+            <ModalImagePicker ref={refPicker} onChange={onChangeImage} />
             <Loading ref={refLoading} />
             <ButtonReportFloat onPress={() => navigation.navigate('Report')} />
         </SafeAreaView>

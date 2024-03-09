@@ -7,6 +7,11 @@ import {
 import { COLORS, SIZES, FONTS } from "../constants";
 
 const AnimalVertical = ({ item, contentStyle, onPress }) => {
+
+    const onDetail = () => {
+        onPress?.(item);
+    }
+
     return (
         <TouchableOpacity
             style={{
@@ -15,11 +20,9 @@ const AnimalVertical = ({ item, contentStyle, onPress }) => {
                 borderRadius: SIZES.radius,
                 ...contentStyle
             }}
-
-            onPress={onPress}
-        >
+            onPress={onDetail}>
             <Image
-                source={item.image}
+                source={{ uri: item.images[0].image_local_path }}
                 resizeMode='cover'
                 style={{
                     width: SIZES.width * 0.45,
@@ -33,9 +36,8 @@ const AnimalVertical = ({ item, contentStyle, onPress }) => {
                 ...FONTS.h2,
                 color: COLORS.white,
                 bottom: SIZES.padding * 2
-            }}
-            >
-                {item.name}
+            }}>
+                {item.vn_name || ''}
             </Text>
         </TouchableOpacity>
     )

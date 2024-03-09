@@ -11,7 +11,7 @@ export const getByID = async (id) => {
     //     console.log(res.error)
     // }
     try {
-        const res = await axios.get(endpoint.ANIMAL_BY_ID, { params: { id: id } });
+        const res = await axios.post(endpoint.GET_ANIMAL_AFTER_LOGIN);
         if (res)
             return res
         else

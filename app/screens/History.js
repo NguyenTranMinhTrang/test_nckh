@@ -18,30 +18,41 @@ import { getHistory } from "../api/userAPI";
 import { getByID } from "../api/imageAPI";
 import { useFocusEffect } from "@react-navigation/native";
 import { showError, showSuccess, Alert } from "../components";
+import { useImmer } from "use-immer";
+import Loading from "../components/Loading";
+import { styleGlobal } from "../styles/stylesGlobal";
+import useRequest from "../hook/useRequest";
+import endpoint from "../api/endpoint";
 
 
 const History = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
-    const [data, setData] = React.useState([]);
-    const [isLoad, setIsLoad] = React.useState(false);
+    const axiosPrivate = useRequest();
+    const [state, setState] = useImmer({
+        loading: true,
+        data: []
+    })
     const [openModal, setOpenModal] = React.useState({
         status: false,
         yes: null
     });
 
-    async function get_history(id) {
-        let res = await getHistory(id)
-        if (res.status == "SUCCESS") {
-            setData(res.data)
+    const getHistory = async () => {
+        let res = await axiosPrivate.post(endpoint.GET_HISTORY);
+        if (res?.resultCode === 0) {
+            setState(draft => {
+                draft.loading = false;
+                draft.data = res?.data || [];
+            })
+        } else {
+            showError();
         }
-        else {
-            showError(res.message)
-        }
+        console.log('res: ', res);
     }
 
     useFocusEffect(
         React.useCallback(() => {
-            get_history(userData.userId);
+            getHistory();
         }, [])
     );
 
@@ -54,23 +65,29 @@ const History = ({ navigation }) => {
             showError(res.message)
         }
         //Reset history after deleted
-        get_history(id)
+        getHistory(id)
     }
 
     const showInfo = async (id) => {
-        const res = await getByID(id);
-        if (res.status == "SUCCESS") {
-            navigation.navigate("ShowInfo", {
-                data: res.data
-            });
-        }
-        else {
-            console.log(res.error)
-        }
+        navigation.navigate('ShowInfo', {
+            id
+        })
+    }
+
+    const onLongPress = () => {
+        setOpenModal({
+            status: true,
+            yes: async () => {
+                await delete_history(userData.id, item.animalID, item.time);
+                setOpenModal({
+                    status: false,
+                    yes: null
+                });
+            }
+        })
     }
 
     // render
-
     function renderHeader() {
         return (
             <View
@@ -111,90 +128,84 @@ const History = ({ navigation }) => {
         )
     }
 
-    function renderHistory() {
+    const renderItem = ({ item }) => {
+        return (
+            <TouchableOpacity
+                style={{
+                    marginBottom: SIZES.padding,
+                    height: SIZES.height * 0.25,
+                    flexDirection: 'row',
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: '#606d87',
+                }}
 
-        const handleLoadMore = () => {
-            setIsLoad(true);
-        }
-
-        function renderItem({ item }) {
-            return (
-                <TouchableOpacity
+                onLongPress={onLongPress}
+                onPress={() => showInfo(item.animal_red_list_id)}>
+                <View
                     style={{
-                        marginBottom: SIZES.padding,
-                        height: SIZES.height * 0.25,
-                        flexDirection: 'row',
-                        borderRadius: 20,
-                        borderWidth: 1,
-                        borderColor: '#606d87',
+                        flex: 0.4,
+                        padding: SIZES.base
                     }}
-
-                    onLongPress={() => setOpenModal({
-                        status: true,
-                        yes: async () => {
-                            await delete_history(userData.id, item.animalID, item.time);
-                            setOpenModal({
-                                status: false,
-                                yes: null
-                            });
-                        }
-                    })}
-
-                    onPress={() => showInfo(item.animalID)}
                 >
-                    <View
+                    <Image
+                        source={{ uri: `${item.img}` }}
+                        resizeMode="cover"
                         style={{
-                            flex: 0.4,
-                            padding: SIZES.base
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: SIZES.radius,
                         }}
-                    >
-                        <Image
-                            source={{ uri: `${item.img}` }}
-                            resizeMode="cover"
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                borderRadius: SIZES.radius,
-                            }}
-                        />
-                    </View>
+                    />
+                </View>
 
-                    <View
-                        style={{
-                            flex: 0.6,
-                            paddingLeft: SIZES.padding,
-                            paddingVertical: SIZES.base
-                        }}
-                    >
-                        <Text style={{ ...FONTS.body3, color: COLORS.white }}>{item.name}</Text>
-                        <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Thời gian: {item.time}</Text>
-                    </View>
-                </TouchableOpacity>
+                <View
+                    style={{
+                        flex: 0.6,
+                        paddingLeft: SIZES.padding,
+                        paddingVertical: SIZES.base * 2
+                    }}>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white }}>{item.vn_name}</Text>
+                    <Text style={{ ...FONTS.body3, color: COLORS.white, marginTop: SIZES.base }}>Thời gian: {item.watch_time}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    const renderBody = () => {
+        if (state.loading) {
+            return (
+                <View style={[styleGlobal.full, styleGlobal.center]}>
+                    <Loading initalState={true} style={{ backgroundColor: 'transparent' }} />
+                </View>
             )
         }
 
         return (
             <View
                 style={{
+                    marginTop: SIZES.padding,
+                    height: Platform.OS === "android" ? SIZES.height * 0.7 : SIZES.height * 0.6,
+                }}>
+                <FlatList
+                    data={state.data}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item, index) => `${item.animal_red_list_id} - ${index}`}
+                    renderItem={renderItem}
+                />
+            </View>
+        )
+    }
+
+    function renderHistory() {
+        return (
+            <View
+                style={[styleGlobal.full, {
                     marginTop: SIZES.padding * 2,
                     paddingHorizontal: SIZES.padding,
-                }}
-            >
+                }]}>
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>Động Vật Của Bạn</Text>
-                <View
-                    style={{
-                        marginTop: SIZES.padding,
-                        height: Platform.OS === "android" ? SIZES.height * 0.7 : SIZES.height * 0.6,
-                    }}
-                >
-                    <FlatList
-                        data={data}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={(item, index) => `${item.animalID} - ${index}`}
-                        renderItem={renderItem}
-                    />
-
-                </View>
+                {renderBody()}
             </View>
         )
     }

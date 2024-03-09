@@ -10,6 +10,7 @@ import ModalImagePicker from "../components/ModalImagePicker";
 import Loading from '../components/Loading';
 import useRequest from "../hook/useRequest";
 import endpoint from "../api/endpoint";
+import { showError, showSuccess } from "../components";
 
 const Report = ({ navigation }) => {
     const refModal = useRef(null);
@@ -20,7 +21,7 @@ const Report = ({ navigation }) => {
         control,
         handleSubmit,
         setValue,
-        formState: { errors },
+        reset,
     } = useForm({
         mode: 'all',
         defaultValues: {
@@ -61,7 +62,6 @@ const Report = ({ navigation }) => {
     }
 
     const onChange = (img) => {
-        console.log('img: ', img);
         if (img) {
             let imagePath = Platform.OS === 'android' ? img.uri : img.uri.replace('file://', '')
             setValue("image", {
@@ -74,7 +74,6 @@ const Report = ({ navigation }) => {
     }
 
     const onSubmit = async (values) => {
-        console.log('values: ', values);
         refLoading?.current?.onOpen();
         const formData = new FormData();
         formData.append("title", values.title);
@@ -82,14 +81,21 @@ const Report = ({ navigation }) => {
         formData.append("lat", values.lat);
         formData.append("lng", values.lng);
         formData.append("image", values.image);
-
-        const response = await axiosPrivate.post(endpoint.CREATE_REPORT, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        })
-
-        console.log('response: ', response);
+        const response = await axiosPrivate.post(endpoint.CREATE_REPORT, formData);
+        if (response?.resultCode !== 0) {
+            showSuccess('Gửi báo cáo thành công!');
+            reset({
+                description: '',
+                image: '',
+                title: '',
+                lat: values.lat,
+                lng: values.lng,
+                location: values.location
+            });
+        } else {
+            showError(response?.message);
+        }
+        refLoading?.current?.onClose();
     }
 
     const renderHeader = () => {

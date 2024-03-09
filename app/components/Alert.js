@@ -69,8 +69,8 @@ const Alert = ({ number, title, openModal, onPress, yes, no = null }) => {
                         style={{
                             position: "absolute",
                             top: -50,
-                            height: 100,
-                            width: 100,
+                            height: 90,
+                            width: 90,
                             borderRadius: 100,
                         }}
                     >

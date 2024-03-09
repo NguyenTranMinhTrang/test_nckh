@@ -11,7 +11,7 @@ export default {
     SIGNUP: "/user/register",
     CHANGE_PASSWORD: "/user/changePassword",
     POST_HISTORY: "/user/postHistory",
-    GET_HISTORY: "/user/getHistory",
+    GET_HISTORY: "/history/getHistory",
     DELETE_HISTORY: "/user/deleteHistory",
     UPLOAD_PROFILE: "/user/uploadProfile",
     REQUEST_RESET_PASSWORD: "/user/requestPasswordReset",
@@ -20,5 +20,8 @@ export default {
     RESET_PASSWORD: "/user/resetPassword",
     RESEND_VERIFY_EMAIL: "/user/resendVerificationLink",
     PREDICT_ANIMAL: '/redList/predictAnimal',
+    PREDICT_AFTERLOGIN: 'redList/predictAnimalAfterLogin',
     CREATE_REPORT: '/report/createReport',
+    GET_ANIMAL: '/redList/getAnimalRedList',
+    GET_ANIMAL_AFTER_LOGIN: '/redList/getAnimalRedListAfterLogin',
 }

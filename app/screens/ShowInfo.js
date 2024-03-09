@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import {
@@ -19,14 +19,23 @@ import {
     vec,
     onGestureEvent,
     timing,
-    pinchActive,
-    pinchBegan,
     transformOrigin,
     translate,
 } from "react-native-redash";
+import { useImmer } from "use-immer";
+import { styleGlobal } from "../styles/stylesGlobal";
+import Loading from "../components/Loading";
+import endpoint from "../api/endpoint";
+import { useSelector } from "react-redux";
+import useRequest from "../hook/useRequest";
+import { showError } from "../components";
 
 const ShowInfo = ({ navigation, route }) => {
-    const [data, setData] = React.useState(route.params.data);
+    const userData = useSelector((state) => state.auth.userData);
+    const axiosPrivate = useRequest();
+    const [stateData, setState] = useImmer({
+        loading: true
+    })
     const state = new Value(State.UNDETERMINED);
     const scale = new Value(1);
     const focal = vec.createValue(0, 0);
@@ -48,6 +57,28 @@ const ShowInfo = ({ navigation, route }) => {
         focalY: focal.y
     });
 
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        let api = userData ? endpoint.GET_ANIMAL_AFTER_LOGIN : endpoint.GET_ANIMAL;
+        const formData = new FormData();
+        formData.append('animalRedListId', route.params.id);
+        formData.append('status', '');
+        const response = await axiosPrivate.post(api, formData);
+        console.log('response: ', response);
+        if (response?.resultCode === 0) {
+            setState(draft => {
+                draft.loading = false;
+                draft.data = response?.data;
+            })
+        } else {
+            showError('Không tải được dữ liệu động vật !');
+            navigation.goBack();
+        }
+    }
+
     useCode(() => block([
         cond(eq(state, State.BEGAN), vec.set(origin, adjustedFocal)),
         cond(eq(state, State.ACTIVE), vec.set(translation, vec.minus(vec.sub(origin, adjustedFocal)))),
@@ -59,6 +90,7 @@ const ShowInfo = ({ navigation, route }) => {
     ]), [focal, origin, state]);
 
     function renderImage() {
+        const { data } = stateData;
         return (
             <View
                 style={{
@@ -116,6 +148,7 @@ const ShowInfo = ({ navigation, route }) => {
     }
 
     function renderInfo() {
+        const { data } = stateData;
         return (
             <ScrollView
                 style={{
@@ -124,13 +157,11 @@ const ShowInfo = ({ navigation, route }) => {
                     width: SIZES.width,
                     borderTopLeftRadius: 50,
                     borderTopRightRadius: 50
-                }}
-            >
+                }}>
                 <View
                     style={{
                         padding: SIZES.padding,
-                    }}
-                >
+                    }}>
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>{data.vn_name}</Text>
                     <Text style={{ ...FONTS.body3, color: COLORS.lightGray }}>{data.sc_name}</Text>
                     <Text style={{ ...FONTS.h3, color: COLORS.white, paddingTop: SIZES.base * 2 }}>Tình trạng bảo tồn</Text>
@@ -142,9 +173,17 @@ const ShowInfo = ({ navigation, route }) => {
         )
     }
 
+    if (stateData.loading) {
+        return (
+            <View style={[styleGlobal.full, { backgroundColor: COLORS.black }]}>
+                <Loading initalState={true} style={{ backgroundColor: 'transparent' }} />
+            </View>
+        )
+    }
+
     return (
         <>
-            {data &&
+            {stateData?.data &&
                 <View style={{ flex: 1, backgroundColor: COLORS.black }}>
                     {renderImage()}
                     {renderInfo()}

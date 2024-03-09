@@ -3,8 +3,8 @@ import { ActivityIndicator, View } from "react-native";
 import { styleGlobal } from "../styles/stylesGlobal";
 import { COLORS } from "../constants";
 
-const Loading = forwardRef((props, ref) => {
-    const [loading, setLoading] = useState(false);
+const Loading = forwardRef(({ initalState = false, style }, ref) => {
+    const [loading, setLoading] = useState(initalState);
 
     const onOpen = () => {
         setLoading(true);
@@ -30,7 +30,7 @@ const Loading = forwardRef((props, ref) => {
                     left: 0,
                     backgroundColor: 'rgba(234,233,238,0.5)',
                     zIndex: 9999
-                }]}
+                }, style]}
             >
                 <ActivityIndicator size="large" color={COLORS.primary} />
             </View>

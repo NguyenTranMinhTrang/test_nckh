@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
     View,
     Text,
@@ -11,7 +11,7 @@ import {
     Image,
     ActivityIndicator
 } from "react-native";
-import { images, theme, COLORS, SIZES, FONTS } from "../constants";
+import { COLORS, SIZES, FONTS } from "../constants";
 import { FontAwesome, AntDesign, Entypo } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
 import actions from "../redux/actions";
@@ -20,13 +20,16 @@ import Camera from "../camera/Camera";
 import Library from "../camera/Library";
 import { uploadProfileImage } from "../api/userAPI"
 import { showError, Alert, showSuccess } from "../components"
-
+import ModalImagePicker from '../components/ModalImagePicker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STORAGE_KEY } from "../constants/AppConstant";
 
 const User = ({ navigation }) => {
     const userData = useSelector((state) => state.auth.userData);
     const [showChooseCamera, setShowChooseCamrera] = React.useState(false);
     const [openModal, setOpenModal] = React.useState(false);
     const [isLoading, setLoading] = React.useState(false);
+    const refPicker = useRef(null);
 
     const Onlogout = () => {
         setOpenModal(true);
@@ -34,48 +37,19 @@ const User = ({ navigation }) => {
 
     const logout = () => {
         actions.logout();
+        AsyncStorage.removeItem(STORAGE_KEY.USER_DATA);
         showSuccess("Đăng xuất thành công !");
         navigation.navigate("Start");
     }
 
-    const takeAvatar = () => {
-        setShowChooseCamrera(true);
+    const onChangeImage = async (img) => {
+        if (img) {
+
+        }
     }
 
-    const handleCamera = async () => {
-        let img = await Camera();
-        if (img) {
-            setLoading(true);
-            let response = await uploadProfileImage(img, userData.token)
-            if (response.status == "SUCCESS") {
-                const oldUserData = { ...userData };
-                oldUserData.avatar = img.uri;
-                actions.saveUserData(oldUserData);
-            }
-            else {
-                showError(response.message);
-            }
-            setShowChooseCamrera(false);
-        }
-        setLoading(false);
-    }
-
-    const handleLibrary = async () => {
-        let img = await Library();
-        if (img) {
-            setLoading(true);
-            let response = await uploadProfileImage(img, userData.token);
-            if (response.status == "SUCCESS") {
-                const oldUserData = { ...userData };
-                oldUserData.avatar = img.uri;
-                actions.saveUserData(oldUserData);
-            }
-            else {
-                showError(response.message);
-            }
-            setShowChooseCamrera(false);
-        }
-        setLoading(false);
+    const onTakeAvatar = () => {
+        refPicker?.current?.onOpen();
     }
 
     // render
@@ -118,102 +92,6 @@ const User = ({ navigation }) => {
                 >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>Cá Nhân</Text>
                 </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showChooseCamera}
-                >
-                    <BlurView
-                        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-                        intensity={80}
-                        tint="dark"
-                    >
-                        {/* button to close modal */}
-                        <TouchableOpacity
-                            style={styles.absolute}
-                            onPress={() => setShowChooseCamrera(false)}
-                        >
-
-                        </TouchableOpacity>
-
-                        {/* Content */}
-                        <View
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '85%',
-                                backgroundColor: COLORS.lightGray2,
-                                borderRadius: SIZES.radius
-                            }}
-                        >
-                            <View
-                                style={{
-                                    backgroundColor: COLORS.lightGray2,
-                                    paddingBottom: SIZES.padding,
-                                    height: 90,
-                                    width: '100%',
-                                    alignItems: 'center',
-                                    borderTopLeftRadius: SIZES.radius,
-                                    borderTopRightRadius: SIZES.radius,
-                                }}
-                            >
-                                <Text style={{ ...FONTS.body1, padding: SIZES.base }}>Chọn 1 tấm ảnh</Text>
-                            </View>
-                            {/* Camera */}
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.white,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: SIZES.radius * 2,
-                                    marginBottom: SIZES.base,
-                                }}
-                                onPress={() => handleCamera()}
-                            >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng camera</Text>
-                            </TouchableOpacity>
-
-                            {/* Library */}
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.white,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: SIZES.radius * 2,
-                                    marginBottom: SIZES.padding,
-                                }}
-                                onPress={() => handleLibrary()}
-                            >
-                                <Text style={{ ...FONTS.h2_light, color: COLORS.lightGray }}>Dùng thư viện ảnh</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={{
-                                    height: 70,
-                                    width: '91%',
-                                    backgroundColor: COLORS.primary,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: SIZES.padding * 2,
-                                    borderRadius: SIZES.radius
-                                }}
-
-                                onPress={() => setShowChooseCamrera(false)}
-                            >
-                                {
-                                    isLoading ?
-                                        <ActivityIndicator size="large" color={COLORS.white} />
-                                        :
-                                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>Hủy</Text>
-                                }
-                            </TouchableOpacity>
-                        </View>
-
-                    </BlurView>
-                </Modal>
             </View>
         )
     }
@@ -275,8 +153,7 @@ const User = ({ navigation }) => {
                             alignItems: 'center'
                         }}
 
-                        onPress={() => takeAvatar()}
-                    >
+                        onPress={onTakeAvatar}>
                         <Entypo name="camera" size={35} color={COLORS.white} />
                     </TouchableOpacity>
                 </View>
@@ -341,16 +218,13 @@ const User = ({ navigation }) => {
                             backgroundColor: COLORS.tabbar,
                             marginVertical: 10
                         }}
-
-                        onPress={() => navigation.navigate('ChangePassword', { userData })}
-                    >
+                        onPress={() => navigation.navigate('ChangePassword', { userData })}>
                         <View
                             style={{
                                 flex: 0.2,
                                 justifyContent: 'center',
                                 alignItems: 'center'
-                            }}
-                        >
+                            }}>
                             <FontAwesome name="lock" size={40} color={COLORS.primary} />
                         </View>
                         <View
@@ -370,9 +244,7 @@ const User = ({ navigation }) => {
                             flexDirection: 'row',
                             backgroundColor: COLORS.tabbar,
                         }}
-
-                        onPress={Onlogout}
-                    >
+                        onPress={Onlogout}>
                         <View
                             style={{
                                 flex: 0.2,
@@ -402,6 +274,10 @@ const User = ({ navigation }) => {
             {renderHeader()}
             {renderImage()}
             {renderInfo()}
+            <ModalImagePicker
+                ref={refPicker}
+                onChange={onChangeImage}
+            />
         </SafeAreaView>
     )
 }
