@@ -5,6 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEY } from "../constants/AppConstant";
 import { showError } from "../components";
 import { useNavigation } from "@react-navigation/native";
+import endpoint from "../api/endpoint";
+import { saveUserData } from "../redux/actions/auth";
 
 const useRequest = () => {
     const navigation = useNavigation();
@@ -16,8 +18,18 @@ const useRequest = () => {
         navigation.navigate('Login');
     }
 
-    const refresh = async () => {
+    const onRefresh = async () => {
+        const response = await axiosClient.post(endpoint.REFRESH_TOKEN, {}, {
+            headers: {
+                Authorization: `${userData?.accessToken}`,
+            }
+        });
 
+        if (response?.resultCode === 0) {
+            return response?.data?.newToken;
+        } else {
+            return '';
+        }
     }
 
     useEffect(() => {
@@ -33,17 +45,22 @@ const useRequest = () => {
         const responseIntercept = axiosClient.interceptors.response.use(
             response => response,
             async (error) => {
-                const prevRequest = error?.config;
-                if (error?.response?.status === 403 && !prevRequest?.sent) {
-                    prevRequest.sent = true;
+                if (error?.request?.status === 403) {
+                    const prevRequest = error?.config;
                     try {
-                        console.log('Out access token');
-                        // const newAccessToken = await refresh();
-                        // if (newAccessToken) {
-                        //     AsyncStorage.setItem(STORAGE_KEY.TOKEN, JSON.stringify(newAccessToken));
-                        //     prevRequest.headers['Authorization'] = `${newAccessToken}`;
-                        //     return axiosPrivate(prevRequest);
-                        // }
+                        const resToken = await onRefresh();
+                        if (resToken) {
+                            const newData = {
+                                ...userData,
+                                accessToken: resToken
+                            }
+                            saveUserData(newData);
+                            AsyncStorage.setItem(STORAGE_KEY.USER_DATA, JSON.stringify(newData));
+                            prevRequest.headers['Authorization'] = `${resToken}`;
+                            return axiosClient(prevRequest);
+                        } else {
+                            handleOutRefresh();
+                        }
                     } catch (error) {
                         handleOutRefresh();
                     }

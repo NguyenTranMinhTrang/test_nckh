@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import {
@@ -29,6 +29,7 @@ import endpoint from "../api/endpoint";
 import { useSelector } from "react-redux";
 import useRequest from "../hook/useRequest";
 import { showError } from "../components";
+import Carousel from "react-native-snap-carousel";
 
 const ShowInfo = ({ navigation, route }) => {
     const userData = useSelector((state) => state.auth.userData);
@@ -67,7 +68,6 @@ const ShowInfo = ({ navigation, route }) => {
         formData.append('animalRedListId', route.params.id);
         formData.append('status', '');
         const response = await axiosPrivate.post(api, formData);
-        console.log('response: ', response);
         if (response?.resultCode === 0) {
             setState(draft => {
                 draft.loading = false;
@@ -89,6 +89,23 @@ const ShowInfo = ({ navigation, route }) => {
         ]),
     ]), [focal, origin, state]);
 
+    const renderItem = ({ item, index }) => {
+        return (
+            <View style={[
+                styleGlobal.center,
+                { width: '100%', height: '100%' }
+            ]}>
+                <Image
+                    source={{ uri: item?.image_local_path }}
+                    style={{
+                        width: '100%',
+                        height: '100%'
+                    }}
+                />
+            </View>
+        )
+    }
+
     function renderImage() {
         const { data } = stateData;
         return (
@@ -97,31 +114,22 @@ const ShowInfo = ({ navigation, route }) => {
                     height: '40%',
                     justifyContent: 'center',
                     alignItems: 'center',
-                }}
-            >
-                <PinchGestureHandler {...handlePinch}>
-                    <Animated.View
-                        style={{
-                            height: '100%',
-                            width: '100%',
-                            zIndex
-                        }}
-                    >
-                        <Animated.Image
-                            source={{ uri: data.images[0]?.image_local_path }}
-                            resizeMode='cover'
-                            style={{
-                                height: '100%',
-                                width: '100%',
-                                transform: [
-                                    ...translate(translation),
-                                    ...transformOrigin(origin, { scale })
-                                ]
-                            }}
+                }}>
+                <View
+                    style={[{
+                        height: '100%',
+                        width: '100%'
+                    }]}>
+                    <View style={[styleGlobal.full]}>
+                        <Carousel
+                            data={data.images || []}
+                            renderItem={renderItem}
+                            sliderWidth={SIZES.width}
+                            itemWidth={SIZES.width}
+                            autoplay
                         />
-                    </Animated.View>
-                </PinchGestureHandler>
-
+                    </View>
+                </View>
 
                 <TouchableOpacity
                     style={{

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, SendEmail, ChangePassword, RealtimeCamera } from "../screens";
 import Tabs from "./tab";
 import Report from '../screens/Report';
+import EditProfile from '../screens/EditProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,11 +15,10 @@ export default function Routes({ tflite }) {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='Home'
+                initialRouteName='Start'
                 screenOptions={{
                     headerShown: false
-                }}
-            >
+                }}>
                 <Stack.Screen
                     name="Tabs"
                 >
@@ -50,6 +50,12 @@ export default function Routes({ tflite }) {
                     name="Register"
                     component={Register}
                 />
+
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
+                />
+
                 <Stack.Screen
                     name="ForgetPassword"
                     component={ForgetPassword}

@@ -19,16 +19,13 @@ const InputField = ({
     styleTextInput,
     readOnly = false
 }) => {
-
     return (
-
         <Controller
             control={control}
             rules={rules || {
                 required: required ? 'Trường thông tin không được để trống!' : false
             }}
             render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
-                console.log('error: ', error);
                 return (
                     <View style={styleGlobal.mb2}>
                         <View style={[styleGlobal.flexRow]}>

@@ -242,7 +242,7 @@ const Home = ({ navigation, tflite }) => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     listKey="Animals"
-                    keyExtractor={item => `${item.id}`}
+                    keyExtractor={item => `${item.animal_red_list_id}`}
                     renderItem={({ item, index }) => (
                         <AnimalVertical
                             item={item}

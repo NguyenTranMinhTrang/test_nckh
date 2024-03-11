@@ -36,8 +36,10 @@ const Login = ({ navigation }) => {
     })
 
     const onLogin = async (values) => {
+        refLoading?.current?.onOpen();
         try {
             const res = await postUser(values.userName, values.password);
+            console.log('res login; ', res);
             if (res?.resultCode === 0) {
                 console.log(res);
                 saveUserData(res?.data);
@@ -50,6 +52,7 @@ const Login = ({ navigation }) => {
         } catch (error) {
             showError();
         }
+        refLoading?.current?.onClose();
     }
 
     function renderHeader() {

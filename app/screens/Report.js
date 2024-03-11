@@ -166,7 +166,6 @@ const Report = ({ navigation }) => {
                     name="image"
                     control={control}
                     render={({ field: { value } }) => {
-                        console.log('value: ', value);
                         return (
                             <View>
                                 {

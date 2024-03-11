@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
     View,
     SafeAreaView,
@@ -9,13 +9,11 @@ import {
     Image,
     StatusBar,
     Platform,
+    RefreshControl,
 } from "react-native";
-import { deleteHistory } from "../api/userAPI";
 import { COLORS, SIZES, FONTS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
-import { getHistory } from "../api/userAPI";
-import { getByID } from "../api/imageAPI";
 import { useFocusEffect } from "@react-navigation/native";
 import { showError, showSuccess, Alert } from "../components";
 import { useImmer } from "use-immer";
@@ -24,9 +22,7 @@ import { styleGlobal } from "../styles/stylesGlobal";
 import useRequest from "../hook/useRequest";
 import endpoint from "../api/endpoint";
 
-
 const History = ({ navigation }) => {
-    const userData = useSelector((state) => state.auth.userData);
     const axiosPrivate = useRequest();
     const [state, setState] = useImmer({
         loading: true,
@@ -36,6 +32,8 @@ const History = ({ navigation }) => {
         status: false,
         yes: null
     });
+
+    const refLoading = useRef(null);
 
     const getHistory = async () => {
         let res = await axiosPrivate.post(endpoint.GET_HISTORY);
@@ -47,7 +45,6 @@ const History = ({ navigation }) => {
         } else {
             showError();
         }
-        console.log('res: ', res);
     }
 
     useFocusEffect(
@@ -56,16 +53,17 @@ const History = ({ navigation }) => {
         }, [])
     );
 
-    const delete_history = async (id, animalID, time) => {
-        let res = await deleteHistory(id, animalID, time)
-        if (res.status == "SUCCESS") {
-            showSuccess(res.message)
+    const delete_history = async () => {
+        refLoading?.current?.onOpen();
+        const formData = new FormData();
+        let res = await axiosPrivate.post(endpoint.DELETE_HISTORY, formData);
+        if (res?.resultCode == 0) {
+            showSuccess('Xóa thành công!');
+            await getHistory();
+        } else {
+            showError();
         }
-        else {
-            showError(res.message)
-        }
-        //Reset history after deleted
-        getHistory(id)
+        refLoading?.current?.onClose();
     }
 
     const showInfo = async (id) => {
@@ -74,15 +72,15 @@ const History = ({ navigation }) => {
         })
     }
 
-    const onLongPress = () => {
+    const onLongPress = (item) => {
         setOpenModal({
             status: true,
             yes: async () => {
-                await delete_history(userData.id, item.animalID, item.time);
                 setOpenModal({
                     status: false,
                     yes: null
                 });
+                await delete_history(item.animal_red_list_id);
             }
         })
     }
@@ -139,8 +137,7 @@ const History = ({ navigation }) => {
                     borderWidth: 1,
                     borderColor: '#606d87',
                 }}
-
-                onLongPress={onLongPress}
+                onLongPress={() => onLongPress(item)}
                 onPress={() => showInfo(item.animal_red_list_id)}>
                 <View
                     style={{
@@ -192,6 +189,12 @@ const History = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => `${item.animal_red_list_id} - ${index}`}
                     renderItem={renderItem}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={false}
+                            onRefresh={getHistory}
+                        />
+                    }
                 />
             </View>
         )
@@ -214,6 +217,7 @@ const History = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {renderHeader()}
             {renderHistory()}
+            <Loading ref={refLoading} />
         </SafeAreaView>
     )
 }

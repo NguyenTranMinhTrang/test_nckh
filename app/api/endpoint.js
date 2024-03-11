@@ -12,8 +12,8 @@ export default {
     CHANGE_PASSWORD: "/user/changePassword",
     POST_HISTORY: "/user/postHistory",
     GET_HISTORY: "/history/getHistory",
-    DELETE_HISTORY: "/user/deleteHistory",
-    UPLOAD_PROFILE: "/user/uploadProfile",
+    DELETE_HISTORY: "/history/deleteHistory",
+    UPLOAD_PROFILE: "/user/updateProfile",
     REQUEST_RESET_PASSWORD: "/user/requestPasswordReset",
     VERIFY_PIN: "/user/verifyOtp",
     RESEND_PIN: "/user/resendOtp",
@@ -24,4 +24,7 @@ export default {
     CREATE_REPORT: '/report/createReport',
     GET_ANIMAL: '/redList/getAnimalRedList',
     GET_ANIMAL_AFTER_LOGIN: '/redList/getAnimalRedListAfterLogin',
+    UPLOAD_AVATAR: '/user/updateAvt',
+    LOGOUT: '/user/logout',
+    REFRESH_TOKEN: '/user/expand',
 }

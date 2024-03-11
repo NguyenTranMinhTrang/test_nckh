@@ -12,7 +12,7 @@ const Header = ({ navigation, title }) => {
                     style={{
                         position: 'absolute',
                         left: SIZES.padding,
-                        top: 15,
+                        top: 0,
                         height: 50,
                         width: 50,
                         justifyContent: 'center',
@@ -20,8 +20,7 @@ const Header = ({ navigation, title }) => {
                         borderRadius: 25,
                         backgroundColor: 'rgba(255,255,255,0.5)'
                     }}
-                    onPress={() => navigation.goBack()}
-                >
+                    onPress={() => navigation.goBack()}>
                     <AntDesign
                         name="arrowleft"
                         size={30}
