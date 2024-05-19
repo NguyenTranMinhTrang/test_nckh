@@ -6,7 +6,7 @@ import { COLORS, FONTS } from "../constants";
 import Library from "../camera/Library";
 import { Camera } from "expo-camera";
 
-const ModalImagePicker = forwardRef(({ onChange }, ref) => {
+const ModalImagePicker = forwardRef(({ onChange, config = {} }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
 
     const onOpen = () => {
@@ -23,7 +23,7 @@ const ModalImagePicker = forwardRef(({ onChange }, ref) => {
     }))
 
     const onOpenLibrary = async () => {
-        let img = await Library();
+        let img = await Library(config);
         onClose();
         onChange(img);
     }

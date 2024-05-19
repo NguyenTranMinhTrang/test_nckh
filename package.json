@@ -17,6 +17,7 @@
     "@react-navigation/native-stack": "^6.5.0",
     "axios": "^0.21.1",
     "date-fns": "^3.3.1",
+    "expo": "~48.0.21",
     "expo-blur": "~12.2.2",
     "expo-build-properties": "~0.6.0",
     "expo-camera": "~13.2.1",
@@ -50,8 +51,7 @@
     "redux-thunk": "^2.4.1",
     "source-map-resolve": "^0.6.0",
     "tflite-react-native": "^0.0.5",
-    "use-immer": "^0.9.0",
-    "expo": "~48.0.21"
+    "use-immer": "^0.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

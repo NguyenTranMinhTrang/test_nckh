@@ -34,11 +34,19 @@ const User = ({ navigation }) => {
     }
 
     const logout = async () => {
-        actions.logout();
-        await AsyncStorage.removeItem(STORAGE_KEY.USER_DATA);
-        await axiosPrivate.post(endpoint.LOGOUT);
-        showSuccess("Đăng xuất thành công !");
-        navigation.navigate("Start");
+        setOpenModal(false);
+        const formData = new FormData();
+        const response = await axiosPrivate.post(endpoint.LOGOUT, formData);
+        console.log('response: ', response);
+        if (response?.resultCode === 0) {
+            await AsyncStorage.removeItem(STORAGE_KEY.USER_DATA);
+            actions.logout();
+            showSuccess("Đăng xuất thành công !");
+            navigation.navigate("Start");
+        } else {
+            showError('Thao tác thất bại! Vui lòng thử lại !')
+        }
+
     }
 
     const onChangeImage = async (img) => {

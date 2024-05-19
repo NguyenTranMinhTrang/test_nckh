@@ -12,6 +12,7 @@ import Loading from '../components/Loading';
 import ModalImagePicker from "../components/ModalImagePicker";
 import useRequest from '../hook/useRequest';
 import { useImmer } from "use-immer";
+import axios from "axios";
 
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
@@ -46,7 +47,6 @@ const Home = ({ navigation, tflite }) => {
 
     const loadData = async () => {
         let api = userData ? endpoint.GET_ANIMAL_AFTER_LOGIN : endpoint.GET_ANIMAL;
-        console.log('api: ', api);
         const formData = new FormData();
         formData.append('animalRedListId', '');
         formData.append('status', '');
@@ -63,7 +63,6 @@ const Home = ({ navigation, tflite }) => {
                 draft.data = [];
             })
         }
-        console.log('response: ', response);
     }
 
     // Data
@@ -101,6 +100,8 @@ const Home = ({ navigation, tflite }) => {
     }
 
     const onPredictImage = async (image) => {
+        console.log('image: ', image);
+        const url = 'https://khapahm.xyz/redList/predictAnimal';
         const formData = new FormData();
         let imagePath = Platform.OS === 'android' ? image.uri : image.uri.replace('file://', '')
         formData.append('image', {
@@ -108,11 +109,14 @@ const Home = ({ navigation, tflite }) => {
             uri: imagePath,
             type: 'image/jpg',
         });
+        console.log('formData: ', formData);
         let response;
         if (userData) {
             response = await axiosPrivate.post(endpoint.PREDICT_AFTERLOGIN, formData);
         } else {
             response = await axiosPrivate.post(endpoint.PREDICT_ANIMAL, formData);
+            // response = await axiosClient.post(url, formData);
+            console.log('response: ', response);
         }
         return response;
     }

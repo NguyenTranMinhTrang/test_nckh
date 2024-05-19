@@ -6,6 +6,7 @@ import { ShowInfo, Start, Login, Register, ForgetPassword, Code, GetPassword, Se
 import Tabs from "./tab";
 import Report from '../screens/Report';
 import EditProfile from '../screens/EditProfile';
+import Contribute from '../screens/Contribute';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +16,7 @@ export default function Routes({ tflite }) {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='Start'
+                initialRouteName='Contribute'
                 screenOptions={{
                     headerShown: false
                 }}>
@@ -24,6 +25,11 @@ export default function Routes({ tflite }) {
                 >
                     {props => < Tabs {...props} tflite={tflite} />}
                 </Stack.Screen>
+
+                <Stack.Screen
+                    name="Contribute"
+                    component={Contribute}
+                />
 
                 <Stack.Screen
                     name="ShowInfo"

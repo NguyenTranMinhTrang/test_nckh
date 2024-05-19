@@ -12,7 +12,7 @@ import Loading from "../components/Loading";
 const COUNT = 4;
 
 const Code = ({ navigation, route }) => {
-    const { email, userName } = route.params;
+    const { email, userName } = route.params || { email: 'minhtrang.9096@gmail.com', userName: 'trang1508' };
 
     const refCountDown = useRef();
     const refCode = useRef();

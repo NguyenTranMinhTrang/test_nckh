@@ -82,7 +82,7 @@ const Report = ({ navigation }) => {
         formData.append("lng", values.lng);
         formData.append("image", values.image);
         const response = await axiosPrivate.post(endpoint.CREATE_REPORT, formData);
-        if (response?.resultCode !== 0) {
+        if (response?.resultCode === 0) {
             showSuccess('Gửi báo cáo thành công!');
             reset({
                 description: '',

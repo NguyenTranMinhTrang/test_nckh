@@ -9,9 +9,13 @@ import { saveUserData } from './app/redux/actions/auth';
 import Tflite from 'tflite-react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { STORAGE_KEY } from './app/constants/AppConstant';
+import { LogBox } from 'react-native';
 let tflite = new Tflite();
 
-console.log('tflite: ', tflite);
+LogBox.ignoreAllLogs();
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs(['Constants']);
+LogBox.ignoreLogs(['ViewPropTypes']);
 
 // screen for stack & tabs
 const App = () => {

@@ -2,11 +2,10 @@ import axios from 'axios';
 import queryString from 'query-string';
 import endpoint from './endpoint';
 
-const timeoutInSecond = 10;
+const timeoutInSecond = 20;
 
 const axiosClient = axios.create({
     baseURL: endpoint.BASE_URL,
-    timeout: timeoutInSecond * 1000,
     paramsSerializer: params => queryString.stringify(params),
 });
 

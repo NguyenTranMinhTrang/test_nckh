@@ -79,14 +79,12 @@ const Login = ({ navigation }) => {
                         flex: 1,
                         paddingHorizontal: SIZES.padding,
                         paddingVertical: 30
-
                     }}
-
                     onPress={Keyboard.dismiss}>
                     <InputField
                         control={control}
                         name="userName"
-                        title="Username"
+                        title="Tên đăng nhập"
                         iconName="user"
                         required={true}
                     />
