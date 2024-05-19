@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import { Header } from "../components";
 import InputField from "../components/InputField";
 import Icon from "../components/Icon";
 import EmptyView from "../components/EmptyView";
 import ModalImagePicker from "../components/ModalImagePicker";
+import ImageFileItem from "../components/ImageFileItem";
 
 const Contribute = ({ navigation }) => {
 
@@ -41,6 +42,14 @@ const Contribute = ({ navigation }) => {
         }
     }
 
+    const onDelete = (idx) => {
+        const currentValues = getValues()?.images || [];
+        const newValues = currentValues.filter((val, index) => {
+            return index !== idx;
+        })
+        setValue('images', newValues);
+    }
+
     const renderHeader = () => {
         return (
             <Header title="Đóng góp !" navigation={navigation} />
@@ -59,54 +68,67 @@ const Contribute = ({ navigation }) => {
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
                 }}>
-                <Pressable
-                    style={{
-                        flex: 1,
-                        paddingHorizontal: SIZES.padding,
-                        paddingVertical: 30
-                    }}
-                    onPress={Keyboard.dismiss}>
-                    <InputField
-                        control={control}
-                        name="name"
-                        title="Tên"
-                        iconName="user"
-                        required={true}
-                    />
+                <ScrollView>
+                    <Pressable
+                        style={{
+                            flex: 1,
+                            paddingHorizontal: SIZES.padding,
+                            paddingVertical: 30
+                        }}
+                        onPress={Keyboard.dismiss}>
+                        <InputField
+                            control={control}
+                            name="name"
+                            title="Tên"
+                            iconName="user"
+                            required={true}
+                        />
 
-                    <InputField
-                        control={control}
-                        name="description"
-                        title="Mô tả"
-                        iconName="edit"
-                        iconType="Feat"
-                        required={true}
-                    />
+                        <InputField
+                            control={control}
+                            name="description"
+                            title="Mô tả"
+                            iconName="edit"
+                            iconType="Feat"
+                            required={true}
+                        />
 
-                    <TouchableOpacity onPress={onOpenCamera} style={styles.buttonImage}>
-                        <Icon type="Ant" name="plus" color={COLORS.white} />
-                        <Text style={{ color: COLORS.white, fontSize: 17, marginLeft: 5 }}>Thêm ảnh</Text>
-                    </TouchableOpacity>
-                    <Controller
-                        name="images"
-                        control={control}
-                        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
-                            console.log('value: ', value);
-                            if (!value || value.length === 0) {
+                        <TouchableOpacity onPress={onOpenCamera} style={styles.buttonImage}>
+                            <Icon type="Ant" name="plus" color={COLORS.white} />
+                            <Text style={{ color: COLORS.white, fontSize: 17, marginLeft: 5 }}>Thêm ảnh</Text>
+                        </TouchableOpacity>
+                        <Controller
+                            name="images"
+                            control={control}
+                            render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
+                                console.log('value: ', value);
+                                if (!value || value.length === 0) {
+                                    return (
+                                        <View style={{ minHeight: 200 }}>
+                                            <EmptyView />
+                                        </View>
+                                    )
+                                }
                                 return (
-                                    <View style={{ minHeight: 200 }}>
-                                        <EmptyView />
+                                    <View>
+                                        {
+                                            value.map((val, index) => {
+                                                return (
+                                                    <ImageFileItem
+                                                        key={index}
+                                                        item={val}
+                                                        index={index}
+                                                        onDelete={onDelete}
+                                                    />
+                                                )
+                                            })
+                                        }
                                     </View>
                                 )
-                            }
-                            return (
-                                <View>
-
-                                </View>
-                            )
-                        }}
-                    />
-                </Pressable>
+                            }}
+                        />
+                    </Pressable>
+                </ScrollView>
             </KeyboardAvoidingView>
             <ModalImagePicker
                 ref={refPicker}
